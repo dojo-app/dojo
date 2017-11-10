@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, Left, Body, Title, Right, List, ListItem, Switch } from 'native-base';
+import * as firebase from "firebase";
+import { StackNavigator } from 'react-navigation';
+import { MainNav } from './MainNav';
+import { AddBillScreen } from './AddBillScreen';
+import { firebaseConfig } from './firebaseConfig';
 
+
+firebase.initializeApp(firebaseConfig);
 
 export default class App extends React.Component {
   constructor() {
@@ -20,58 +26,13 @@ export default class App extends React.Component {
     this.setState({ isReady: true });
   }
 
-
   render() {
+
     if (!this.state.isReady) {
       return <Expo.AppLoading />;
     }
-    return (
-      <Container>
-        <Header>
-          <Body>
-            <Title>Tasks</Title>
-          </Body>
-        </Header>
-        <Content>
-          <List>
-            <ListItem icon>
-              <Left>
-                <Icon name="trash" />
-              </Left>
-              <Body>
-                <Text>Throw out trash</Text>
-              </Body>
-              <Right>
-                <Button transparent>
-                  <Text>Done</Text>
-                </Button>
-              </Right>
-            </ListItem>
-          </List>
-        </Content>
-        <Footer>
-          <FooterTab>
-            <Button vertical active>
-              <Icon active name="list" />
-              <Text>Tasks</Text>
-            </Button>
-            <Button vertical>
-              <Icon name="cash" />
-              <Text>Bills</Text>
-            </Button>
-            <Button vertical>
-              <Icon name="person" />
-              <Text>Profile</Text>
-            </Button>
-            <Button vertical>
-              <Icon name="settings" />
-              <Text>Settings</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
-      </Container>    
-    );
-  }
 
+    return <MainNav />;
+  }
   
 }
