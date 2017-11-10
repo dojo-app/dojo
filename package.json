@@ -26,6 +26,11 @@
     "react": "16.0.0-beta.5",
     "react-floating-button-menu": "^1.0.8",
     "react-native": "^0.49.5",
-    "react-navigation": "^1.0.0-beta.19"
+    "react-native-action-button": "^2.8.1",
+    "react-native-facebook-login": "^1.6.0",
+    "react-native-firebase-auth": "^1.0.1",
+    "react-native-google-sign-in": "0.0.16",
+    "react-navigation": "^1.0.0-beta.19",
+    "watchman": "^0.1.8"
   }
 }

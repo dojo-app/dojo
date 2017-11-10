@@ -1,5 +1,5 @@
 firebaseConfig.js
-
+secret.js
 
 # Logs
 logs
@@ -59,4 +59,3 @@ typings/
 
 # dotenv environment variables file
 .env
-
