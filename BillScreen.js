@@ -9,6 +9,11 @@ export class BillScreen extends React.Component {
         <Text>Add Bill</Text>
       </Button>
     ),
+    headerLeft: (
+      <Button transparent onPress={() => navigation.navigate('EditBill')}>
+        <Text>Edit Bill</Text>
+      </Button>
+    ),
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
         name={focused ? 'ios-cash' : 'ios-cash-outline'}
@@ -23,7 +28,7 @@ export class BillScreen extends React.Component {
       <Container>
         <Content>
         </Content>
-      </Container>    
+      </Container>
     );
   }
 }

@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { Container, Header, Content, Button, Form, Item, Input, Label, Left, Text } from 'native-base';
 import * as firebase from "firebase";
 
-
-export class AddBillScreen extends React.Component {
+export class EditBillScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Bill',
+    title: 'Edit Bill',
   };
 
   constructor() {
