@@ -14,14 +14,19 @@ export class TaskScreen extends React.Component {
     });
   }
 
-
-
   static navigationOptions = ({navigation}) => ({
     title: 'Tasks',
     headerRight: (
       <Button transparent onPress={() => navigation.navigate('AddTask')}>
         <Text>Add Task</Text>
       </Button>
+    
+    ),
+    headerLeft: (
+      <Button transparent onPress={() => navigation.navigate('EditTask')}>
+        <Text>Edit Task</Text>
+      </Button>
+
     ),
     tabBarIcon: ({ tintColor, focused }) => (
     <Icon
@@ -31,13 +36,16 @@ export class TaskScreen extends React.Component {
     ),
   });
 
+
   render() {
     return (
       <Container style={styles.container}>
         <Content>
           <List>
             <ListItem>
-              <Text>Example Task #1</Text>
+
+                <Text>Example Task #1</Text>
+              
             </ListItem>
             <ListItem>
               <Text>Example Task #2</Text>

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Container, Header, Content, Button, Form, Item, Input, Label, Left, Text } from 'native-base';
 import * as firebase from "firebase";
 
-export class AddTaskScreen extends React.Component {
+export class EditTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Task',
+    title: 'Edit Task',
   };
 
   constructor() {
@@ -12,7 +12,7 @@ export class AddTaskScreen extends React.Component {
     this.state = {
       taskTitle: 'Important Task',
       taskDescription: 'Cool Description',
-      taskDueDate: 'Due Date',
+      taskDueDate: 'Date',
       taskUsers: 'Users',
     };
   }
@@ -31,11 +31,11 @@ export class AddTaskScreen extends React.Component {
                 <Input value={this.state.taskDescription} onChangeText={(text) => this.setState({taskDescription: text})} />
               </Item>
               <Item fixedLabel>
-                <Label>Task Users</Label>
+                <Label>Users</Label>
                 <Input value={this.state.taskUsers} onChangeText={(text) => this.setState({taskUsers: text})} />
               </Item>
               <Item fixedLabel>
-                <Label>Task Due Date</Label>
+                <Label>Due Date</Label>
                 <Input value={this.state.taskDueDate} onChangeText={(text) => this.setState({taskDueDate: text})} />
               </Item>
             </Form>
@@ -47,7 +47,7 @@ export class AddTaskScreen extends React.Component {
                 task_dueDate: this.state.taskDueDate
               })
             }}>
-              <Text>Submit</Text>
+              <Text>Save</Text>
             </Button>
           </Content>
       </Container>
