@@ -27,7 +27,7 @@ export class DashboardScreen extends React.Component {
       <Container>
         <Content>
         </Content>
-      </Container>    
+      </Container>
     );
   }
 }
