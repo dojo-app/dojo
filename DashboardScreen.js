@@ -3,7 +3,7 @@ import { Container, Header, Content, Footer, FooterTab, Icon, Text, Left, Body, 
 
 export class DashboardScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: 'Dashboard',
+    title: 'Dojo',
     /*
     headerRight: (
       <Button transparent onPress={() => navigation.navigate('AddBill')}>

@@ -57,7 +57,7 @@ export class TaskScreen extends React.Component {
           </List>
           <Text>{this.state.text}</Text>
         </Content>
-      </Container>    
+      </Container>
     );
   }
 }
