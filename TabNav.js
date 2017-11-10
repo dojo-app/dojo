@@ -5,6 +5,7 @@ import { BillScreen } from './BillScreen';
 import { ProfileScreen } from './ProfileScreen';
 
 const options = {
+    tabBarPosition: 'bottom'
 };
 
 export const TabNav = TabNavigator({
@@ -13,3 +14,4 @@ export const TabNav = TabNavigator({
   Bills: { screen: BillScreen },
   Profile: { screen: ProfileScreen },
 }, options);
+
