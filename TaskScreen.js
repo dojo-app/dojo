@@ -9,9 +9,9 @@ export class TaskScreen extends React.Component {
     this.state = {
       text: ''
     };
-    firebase.database().ref('task').once("value").then(function(snapshot) {
-      console.log( snapshot );
-    });
+    // firebase.database().ref('task').once("value").then(function(snapshot) {
+    //   console.log( snapshot );
+    // });
   }
 
   static navigationOptions = ({navigation}) => ({
