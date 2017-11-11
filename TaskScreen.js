@@ -15,6 +15,7 @@ export class TaskScreen extends React.Component {
   }
 
   static navigationOptions = ({navigation}) => ({
+
     title: 'Tasks',
     headerRight: (
       <Button transparent onPress={() => navigation.navigate('AddTask')}>
@@ -56,7 +57,7 @@ export class TaskScreen extends React.Component {
           </List>
           <Text>{this.state.text}</Text>
         </Content>
-      </Container>    
+      </Container>
     );
   }
 }
