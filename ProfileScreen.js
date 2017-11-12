@@ -34,7 +34,7 @@ export class ProfileScreen extends React.Component {
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
-        name={focused ? 'ios-list-box' : 'ios-list-box-outline'}
+        name={focused ? 'ios-person' : 'ios-person-outline'}
         style={{ color: tintColor }}
       />
     )

@@ -28,24 +28,6 @@ export class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
   }
-  static navigationOptions = ({ navigation }) => ({
-    title: 'Login Screen',
-    /*
-    headerRight: (
-      <Button transparent onPress={() => navigation.navigate('AddBill')}>
-        <Text>Add Bill</Text>
-      </Button>
-    ),
-    */
-
-    //TODO: Change the icon
-    tabBarIcon: ({ tintColor, focused }) => (
-      <Icon
-        name={focused ? 'ios-home' : 'ios-home-outline'}
-        style={{ color: tintColor }}
-      />
-    )
-  });
 
   async signInWithGoogleAsync() {
     try {

@@ -65,7 +65,7 @@ export class AddTaskScreen extends React.Component {
           <Button
             full
             onPress={() => {
-              return firebase
+              firebase
                 .database()
                 .ref('task')
                 .push({
@@ -74,6 +74,7 @@ export class AddTaskScreen extends React.Component {
                   task_users: this.state.taskUsers,
                   task_dueDate: this.state.taskDueDate
                 });
+              this.props.navigation.goBack();
             }}
           >
             <Text>Submit</Text>

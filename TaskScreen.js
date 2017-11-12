@@ -23,11 +23,22 @@ export class TaskScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      text: ''
+      loading: true
     };
-    // firebase.database().ref('task').once("value").then(function(snapshot) {
-    //   console.log( snapshot );
-    // });
+    firebase
+      .database()
+      .ref('task')
+      .once('value')
+      .then(snapshot => {
+        this.setState({ tasks: snapshot.val(), loading: false });
+      });
+
+    firebase
+      .database()
+      .ref('task')
+      .on('value', snapshot => {
+        this.setState({ tasks: snapshot.val() });
+      });
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -51,24 +62,35 @@ export class TaskScreen extends React.Component {
   });
 
   render() {
-    return (
-      <Container style={styles.container}>
-        <Content>
-          <List>
-            <ListItem>
-              <Text>Example Task #1</Text>
-            </ListItem>
-            <ListItem>
-              <Text>Example Task #2</Text>
-            </ListItem>
-            <ListItem>
-              <Text>Example Task #3</Text>
-            </ListItem>
-          </List>
-          <Text>{this.state.text}</Text>
-        </Content>
-      </Container>
-    );
+    if (!this.state.loading) {
+      var tasks = [];
+      if (this.state.tasks) {
+        tasks = Object.values(this.state.tasks);
+      }
+      var listItems = [];
+      //console.log(Object.values(this.state.tasks));
+      for (var i = 0; i < tasks.length; i++) {
+        //console.log(task);
+        listItems.push(
+          <ListItem>
+            <Text>{tasks[i].task_title}</Text>
+          </ListItem>
+        );
+      }
+      return (
+        <Container style={styles.container}>
+          <Content>
+            <List>{listItems}</List>
+          </Content>
+        </Container>
+      );
+    } else {
+      return (
+        <Container>
+          <Text>Loading...</Text>
+        </Container>
+      );
+    }
   }
 }
 
