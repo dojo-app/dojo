@@ -1,40 +1,33 @@
 import React, { Component } from 'react';
-import {Alert, StyleSheet} from 'react-native';
-import { Container, Header, Content, Footer, FooterTab, Icon, Text, Left, Body, Title, Right, List, ListItem, Switch, Button } from 'native-base';
+import { Alert, StyleSheet } from 'react-native';
+import {
+  Container,
+  Header,
+  Content,
+  Footer,
+  FooterTab,
+  Icon,
+  Text,
+  Left,
+  Body,
+  Title,
+  Right,
+  List,
+  ListItem,
+  Switch,
+  Button,
+  H1
+} from 'native-base';
 import { secret } from './secret';
 import Expo from 'expo';
-import * as firebase from "firebase";
+import * as firebase from 'firebase';
 
 // TODO for deployment to standalone app, need to do stuff : https://docs.expo.io/versions/latest/sdk/google.html
-async function signInWithGoogleAsync() {
-  try {
-    const result = await Expo.Google.logInAsync({
-      androidClientId: secret.googleAndroidClientID,
-      iosClientId: secret.googleiOSClientID,
-      scopes: ['profile', 'email'],
-    });
-
-    if (result.type === 'success') {
-      console.log(result);
-      //https://firebase.google.com/docs/reference/js/firebase.auth.GoogleAuthProvider#.credential
-      var credential = firebase.auth.GoogleAuthProvider.credential(result.idToken);
-      
-      firebase.auth().signInWithCredential(credential).catch(function(error) {
-        console.error(error);
-      });
-
-
-      return result.accessToken;
-    } else {
-      return {cancelled: true};
-    }
-  } catch(e) {
-    return {error: true};
-}
-}
-
 
 export class LoginScreen extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   static navigationOptions = ({ navigation }) => ({
     title: 'Login Screen',
     /*
@@ -51,38 +44,58 @@ export class LoginScreen extends React.Component {
         name={focused ? 'ios-home' : 'ios-home-outline'}
         style={{ color: tintColor }}
       />
-    ),
-
+    )
   });
+
+  async signInWithGoogleAsync() {
+    try {
+      const result = await Expo.Google.logInAsync({
+        androidClientId: secret.googleAndroidClientID,
+        iosClientId: secret.googleiOSClientID,
+        scopes: ['profile', 'email']
+      });
+
+      if (result.type === 'success') {
+        console.log(result);
+        // https://firebase.google.com/docs/reference/js/firebase.auth.GoogleAuthProvider#.credential
+        var credential = firebase.auth.GoogleAuthProvider.credential(
+          result.idToken
+        );
+
+        firebase
+          .auth()
+          .signInWithCredential(credential)
+          .catch(error => console.error(error));
+
+        return result.accessToken;
+      } else {
+        return { cancelled: true };
+      }
+    } catch (e) {
+      return { error: true };
+    }
+  }
 
   render() {
     return (
-      <Container>
-        <Content>
-            <Button style={styles.buttonSection} onPress={() => { signInWithGoogleAsync() }}>
-                <Text style={styles.textSection}>
-                    Sign-In
-                </Text>
-            </Button>
-        </Content>
+      <Container style={styles.container}>
+        <H1 style={{ textAlign: 'center' }}>Welcome to Dojo!</H1>
+        <Button
+          style={styles.button}
+          onPress={() => this.signInWithGoogleAsync()}
+          full
+        >
+          <Text>Sign in with Google</Text>
+        </Button>
       </Container>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  loginSection: {
-        width: '100%',
-        height: '30%',
+  container: {
+    justifyContent: 'center'
   },
 
-  buttonSection: {
-      marginLeft: '20%',
-      width: '60%'
-  },
-
-  textSection: {
-
-  }
-
+  button: { marginTop: '10%' }
 });

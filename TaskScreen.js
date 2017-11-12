@@ -1,7 +1,23 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
-import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, Left, Body, Title, Right, List, ListItem, Switch } from 'native-base';
-import * as firebase from "firebase";
+import {
+  Container,
+  Header,
+  Content,
+  Footer,
+  FooterTab,
+  Button,
+  Icon,
+  Text,
+  Left,
+  Body,
+  Title,
+  Right,
+  List,
+  ListItem,
+  Switch
+} from 'native-base';
+import * as firebase from 'firebase';
 
 export class TaskScreen extends React.Component {
   constructor() {
@@ -14,29 +30,25 @@ export class TaskScreen extends React.Component {
     // });
   }
 
-  static navigationOptions = ({navigation}) => ({
-
+  static navigationOptions = ({ navigation }) => ({
     title: 'Tasks',
     headerRight: (
       <Button transparent onPress={() => navigation.navigate('AddTask')}>
         <Text>Add Task</Text>
       </Button>
-    
     ),
     headerLeft: (
       <Button transparent onPress={() => navigation.navigate('EditTask')}>
         <Text>Edit Task</Text>
       </Button>
-
     ),
     tabBarIcon: ({ tintColor, focused }) => (
-    <Icon
-      name={focused ? 'ios-list-box' : 'ios-list-box-outline'}
-      style={{ color: tintColor }}
-    />
-    ),
+      <Icon
+        name={focused ? 'ios-list-box' : 'ios-list-box-outline'}
+        style={{ color: tintColor }}
+      />
+    )
   });
-
 
   render() {
     return (
@@ -44,9 +56,7 @@ export class TaskScreen extends React.Component {
         <Content>
           <List>
             <ListItem>
-
-                <Text>Example Task #1</Text>
-              
+              <Text>Example Task #1</Text>
             </ListItem>
             <ListItem>
               <Text>Example Task #2</Text>
@@ -65,6 +75,6 @@ export class TaskScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-  },
+    backgroundColor: 'white'
+  }
 });
