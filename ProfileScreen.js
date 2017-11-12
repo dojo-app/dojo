@@ -43,7 +43,7 @@ export class ProfileScreen extends React.Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Content>
+        <Content scrollEnabled={false}>
           <List>
             <ListItem itemDivider>
               <Text>Name</Text>
