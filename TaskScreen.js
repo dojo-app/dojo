@@ -64,15 +64,15 @@ export class TaskScreen extends React.Component {
 
       if (this.state.tasks) {
         // checks null because Object.values fails on null
-        tasks = Object.values(this.state.tasks);
+        tasks = Object.entries(this.state.tasks);
       }
 
       var listItems = [];
 
-      for (var i = 0; i < tasks.length; i++) {
+      for (const [key, task] of tasks) {
         listItems.push(
-          <ListItem>
-            <Text>{tasks[i].task_title}</Text>
+          <ListItem key={key}>
+            <Text>{task.task_title}</Text>
           </ListItem>
         );
       }
