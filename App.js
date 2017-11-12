@@ -12,11 +12,14 @@ export default class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      isReady: false,
-      loggedIn: false
+      loaded: false, // whether fonts are loaded
+      loggedIn: false,
+      auth: false // whether the onAuthStateChanged listener has been set, prevents a flash of login screen if the user is already logged in
     };
 
     firebase.auth().onAuthStateChanged(user => {
+      this.setState({ auth: true });
+
       if (user != null) {
         this.setState({ loggedIn: true });
       } else {
@@ -31,11 +34,11 @@ export default class App extends React.Component {
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       Ionicons: require('@expo/vector-icons/fonts/Ionicons.ttf')
     });
-    this.setState({ isReady: true });
+    this.setState({ loaded: true });
   }
 
   render() {
-    if (!this.state.isReady) {
+    if (!(this.state.loaded && this.state.auth)) {
       return <Expo.AppLoading />;
     } else if (!this.state.loggedIn) {
       return <LoginScreen />;

@@ -25,19 +25,12 @@ export class TaskScreen extends React.Component {
     this.state = {
       loading: true
     };
-    firebase
-      .database()
-      .ref('task')
-      .once('value')
-      .then(snapshot => {
-        this.setState({ tasks: snapshot.val(), loading: false });
-      });
 
     firebase
       .database()
       .ref('task')
       .on('value', snapshot => {
-        this.setState({ tasks: snapshot.val() });
+        this.setState({ tasks: snapshot.val(), loading: false });
       });
   }
 
@@ -64,19 +57,22 @@ export class TaskScreen extends React.Component {
   render() {
     if (!this.state.loading) {
       var tasks = [];
+
       if (this.state.tasks) {
+        // checks null because Object.values fails on null
         tasks = Object.values(this.state.tasks);
       }
+
       var listItems = [];
-      //console.log(Object.values(this.state.tasks));
+
       for (var i = 0; i < tasks.length; i++) {
-        //console.log(task);
         listItems.push(
           <ListItem>
             <Text>{tasks[i].task_title}</Text>
           </ListItem>
         );
       }
+
       return (
         <Container style={styles.container}>
           <Content>
@@ -85,11 +81,7 @@ export class TaskScreen extends React.Component {
         </Container>
       );
     } else {
-      return (
-        <Container>
-          <Text>Loading...</Text>
-        </Container>
-      );
+      return <Text>Loading...</Text>;
     }
   }
 }
