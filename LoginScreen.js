@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import {
+  Alert,
+  StyleSheet,
+  Image,
+  TouchableWithoutFeedback
+} from 'react-native';
 import {
   Container,
   Header,
@@ -28,8 +33,12 @@ import * as firebase from 'firebase';
 export class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.normalButton = require('./btn_google_signin_dark_normal_web.png');
+    this.pressedButton = require('./btn_google_signin_dark_pressed_web.png');
+
     this.state = {
-      signingIn: false
+      signingIn: false,
+      button: this.normalButton
     };
   }
 
@@ -78,13 +87,13 @@ export class LoginScreen extends React.Component {
     return (
       <Container style={styles.container}>
         <H1 style={styles.center}>Welcome to Dojo!</H1>
-        <Button
-          style={styles.button}
-          full
+        <TouchableWithoutFeedback
           onPress={() => this.signInWithGoogleAsync()}
+          onPressIn={() => this.setState({ button: this.pressedButton })}
+          onPressOut={() => this.setState({ button: this.normalButton })}
         >
-          <Text>Sign in with Google</Text>
-        </Button>
+          <Image style={styles.button} source={this.state.button} />
+        </TouchableWithoutFeedback>
       </Container>
     );
   }
@@ -92,7 +101,9 @@ export class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flex: 1,
+    alignItems: 'center'
   },
 
   center: {
