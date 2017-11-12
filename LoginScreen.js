@@ -16,7 +16,8 @@ import {
   ListItem,
   Switch,
   Button,
-  H1
+  H1,
+  Spinner
 } from 'native-base';
 import { secret } from './secret';
 import Expo from 'expo';
@@ -27,6 +28,9 @@ import * as firebase from 'firebase';
 export class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      signingIn: false
+    };
   }
 
   async signInWithGoogleAsync() {
@@ -38,6 +42,8 @@ export class LoginScreen extends React.Component {
       });
 
       if (result.type === 'success') {
+        this.setState({ signingIn: true });
+
         console.log(result);
         // https://firebase.google.com/docs/reference/js/firebase.auth.GoogleAuthProvider#.credential
         var credential = firebase.auth.GoogleAuthProvider.credential(
@@ -51,6 +57,8 @@ export class LoginScreen extends React.Component {
 
         return result.accessToken;
       } else {
+        this.setState({ signingIn: false });
+
         return { cancelled: true };
       }
     } catch (e) {
@@ -59,13 +67,21 @@ export class LoginScreen extends React.Component {
   }
 
   render() {
+    if (this.state.signingIn) {
+      return (
+        <Container style={styles.container}>
+          <H1 style={styles.center}>Logging In...</H1>
+          <Spinner color="black" />
+        </Container>
+      );
+    }
     return (
       <Container style={styles.container}>
-        <H1 style={{ textAlign: 'center' }}>Welcome to Dojo!</H1>
+        <H1 style={styles.center}>Welcome to Dojo!</H1>
         <Button
           style={styles.button}
-          onPress={() => this.signInWithGoogleAsync()}
           full
+          onPress={() => this.signInWithGoogleAsync()}
         >
           <Text>Sign in with Google</Text>
         </Button>
@@ -77,6 +93,10 @@ export class LoginScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center'
+  },
+
+  center: {
+    textAlign: 'center'
   },
 
   button: { marginTop: '10%' }

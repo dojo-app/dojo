@@ -26,12 +26,16 @@ export class TaskScreen extends React.Component {
       loading: true
     };
 
-    firebase
-      .database()
-      .ref('task')
-      .on('value', snapshot => {
-        this.setState({ tasks: snapshot.val(), loading: false });
-      });
+    firebase.auth().onAuthStateChanged(user => {
+      if (user != null) {
+        firebase
+          .database()
+          .ref('task')
+          .on('value', snapshot => {
+            this.setState({ tasks: snapshot.val(), loading: false });
+          });
+      }
+    });
   }
 
   static navigationOptions = ({ navigation }) => ({
