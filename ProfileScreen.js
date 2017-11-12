@@ -20,15 +20,14 @@ import {
 import * as firebase from 'firebase';
 
 export class ProfileScreen extends React.Component {
-  // constructor() {
-  //   super();
-  //   this.state = {
-  //     text: ''
-  //   };
-  //   firebase.database().ref('task').once("value").then(function(snapshot) {
-  //     console.log( snapshot );
-  //   });
-  // }
+  constructor(props) {
+    super(props);
+    const user = firebase.auth().currentUser;
+    this.state = {
+      displayName: user.displayName,
+      email: user.email
+    };
+  }
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Profile',
@@ -46,18 +45,23 @@ export class ProfileScreen extends React.Component {
       <Container style={styles.container}>
         <Content>
           <List>
-            <ListItem>
+            <ListItem itemDivider>
               <Text>Name</Text>
             </ListItem>
+
             <ListItem>
+              <Text>{this.state.displayName}</Text>
+            </ListItem>
+            <ListItem itemDivider>
               <Text>Email</Text>
             </ListItem>
+
             <ListItem>
-              <Text>Phone</Text>
+              <Text>{this.state.email}</Text>
             </ListItem>
           </List>
 
-          <Button danger onPress={() => firebase.auth().signOut()}>
+          <Button full danger onPress={() => firebase.auth().signOut()}>
             <Text>Log Out</Text>
           </Button>
         </Content>
