@@ -80,7 +80,7 @@ export class TaskScreen extends React.Component {
             </CardItem>
             <CardItem>
               <Body>
-                <Text>{task.tast_description}</Text>
+                <Text>{task.task_description}</Text>
               </Body>
             </CardItem>
           </Card>
