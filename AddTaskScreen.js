@@ -38,6 +38,7 @@ export class AddTaskScreen extends React.Component {
               <Input
                 value={this.state.taskTitle}
                 onChangeText={text => this.setState({ taskTitle: text })}
+                autoFocus={true}
               />
             </Item>
             <Item fixedLabel>

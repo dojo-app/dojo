@@ -27,6 +27,7 @@ export class TaskScreen extends React.Component {
     };
   }
 
+  // https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
   componentWillMount() {
     if (firebase.auth().currentUser) {
       firebase

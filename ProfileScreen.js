@@ -52,6 +52,7 @@ export class ProfileScreen extends React.Component {
             <ListItem>
               <Text>{this.state.displayName}</Text>
             </ListItem>
+
             <ListItem itemDivider>
               <Text>Email</Text>
             </ListItem>
