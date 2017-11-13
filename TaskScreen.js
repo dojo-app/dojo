@@ -15,7 +15,9 @@ import {
   Right,
   List,
   ListItem,
-  Switch
+  Switch,
+  Card,
+  CardItem
 } from 'native-base';
 import * as firebase from 'firebase';
 
@@ -65,24 +67,29 @@ export class TaskScreen extends React.Component {
 
       if (this.state.tasks) {
         // checks null because Object.values fails on null
-        tasks = Object.entries(this.state.tasks);
+        tasks = Object.entries(this.state.tasks).reverse();
       }
 
       var listItems = [];
 
       for (const [key, task] of tasks) {
         listItems.push(
-          <ListItem key={key}>
-            <Text>{task.task_title}</Text>
-          </ListItem>
+          <Card key={key}>
+            <CardItem header>
+              <Text>{task.task_title}</Text>
+            </CardItem>
+            <CardItem>
+              <Body>
+                <Text>{task.tast_description}</Text>
+              </Body>
+            </CardItem>
+          </Card>
         );
       }
 
       return (
         <Container style={styles.container}>
-          <Content>
-            <List>{listItems}</List>
-          </Content>
+          <Content>{listItems}</Content>
         </Container>
       );
     } else {

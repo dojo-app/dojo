@@ -21,6 +21,20 @@ export default class App extends React.Component {
       this.setState({ auth: true });
 
       if (user != null) {
+        const uid = user['uid'];
+        var ref = firebase.database().ref('users');
+        ref.once('value').then(snapshot => {
+          var userExists = snapshot.hasChild(uid);
+          console.log(`userExists = ${userExists}`);
+          if (!userExists) {
+            ref.set({
+              [uid]: {
+                name: user['displayName']
+              }
+            });
+          }
+        });
+
         this.setState({ loggedIn: true });
       } else {
         this.setState({ loggedIn: false });

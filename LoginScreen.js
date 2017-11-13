@@ -53,7 +53,7 @@ export class LoginScreen extends React.Component {
       if (result.type === 'success') {
         this.setState({ signingIn: true });
 
-        console.log(result);
+        //console.log(result);
         // https://firebase.google.com/docs/reference/js/firebase.auth.GoogleAuthProvider#.credential
         var credential = firebase.auth.GoogleAuthProvider.credential(
           result.idToken
@@ -86,12 +86,11 @@ export class LoginScreen extends React.Component {
     }
     return (
       <Container style={styles.container}>
-        <H1 style={styles.center}>Welcome to Dojo!</H1>
+        <H1 style={styles.h1}>Welcome to Dojo!</H1>
         <TouchableWithoutFeedback
           onPress={() => this.signInWithGoogleAsync()}
           onPressIn={() => this.setState({ button: this.pressedButton })}
-          onPressOut={() => this.setState({ button: this.normalButton })}
-        >
+          onPressOut={() => this.setState({ button: this.normalButton })}>
           <Image style={styles.button} source={this.state.button} />
         </TouchableWithoutFeedback>
       </Container>
@@ -106,7 +105,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
 
-  center: {
+  h1: {
     textAlign: 'center'
   },
 
