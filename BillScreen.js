@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { StyleSheet } from 'react-native';
 import {
   Container,
   Header,
@@ -16,6 +17,7 @@ import {
   Switch,
   Button
 } from 'native-base';
+import ActionButton from 'react-native-action-button';
 
 export class BillScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -39,15 +41,24 @@ export class BillScreen extends React.Component {
   });
 
   render() {
+    const {navigate} = this.props.navigation;
     return (
-      <Container>
-<<<<<<< HEAD
-        <Content>
-        </Content>
-=======
-        <Content />
->>>>>>> d8369eff42c164dae9c359b7e4966fd3eaafbcc9
+      <Container style={styles.container}>
+        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={() => navigate('EditBill')}>
+        </ActionButton>
       </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: 'white',
+  },
+});

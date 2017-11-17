@@ -20,6 +20,7 @@ import {
   CardItem
 } from 'native-base';
 import * as firebase from 'firebase';
+import ActionButton from 'react-native-action-button';
 
 export class TaskScreen extends React.Component {
   constructor() {
@@ -62,6 +63,7 @@ export class TaskScreen extends React.Component {
   });
 
   render() {
+    const {navigate} = this.props.navigation;
     if (!this.state.loading) {
       var tasks = [];
 
@@ -89,7 +91,11 @@ export class TaskScreen extends React.Component {
 
       return (
         <Container style={styles.container}>
-          <Content>{listItems}</Content>
+          <Content>
+          {listItems}
+          </Content>
+          <ActionButton buttonColor="rgba(231,76,60,1)" onPress={() => navigate('EditTask')}>
+          </ActionButton>
         </Container>
       );
     } else {
@@ -102,5 +108,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
-  }
+  },
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: 'white',
+  },
 });

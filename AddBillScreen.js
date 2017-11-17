@@ -82,8 +82,4 @@ export class AddBillScreen extends React.Component {
       </Container>
     );
   }
-<<<<<<< HEAD
-};
-=======
 }
->>>>>>> d8369eff42c164dae9c359b7e4966fd3eaafbcc9
