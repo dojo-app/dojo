@@ -7,27 +7,23 @@ import Expo from 'expo';
 import * as firebase from 'firebase';
 
 export class NotInDojo extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: props.user
-    };
-  }
   createDojo() {
     var new_dojo = firebase
       .database()
       .ref('dojos')
       .push({
-        user: this.state.user.uid
+        name: 'Awesome Dojo',
+        users: { [this.props.state.user.uid]: true }
       });
 
     firebase
       .database()
       .ref('users')
-      .child(this.state.user.uid)
+      .child(this.props.state.user.uid)
       .child('dojo')
       .set(new_dojo.key);
   }
+
   render() {
     return (
       <Container style={styles.container}>
@@ -37,13 +33,14 @@ export class NotInDojo extends React.Component {
         <Button full success large onPress={() => this.createDojo()}>
           <Text>Create Dojo</Text>
         </Button>
-        <Button full danger large>
+        <Button full danger large onPress={() => firebase.auth().signOut()}>
           <Text>Sign Out</Text>
         </Button>
       </Container>
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

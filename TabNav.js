@@ -1,7 +1,7 @@
 import { TabNavigator } from 'react-navigation';
 import { TaskScreen } from './TaskScreen';
 import { BillScreen } from './BillScreen';
-import { DashboardScreen } from './DashboardScreen';
+import { DojoScreen } from './DojoScreen';
 import { ProfileScreen } from './ProfileScreen';
 
 const options = {
@@ -12,7 +12,7 @@ export const TabNav = TabNavigator(
   {
     Tasks: { screen: TaskScreen },
     Bills: { screen: BillScreen },
-    Dashboard: { screen: DashboardScreen },
+    Dojo: { screen: DojoScreen },
     Profile: { screen: ProfileScreen }
   },
   options

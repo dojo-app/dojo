@@ -15,20 +15,12 @@ import {
   Right,
   List,
   ListItem,
-  Switch
+  Switch,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 
 export class ProfileScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    const user = firebase.auth().currentUser;
-    this.state = {
-      displayName: user.displayName,
-      email: user.email
-    };
-  }
-
   static navigationOptions = ({ navigation }) => ({
     title: 'Profile',
 
@@ -44,25 +36,14 @@ export class ProfileScreen extends React.Component {
     return (
       <Container style={styles.container}>
         <Content scrollEnabled={false}>
-          <List>
-            <ListItem itemDivider>
-              <Text>Name</Text>
-            </ListItem>
+          <Thumbnail
+            large
+            source={{ uri: this.props.screenProps.state.user.photoURL }}
+          />
 
-            <ListItem>
-              <Text>{this.state.displayName}</Text>
-            </ListItem>
+          <Text>{this.props.screenProps.state.user.displayName}</Text>
 
-            <ListItem itemDivider>
-              <Text>Email</Text>
-            </ListItem>
-
-            <ListItem>
-              <Text>{this.state.email}</Text>
-            </ListItem>
-          </List>
-
-          <Button full danger onPress={() => firebase.auth().signOut()}>
+          <Button full danger large onPress={() => firebase.auth().signOut()}>
             <Text>Log Out</Text>
           </Button>
         </Content>
@@ -74,6 +55,7 @@ export class ProfileScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    alignItems: 'center'
   }
 });

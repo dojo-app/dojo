@@ -74,8 +74,7 @@ export class EditTaskScreen extends React.Component {
                   task_users: this.state.taskUsers,
                   task_dueDate: this.state.taskDueDate
                 });
-            }}
-          >
+            }}>
             <Text>Save</Text>
           </Button>
         </Content>
