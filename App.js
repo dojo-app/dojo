@@ -32,7 +32,7 @@ export default class App extends React.Component {
           var userExists = snapshot.hasChild(this.state.user.uid);
 
           if (!userExists) {
-            ref.set({
+            ref.update({
               [this.state.user.uid]: {
                 name: user['displayName'],
                 dojo: ''
