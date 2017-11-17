@@ -44,11 +44,6 @@ export class TaskScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Tasks',
-    headerRight: (
-      <Button transparent onPress={() => navigation.navigate('AddTask')}>
-        <Text>Add Task</Text>
-      </Button>
-    ),
     headerLeft: (
       <Button transparent onPress={() => navigation.navigate('EditTask')}>
         <Text>Edit Task</Text>

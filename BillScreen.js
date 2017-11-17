@@ -22,11 +22,6 @@ import ActionButton from 'react-native-action-button';
 export class BillScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
-    headerRight: (
-      <Button transparent onPress={() => navigation.navigate('AddBill')}>
-        <Text>Add Bill</Text>
-      </Button>
-    ),
     headerLeft: (
       <Button transparent onPress={() => navigation.navigate('EditBill')}>
         <Text>Edit Bill</Text>
