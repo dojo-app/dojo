@@ -5,7 +5,7 @@ import { MainNav } from './MainNav';
 import { AddBillScreen } from './AddBillScreen';
 import { firebaseConfig } from './firebaseConfig';
 import { LoginScreen } from './LoginScreen';
-import { NotInDojo } from './NotInDojo';
+import { DojoNav } from './DojoNav';
 import Expo from 'expo';
 
 export default class App extends React.Component {
@@ -24,15 +24,31 @@ export default class App extends React.Component {
     firebase.initializeApp(firebaseConfig);
 
     firebase.auth().onAuthStateChanged(user => {
-      this.handleAuthStateChange(user);
+      if (user === null) {
+        this.handleLogOut();
+      } else {
+        this.handleLogIn(user);
+      }
     });
   }
-
-  async handleAuthStateChange(user) {
+  handleLogOut() {
+    this.setState({
+      loggedIn: false,
+      inDojo: false,
+      user: null,
+      dojo: '',
+      tasks: [],
+      bills: [],
+      users: []
+    });
+  }
+  async handleLogIn(user) {
     this.setState({ auth: true });
 
     if (user === null) {
       this.setState({ loggedIn: false });
+      this.setState({ user: null });
+      this.setState({ inDojo: false });
     } else {
       // user logged in
       this.setState({ loggedIn: true });
@@ -62,6 +78,14 @@ export default class App extends React.Component {
                 inDojo: true,
                 dojo: dataSnapshot.child('dojo').val()
               });
+              firebase
+                .database()
+                .ref('dojos')
+                .child(this.state.dojo)
+                .on('value', snapshot => {
+                  this.updateTasks(snapshot.child('tasks'));
+                  this.updateUsers(snapshot.child('users'));
+                });
             }
           });
       }
@@ -171,7 +195,7 @@ export default class App extends React.Component {
     } else if (!this.state.loggedIn) {
       return <LoginScreen />;
     } else if (!this.state.inDojo) {
-      return <NotInDojo state={this.state} />;
+      return <DojoNav screenProps={{ state: this.state }} />;
     } else {
       return <MainNav screenProps={{ state: this.state }} />;
     }
