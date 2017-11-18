@@ -49,13 +49,17 @@ export default class App extends React.Component {
     this.watchChangesInUsersDojo(user);
   }
 
-  watchChangesInUsersDojo(user) {
+  watchChangesInUsersDojo(user = this.state.user) {
     firebase
       .database()
       .ref('users')
       .child(user.uid)
       .child('dojo')
       .on('value', dataSnapshot => {
+        console.log(
+          'change occurs in dojo on' + this.state.user.displayName + "'s phone"
+        );
+        console.log('dojo exists = ' + dataSnapshot.exists());
         if (dataSnapshot.exists()) {
           this.setState({
             inDojo: true,
@@ -65,11 +69,12 @@ export default class App extends React.Component {
             .database()
             .ref('dojos')
             .child(dataSnapshot.val())
-            .on('value', snapshot => {
+            .once('value', snapshot => {
               this.updateTasks(snapshot.child('tasks'));
               this.updateUsers(snapshot.child('users'));
             });
         } else {
+          console.log(this.state.user.displayName + ' not in dojo');
           this.setState({
             inDojo: false,
             dojo: ''
@@ -112,7 +117,6 @@ export default class App extends React.Component {
       .child(user.uid)
       .child('dojo')
       .once('value');
-    // console.log(snapshot.val());
     return snapshot.val();
   }
 
@@ -132,28 +136,17 @@ export default class App extends React.Component {
       .ref('tasks')
       .once('value')).val();
 
-    // console.log('printing task ids from all tasks');
-    for (const task_id of Object.keys(tasks)) {
-      // console.log('task_id = ' + task_id);
-    }
-
-    // console.log('printing task ids from this dojos tasks');
     for (const task_id of tasks_ids) {
-      // console.log('task_id = ' + task_id);
       if (task_id in tasks) {
         taskObjects.push(tasks[task_id]);
       }
     }
-    // console.log('printing task objects');
-    // console.log(taskObjects);
 
     this.setState({ tasks: taskObjects.reverse() });
-    for (const task of this.state.tasks) {
-      console.log(task);
-    }
   }
 
   async updateUsers(snapshot) {
+    console.log(this.state.user.displayName + ' calling update users');
     var userObjects = [];
     var user_ids = Object.keys(snapshot.val());
 
@@ -161,16 +154,12 @@ export default class App extends React.Component {
       .database()
       .ref('users')
       .once('value')).val();
-    for (const user_id of Object.keys(users)) {
-      // console.log('task_id = ' + task_id);
-    }
+
     for (const user_id of user_ids) {
       if (user_id in users) {
         userObjects.push(users[user_id]);
       }
     }
-    console.log('printing user objects');
-    console.log(userObjects);
 
     this.setState({ users: userObjects });
   }

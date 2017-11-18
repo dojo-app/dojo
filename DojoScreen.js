@@ -58,9 +58,28 @@ export class DojoScreen extends React.Component {
             </ListItem>
             {listItems}
           </List>
+          <Button full danger large onPress={() => this.leaveDojo()}>
+            <Text>Leave Dojo</Text>
+          </Button>
         </Content>
       </Container>
     );
+  }
+
+  leaveDojo() {
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('users')
+      .child(this.props.screenProps.state.user.uid)
+      .remove();
+    firebase
+      .database()
+      .ref('users')
+      .child(this.props.screenProps.state.user.uid)
+      .child('dojo')
+      .remove();
   }
 }
 
