@@ -43,53 +43,39 @@ export default class App extends React.Component {
     });
   }
   async handleLogIn(user) {
-    this.setState({ auth: true });
+    this.setState({ loggedIn: true });
+    this.setState({ user: user });
+    this.updateUserInfo(user);
+    this.watchChangesInUsersDojo(user);
+  }
 
-    if (user === null) {
-      this.setState({ loggedIn: false });
-      this.setState({ user: null });
-      this.setState({ inDojo: false });
-    } else {
-      // user logged in
-      this.setState({ loggedIn: true });
-      this.setState({ user: user });
-      this.updateUserInfo(user);
-      var inDojo = await this.inDojo(user);
-      if (inDojo) {
-        this.setState({ inDojo: true });
-        this.setState({ dojo: await this.getDojo(user) });
-        firebase
-          .database()
-          .ref('dojos')
-          .child(this.state.dojo)
-          .on('value', snapshot => {
-            this.updateTasks(snapshot.child('tasks'));
-            this.updateUsers(snapshot.child('users'));
+  watchChangesInUsersDojo(user) {
+    firebase
+      .database()
+      .ref('users')
+      .child(user.uid)
+      .child('dojo')
+      .on('value', dataSnapshot => {
+        if (dataSnapshot.exists()) {
+          this.setState({
+            inDojo: true,
+            dojo: dataSnapshot.val()
           });
-      } else {
-        // watch for inDojo changes
-        firebase
-          .database()
-          .ref('users')
-          .child(user.uid)
-          .on('value', dataSnapshot => {
-            if (dataSnapshot.child('dojo').exists()) {
-              this.setState({
-                inDojo: true,
-                dojo: dataSnapshot.child('dojo').val()
-              });
-              firebase
-                .database()
-                .ref('dojos')
-                .child(this.state.dojo)
-                .on('value', snapshot => {
-                  this.updateTasks(snapshot.child('tasks'));
-                  this.updateUsers(snapshot.child('users'));
-                });
-            }
+          firebase
+            .database()
+            .ref('dojos')
+            .child(dataSnapshot.val())
+            .on('value', snapshot => {
+              this.updateTasks(snapshot.child('tasks'));
+              this.updateUsers(snapshot.child('users'));
+            });
+        } else {
+          this.setState({
+            inDojo: false,
+            dojo: ''
           });
-      }
-    }
+        }
+      });
   }
 
   async userInDatabase(user) {

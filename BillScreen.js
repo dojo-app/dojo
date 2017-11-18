@@ -22,11 +22,7 @@ import ActionButton from 'react-native-action-button';
 export class BillScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
-    headerLeft: (
-      <Button transparent onPress={() => navigation.navigate('EditBill')}>
-        <Text>Edit Bill</Text>
-      </Button>
-    ),
+
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
         name={focused ? 'ios-cash' : 'ios-cash-outline'}
