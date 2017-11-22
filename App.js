@@ -56,10 +56,6 @@ export default class App extends React.Component {
       .child(user.uid)
       .child('dojo')
       .on('value', dataSnapshot => {
-        console.log(
-          'change occurs in dojo on' + this.state.user.displayName + "'s phone"
-        );
-        console.log('dojo exists = ' + dataSnapshot.exists());
         if (dataSnapshot.exists()) {
           this.setState({
             inDojo: true,
@@ -69,12 +65,11 @@ export default class App extends React.Component {
             .database()
             .ref('dojos')
             .child(dataSnapshot.val())
-            .once('value', snapshot => {
+            .on('value', snapshot => {
               this.updateTasks(snapshot.child('tasks'));
               this.updateUsers(snapshot.child('users'));
             });
         } else {
-          console.log(this.state.user.displayName + ' not in dojo');
           this.setState({
             inDojo: false,
             dojo: ''
@@ -146,7 +141,6 @@ export default class App extends React.Component {
   }
 
   async updateUsers(snapshot) {
-    console.log(this.state.user.displayName + ' calling update users');
     var userObjects = [];
     var user_ids = Object.keys(snapshot.val());
 
