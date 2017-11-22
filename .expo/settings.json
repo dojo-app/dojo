@@ -1,9 +1,9 @@
 {
   "hostType": "tunnel",
   "lanType": "ip",
-  "dev": false,
+  "dev": true,
   "strict": false,
   "minify": false,
   "urlType": "exp",
-  "urlRandomness": null
+  "urlRandomness": "he-sm5"
 }

@@ -1,53 +1,72 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
-import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, Left, Body, Title, Right, List, ListItem, Switch } from 'native-base';
-import * as firebase from "firebase";
+import {
+  Container,
+  Header,
+  Content,
+  Footer,
+  FooterTab,
+  Button,
+  Icon,
+  Text,
+  Left,
+  Body,
+  Title,
+  Right,
+  List,
+  ListItem,
+  Switch
+} from 'native-base';
+import * as firebase from 'firebase';
 
 export class ProfileScreen extends React.Component {
-  // constructor() {
-  //   super();
-  //   this.state = {
-  //     text: ''
-  //   };
-  //   firebase.database().ref('task').once("value").then(function(snapshot) {
-  //     console.log( snapshot );
-  //   });
-  // }
+  constructor(props) {
+    super(props);
+    const user = firebase.auth().currentUser;
+    this.state = {
+      displayName: user.displayName,
+      email: user.email
+    };
+  }
 
-  static navigationOptions = ({navigation}) => ({
-
+  static navigationOptions = ({ navigation }) => ({
     title: 'Profile',
 
     tabBarIcon: ({ tintColor, focused }) => (
-    <Icon
-      name={focused ? 'ios-list-box' : 'ios-list-box-outline'}
-      style={{ color: tintColor }}
-    />
-    ),
+      <Icon
+        name={focused ? 'ios-person' : 'ios-person-outline'}
+        style={{ color: tintColor }}
+      />
+    )
   });
-
 
   render() {
     return (
       <Container style={styles.container}>
-        <Content>
+        <Content scrollEnabled={false}>
           <List>
-            <ListItem>
+            <ListItem itemDivider>
               <Text>Name</Text>
             </ListItem>
+
             <ListItem>
+              <Text>{this.state.displayName}</Text>
+            </ListItem>
+
+            <ListItem itemDivider>
               <Text>Email</Text>
             </ListItem>
+
             <ListItem>
-              <Text>Phone</Text>
+              <Text>{this.state.email}</Text>
             </ListItem>
           </List>
 
-          <Button danger/*transparent onPress={() => navigation.navigate('AddBill')}*/>
+          <Button full danger onPress={() => firebase.auth().signOut()}>
             <Text>Log Out</Text>
-          </Button>  
+          </Button>
         </Content>
-      </Container>    
+      </Container>
     );
   }
 }
@@ -55,6 +74,6 @@ export class ProfileScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-  },
+    backgroundColor: 'white'
+  }
 });

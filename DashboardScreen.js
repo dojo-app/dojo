@@ -1,5 +1,21 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Footer, FooterTab, Icon, Text, Left, Body, Title, Right, List, ListItem, Switch, Button } from 'native-base';
+import {
+  Container,
+  Header,
+  Content,
+  Footer,
+  FooterTab,
+  Icon,
+  Text,
+  Left,
+  Body,
+  Title,
+  Right,
+  List,
+  ListItem,
+  Switch,
+  Button
+} from 'native-base';
 
 export class DashboardScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -18,15 +34,13 @@ export class DashboardScreen extends React.Component {
         name={focused ? 'ios-home' : 'ios-home-outline'}
         style={{ color: tintColor }}
       />
-    ),
-
+    )
   });
 
   render() {
     return (
       <Container>
-        <Content>
-        </Content>
+        <Content />
       </Container>
     );
   }
