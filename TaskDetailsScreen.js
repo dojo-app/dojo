@@ -30,6 +30,13 @@ export class TaskDetailsScreen extends React.Component {
         <Content>
           <Form>
             <Item fixedLabel disabled={!this.state.editMode}>
+              <Label>Task ID</Label>
+              <Input
+                disabled={!this.state.editMode}
+                value={this.props.navigation.state.params.task.id}
+              />
+            </Item>
+            <Item fixedLabel disabled={!this.state.editMode}>
               <Label>Task Title</Label>
               <Input
                 disabled={!this.state.editMode}

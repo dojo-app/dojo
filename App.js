@@ -133,7 +133,9 @@ export default class App extends React.Component {
 
     for (const task_id of tasks_ids) {
       if (task_id in tasks) {
-        taskObjects.push(tasks[task_id]);
+        var taskObject = tasks[task_id];
+        taskObject['id'] = task_id;
+        taskObjects.push(taskObject);
       }
     }
 
