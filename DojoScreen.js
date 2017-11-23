@@ -45,13 +45,14 @@ export class DojoScreen extends React.Component {
       <Container style={styles.container}>
         <Content>
           <Text>dojo id: {this.props.screenProps.state.dojo}</Text>
-          <QRCode
-            value={this.props.screenProps.state.dojo}
-            size={200}
-            bgColor="black"
-            fgColor="white"
-          />
-
+          <Body style={styles.qr}>
+            <QRCode
+              value={this.props.screenProps.state.dojo}
+              size={240}
+              bgColor="black"
+              fgColor="white"
+            />
+          </Body>
           <List>
             <ListItem itemDivider>
               <Text>Users:</Text>
@@ -87,5 +88,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+  qr: {
+    marginTop: '5%',
+    marginBottom: '5%',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
