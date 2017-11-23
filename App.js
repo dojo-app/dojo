@@ -186,7 +186,9 @@ export default class App extends React.Component {
 
       Promise.all(promises).then(snapshots => {
         snapshots.forEach(snapshot => {
-          userObjects.push(snapshot.val());
+          var userObject = snapshot.val();
+          userObject['id'] = snapshot.key;
+          userObjects.push(userObject);
         });
         this.setState({ users: userObjects });
       });

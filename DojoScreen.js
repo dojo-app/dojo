@@ -33,14 +33,12 @@ export class DojoScreen extends React.Component {
   });
 
   render() {
-    var listItems = [];
-    for (const user of this.props.screenProps.state.users) {
-      listItems.push(
-        <ListItem>
-          <Text>{user.name}</Text>
-        </ListItem>
-      );
-    }
+    const users = this.props.screenProps.state.users.map(user => (
+      <ListItem key={user.id}>
+        <Text>{user.name}</Text>
+      </ListItem>
+    ));
+
     return (
       <Container style={styles.container}>
         <Content>
@@ -57,7 +55,7 @@ export class DojoScreen extends React.Component {
             <ListItem itemDivider>
               <Text>Users:</Text>
             </ListItem>
-            {listItems}
+            {users}
           </List>
           <Button full danger large onPress={() => this.leaveDojo()}>
             <Text>Leave Dojo</Text>
