@@ -6,48 +6,42 @@ import { secret } from './secret';
 import Expo from 'expo';
 import * as firebase from 'firebase';
 
-export class NotInDojo extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: props.user
-    };
-  }
-  createDojo() {
-    var new_dojo = firebase
-      .database()
-      .ref('dojos')
-      .push({
-        user: this.state.user.uid
-      });
-
-    firebase
-      .database()
-      .ref('users')
-      .child(this.state.user.uid)
-      .child('dojo')
-      .set(new_dojo.key);
-  }
+export class NotInDojoScreen extends React.Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Button full large>
+        <Text style={styles.text}>
+          You are not in a Dojo. You can create a Dojo, or join one by scanning
+          its QR code.
+        </Text>
+        <Button
+          full
+          large
+          onPress={() => this.props.navigation.navigate('JoinDojo')}>
           <Text>Join Dojo</Text>
         </Button>
-        <Button full success large onPress={() => this.createDojo()}>
+        <Button
+          full
+          success
+          large
+          onPress={() => this.props.navigation.navigate('CreateDojo')}>
           <Text>Create Dojo</Text>
         </Button>
-        <Button full danger large>
+        <Button full danger large onPress={() => firebase.auth().signOut()}>
           <Text>Sign Out</Text>
         </Button>
       </Container>
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  text: {
+    margin: '10%'
   }
 });

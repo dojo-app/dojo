@@ -74,8 +74,7 @@ export class AddBillScreen extends React.Component {
                   bill_date: this.state.billDueDate,
                   bill_users: this.state.billUsers
                 });
-            }}
-          >
+            }}>
             <Text>Submit</Text>
           </Button>
         </Content>

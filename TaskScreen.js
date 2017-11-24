@@ -30,25 +30,20 @@ export class TaskScreen extends React.Component {
     };
   }
 
-  // https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
-  componentWillMount() {
-    if (firebase.auth().currentUser) {
-      firebase
-        .database()
-        .ref('task')
-        .on('value', snapshot => {
-          this.setState({ tasks: snapshot.val(), loading: false });
-        });
-    }
-  }
-
   static navigationOptions = ({ navigation }) => ({
     title: 'Tasks',
+    /*
+    headerRight: (
+      <Button transparent onPress={() => navigation.navigate('AddTask')}>
+        <Text>Add Task</Text>
+      </Button>
+    ),
     headerLeft: (
       <Button transparent onPress={() => navigation.navigate('EditTask')}>
         <Text>Edit Task</Text>
       </Button>
     ),
+    */
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
         name={focused ? 'ios-list-box' : 'ios-list-box-outline'}
@@ -58,44 +53,28 @@ export class TaskScreen extends React.Component {
   });
 
   render() {
-    const {navigate} = this.props.navigation;
-    if (!this.state.loading) {
-      var tasks = [];
+    const { navigate } = this.props.navigation;
+    var listItems = [];
 
-      if (this.state.tasks) {
-        // checks null because Object.values fails on null
-        tasks = Object.entries(this.state.tasks).reverse();
-      }
-
-      var listItems = [];
-
-      for (const [key, task] of tasks) {
-        listItems.push(
-          <Card key={key}>
-            <CardItem header>
-              <Text>{task.task_title}</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Text>{task.task_description}</Text>
-              </Body>
-            </CardItem>
-          </Card>
-        );
-      }
-
-      return (
-        <Container style={styles.container}>
-          <Content>
-          {listItems}
-          </Content>
-          <ActionButton buttonColor="rgba(231,76,60,1)" onPress={() => navigate('EditTask')}>
-          </ActionButton>
-        </Container>
+    for (const task of this.props.screenProps.state.tasks) {
+      listItems.push(
+        <ListItem onPress={() => navigate('TaskDetails', { task: task })}>
+          <Text>{task.title}</Text>
+        </ListItem>
       );
-    } else {
-      return <Text>Loading...</Text>;
     }
+
+    return (
+      <Container style={styles.container}>
+        <Content>
+          <List>{listItems}</List>
+        </Content>
+        <ActionButton
+          buttonColor="rgba(231,76,60,1)"
+          onPress={() => this.props.navigation.navigate('AddTask')}
+        />
+      </Container>
+    );
   }
 }
 
@@ -103,10 +82,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
-  },
-  actionButtonIcon: {
-    fontSize: 20,
-    height: 22,
-    color: 'white',
-  },
+  }
 });

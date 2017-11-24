@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { StyleSheet } from 'react-native';
+
 import {
   Container,
   Header,
@@ -9,7 +11,10 @@ import {
   Input,
   Label,
   Left,
-  Text
+  Text,
+  CheckBox,
+  ListItem,
+  Body
 } from 'native-base';
 import * as firebase from 'firebase';
 
@@ -24,13 +29,33 @@ export class AddTaskScreen extends React.Component {
       taskTitle: 'Important Task',
       taskDescription: 'Cool Description',
       taskDueDate: 'Due Date',
-      taskUsers: 'Users'
+      taskUsers: 'Users',
+      checkBox1Checked: false,
+      checkBox2Checked: false
     };
+  }
+
+  addTask() {
+    var key = firebase
+      .database()
+      .ref('tasks')
+      .push({
+        title: this.state.taskTitle,
+        description: this.state.taskDescription,
+        users: this.state.taskUsers,
+        dueDate: this.state.taskDueDate
+      }).key;
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('tasks')
+      .update({ [key]: true });
   }
 
   render() {
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
           <Form>
             <Item fixedLabel>
@@ -38,7 +63,6 @@ export class AddTaskScreen extends React.Component {
               <Input
                 value={this.state.taskTitle}
                 onChangeText={text => this.setState({ taskTitle: text })}
-                autoFocus={true}
               />
             </Item>
             <Item fixedLabel>
@@ -49,35 +73,46 @@ export class AddTaskScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel>
-              <Label>Task Users</Label>
-              <Input
-                value={this.state.taskUsers}
-                onChangeText={text => this.setState({ taskUsers: text })}
-              />
-            </Item>
-            <Item fixedLabel>
               <Label>Task Due Date</Label>
               <Input
                 value={this.state.taskDueDate}
                 onChangeText={text => this.setState({ taskDueDate: text })}
               />
             </Item>
+            <ListItem itemDivider>
+              <Body>
+                <Text>Users</Text>
+              </Body>
+            </ListItem>
+            <ListItem
+              onPress={() =>
+                this.setState({
+                  checkBox1Checked: !this.state.checkBox1Checked
+                })
+              }>
+              <CheckBox checked={this.state.checkBox1Checked} />
+              <Body>
+                <Text>User #1</Text>
+              </Body>
+            </ListItem>
+            <ListItem
+              onPress={() =>
+                this.setState({
+                  checkBox2Checked: !this.state.checkBox2Checked
+                })
+              }>
+              <CheckBox checked={this.state.checkBox2Checked} />
+              <Body>
+                <Text>User #2</Text>
+              </Body>
+            </ListItem>
           </Form>
           <Button
             full
             onPress={() => {
-              firebase
-                .database()
-                .ref('task')
-                .push({
-                  task_title: this.state.taskTitle,
-                  tast_description: this.state.taskDescription,
-                  task_users: this.state.taskUsers,
-                  task_dueDate: this.state.taskDueDate
-                });
+              this.addTask();
               this.props.navigation.goBack();
-            }}
-          >
+            }}>
             <Text>Submit</Text>
           </Button>
         </Content>
@@ -85,3 +120,10 @@ export class AddTaskScreen extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  }
+});
