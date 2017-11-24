@@ -3,6 +3,9 @@ import {
   Container,
   Header,
   Content,
+  Modal,
+  TouchableHighlight,
+  View,
   Button,
   Form,
   Item,
@@ -26,6 +29,14 @@ export class EditTaskScreen extends React.Component {
       taskDueDate: 'Date',
       taskUsers: 'Users'
     };
+  }
+
+  state = {
+    modalVisible: false,
+  }
+
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
   }
 
   render() {
@@ -62,6 +73,31 @@ export class EditTaskScreen extends React.Component {
               />
             </Item>
           </Form>
+          <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {alert("Modal has been closed.")}}
+          >
+         <View style={{marginTop: 22}}>
+          <View>
+            <Text>Hello World!</Text>
+
+            <TouchableHighlight onPress={() => {
+              this.setModalVisible(!this.state.modalVisible)
+            }}>
+              <Text>Hide Modal</Text>
+            </TouchableHighlight>
+
+          </View>
+         </View>
+        </Modal>
+
+        <TouchableHighlight onPress={() => {
+          this.setModalVisible(true)
+        }}>
+          <Text>Show Modal</Text>
+        </TouchableHighlight>
           <Button
             full
             onPress={() => {
@@ -77,6 +113,13 @@ export class EditTaskScreen extends React.Component {
             }}
           >
             <Text>Save</Text>
+          </Button>
+          <Button
+          full
+          onPress={() => {
+          this.setModalVisible(true)
+        }}>
+          <Text>Delete</Text>
           </Button>
         </Content>
       </Container>
