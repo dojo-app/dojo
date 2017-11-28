@@ -31,6 +31,7 @@ export default class App extends React.Component {
       }
     });
   }
+
   handleLogOut() {
     this.setState({
       loggedIn: false,
@@ -42,6 +43,7 @@ export default class App extends React.Component {
       users: []
     });
   }
+  
   async handleLogIn(user) {
     this.setState({ loggedIn: true });
     this.setState({ user: user });
@@ -123,6 +125,7 @@ export default class App extends React.Component {
     });
     this.setState({ loaded: true });
   }
+
   async updateTasks(snapshot) {
     var taskObjects = [];
     var tasks_ids = Object.keys(snapshot.val());
