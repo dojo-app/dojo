@@ -48,7 +48,7 @@ export default class App extends React.Component {
     }
 
     if (this.state.dojoInfoListener) {
-      var dojoRef = ref.child('dojos').child(this.state.dojo);
+      const refToDojo = ref.child('dojos').child(this.state.dojo);
       refToDojo.child('users').off();
       refToDojo.child('tasks').off();
       // refToDojo.child('bills').off();
