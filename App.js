@@ -173,7 +173,7 @@ export default class App extends React.Component {
       });
     } else {
       // if the dojo has no tasks
-      //this.setState({ tasks: [] });
+      this.setState({ tasks: [] });
     }
   }
 
