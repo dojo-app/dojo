@@ -23,15 +23,16 @@ export class AddTaskScreen extends React.Component {
     title: 'Add Task'
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    var users = {};
+    for (const user of this.props.screenProps.state.users) {
+      users[user.id] = true;
+    }
     this.state = {
-      taskTitle: 'Important Task',
-      taskDescription: 'Cool Description',
-      taskDueDate: 'Due Date',
-      taskUsers: 'Users',
-      checkBox1Checked: false,
-      checkBox2Checked: false
+      title: '',
+      description: '',
+      users: users
     };
   }
 
@@ -40,10 +41,9 @@ export class AddTaskScreen extends React.Component {
       .database()
       .ref('tasks')
       .push({
-        title: this.state.taskTitle,
-        description: this.state.taskDescription,
-        users: this.state.taskUsers,
-        dueDate: this.state.taskDueDate
+        title: this.state.title,
+        description: this.state.description,
+        users: this.state.users
       }).key;
     firebase
       .database()
@@ -54,58 +54,51 @@ export class AddTaskScreen extends React.Component {
   }
 
   render() {
+    const users = this.props.screenProps.state.users.map(user => (
+      <ListItem
+        key={user.id}
+        onPress={() => {
+          var prevUsers = this.state.users;
+          prevUsers[user.id] = !prevUsers[user.id];
+          this.setState({
+            users: prevUsers
+          });
+        }}>
+        <CheckBox checked={this.state.users[user.id]} />
+        <Body>
+          <Text>{user.name}</Text>
+        </Body>
+      </ListItem>
+    ));
+
     return (
       <Container style={styles.container}>
         <Content>
           <Form>
             <Item fixedLabel>
-              <Label>Task Title</Label>
+              <Label>Title</Label>
               <Input
-                value={this.state.taskTitle}
-                onChangeText={text => this.setState({ taskTitle: text })}
+                value={this.state.title}
+                onChangeText={text => this.setState({ title: text })}
+                autoFocus={true}
               />
             </Item>
+
             <Item fixedLabel>
-              <Label>Task Description</Label>
+              <Label>Description</Label>
               <Input
-                value={this.state.taskDescription}
-                onChangeText={text => this.setState({ taskDescription: text })}
+                value={this.state.description}
+                onChangeText={text => this.setState({ description: text })}
               />
             </Item>
-            <Item fixedLabel>
-              <Label>Task Due Date</Label>
-              <Input
-                value={this.state.taskDueDate}
-                onChangeText={text => this.setState({ taskDueDate: text })}
-              />
-            </Item>
+
             <ListItem itemDivider>
               <Body>
                 <Text>Users</Text>
               </Body>
             </ListItem>
-            <ListItem
-              onPress={() =>
-                this.setState({
-                  checkBox1Checked: !this.state.checkBox1Checked
-                })
-              }>
-              <CheckBox checked={this.state.checkBox1Checked} />
-              <Body>
-                <Text>User #1</Text>
-              </Body>
-            </ListItem>
-            <ListItem
-              onPress={() =>
-                this.setState({
-                  checkBox2Checked: !this.state.checkBox2Checked
-                })
-              }>
-              <CheckBox checked={this.state.checkBox2Checked} />
-              <Body>
-                <Text>User #2</Text>
-              </Body>
-            </ListItem>
+
+            {users}
           </Form>
           <Button
             full
