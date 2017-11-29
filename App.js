@@ -12,20 +12,25 @@ export default class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      loaded: false, // whether fonts are loaded
+      loaded: false, // whether android fonts are loaded
       loggedIn: false,
-      inDojo: false,
+      inDojo: true, // Assume user in dojo until firebase verifies if user is in a dojo; Allows firebase calls to finish loading and then render page
       user: null,
       dojo: '',
       tasks: [],
       bills: [],
-      users: []
+      users: [],
+      inDojoListener: false,
+      dojoInfoListener: false
     };
+
     firebase.initializeApp(firebaseConfig);
 
     firebase.auth().onAuthStateChanged(user => {
+      // console.log(user);
       if (user === null) {
         this.handleLogOut();
+        this.setState({ loaded: true });
       } else {
         this.handleLogIn(user);
       }
@@ -33,9 +38,28 @@ export default class App extends React.Component {
   }
 
   handleLogOut() {
+    var ref = firebase.database().ref();
+
+    if (this.state.inDojoListener) {
+      ref
+        .child('users')
+        .child(this.state.user.uid)
+        .child('dojo')
+        .off();
+      this.setState({ inDojoListener: false });
+    }
+
+    if (this.state.dojoInfoListener) {
+      var dojoRef = ref.child('dojos').child(this.state.dojo);
+      dojoRef.child('users').off();
+      dojoRef.child('tasks').off();
+      // dojoRef.child('bills').off();
+      this.setState({ dojoInfoListener: false });
+    }
+
     this.setState({
       loggedIn: false,
-      inDojo: false,
+      // inDojo: true,
       user: null,
       dojo: '',
       tasks: [],
@@ -43,122 +67,137 @@ export default class App extends React.Component {
       users: []
     });
   }
-  
-  async handleLogIn(user) {
-    this.setState({ loggedIn: true });
-    this.setState({ user: user });
-    this.updateUserInfo(user);
-    this.watchChangesInUsersDojo(user);
+
+  handleLogIn(user) {
+    this.setState({ loggedIn: true, user: user });
+    this.updateUserInfo();
+    if (!this.state.inDojoListener) {
+      this.addInDojoListener();
+      this.setState({ inDojoListener: true });
+    }
   }
 
-  watchChangesInUsersDojo(user = this.state.user) {
+  addInDojoListener() {
     firebase
       .database()
       .ref('users')
-      .child(user.uid)
+      .child(this.state.user.uid)
       .child('dojo')
-      .on('value', dataSnapshot => {
-        if (dataSnapshot.exists()) {
+      .on('value', snapshot => {
+        if (snapshot.exists()) {
           this.setState({
-            inDojo: true,
-            dojo: dataSnapshot.val()
+            // inDojo: true,
+            dojo: snapshot.val()
           });
-          firebase
-            .database()
-            .ref('dojos')
-            .child(dataSnapshot.val())
-            .on('value', snapshot => {
-              this.updateTasks(snapshot.child('tasks'));
-              this.updateUsers(snapshot.child('users'));
-            });
+          if (!this.state.dojoInfoListener) {
+            this.addDojoInfoListeners();
+            this.setState({ dojoInfoListener: true });
+          }
         } else {
+          // turn off dojo info listeners
+          if (this.state.dojoInfoListener) {
+            var dojoRef = firebase
+              .database()
+              .ref('dojos')
+              .child(this.state.dojo);
+
+            dojoRef.child('users').off();
+            dojoRef.child('tasks').off();
+            // dojoRef.child('bills').off();
+
+            this.setState({ dojoInfoListener: false });
+          }
+
           this.setState({
             inDojo: false,
             dojo: ''
           });
         }
+
+        this.setState({ loaded: true });
       });
   }
 
-  async userInDatabase(user) {
-    var snapshot = await firebase
+  addDojoInfoListeners() {
+    var dojoRef = firebase
       .database()
-      .ref('users')
-      .child(user.uid)
-      .once('value');
-    return snapshot.exists();
+      .ref('dojos')
+      .child(this.state.dojo);
+
+    dojoRef.child('users').on('value', snapshot => {
+      this.updateUsers(snapshot);
+    });
+
+    dojoRef.child('tasks').on('value', snapshot => {
+      this.updateTasks(snapshot);
+    });
+
+    // dojoRef.child('bills').on('value', snapshot => {
+    //   this.updateBills(snapshot);
+    // });
   }
 
-  updateUserInfo(user) {
+  updateUserInfo() {
     firebase
       .database()
       .ref('users')
-      .child(user.uid)
-      .update({ name: user.displayName, photoURL: user.photoURL });
+      .child(this.state.user.uid)
+      .update({
+        name: this.state.user.displayName,
+        photoURL: this.state.user.photoURL,
+        email: this.state.user.email
+      });
   }
 
-  async inDojo(user) {
-    var snapshot = await firebase
-      .database()
-      .ref('users')
-      .child(user.uid)
-      .child('dojo')
-      .once('value');
-    return snapshot.exists();
-  }
-
-  async getDojo(user) {
-    var snapshot = await firebase
-      .database()
-      .ref('users')
-      .child(user.uid)
-      .child('dojo')
-      .once('value');
-    return snapshot.val();
-  }
-
-  async componentWillMount() {
-    await Expo.Font.loadAsync({
-      Roboto: require('native-base/Fonts/Roboto.ttf'),
-      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-      Ionicons: require('@expo/vector-icons/fonts/Ionicons.ttf')
-    });
-    this.setState({ loaded: true });
-  }
-
-  async updateTasks(snapshot) {
+  updateTasks(snapshot) {
     var taskObjects = [];
-    var tasks_ids = Object.keys(snapshot.val());
-    var tasks = (await firebase
-      .database()
-      .ref('tasks')
-      .once('value')).val();
 
-    for (const task_id of tasks_ids) {
-      if (task_id in tasks) {
-        taskObjects.push(tasks[task_id]);
-      }
+    if (snapshot.val()) {
+      var keys = Object.keys(snapshot.val());
+
+      // stackoverflow.com/q/42610264/
+      var promises = keys.map(key => {
+        return firebase
+          .database()
+          .ref('tasks')
+          .child(key)
+          .once('value');
+      });
+
+      Promise.all(promises).then(snapshots => {
+        snapshots.forEach(snapshot => {
+          var taskObject = snapshot.val();
+          taskObject['id'] = snapshot.key;
+          taskObjects.push(taskObject);
+        });
+        this.setState({ tasks: taskObjects.reverse() });
+      });
     }
-
-    this.setState({ tasks: taskObjects.reverse() });
   }
 
-  async updateUsers(snapshot) {
+  updateUsers(snapshot) {
     var userObjects = [];
-    var user_ids = Object.keys(snapshot.val());
 
-    var users = (await firebase
-      .database()
-      .ref('users')
-      .once('value')).val();
+    if (snapshot.val()) {
+      var keys = Object.keys(snapshot.val());
 
-    for (const user_id of user_ids) {
-      if (user_id in users) {
-        userObjects.push(users[user_id]);
-      }
+      var promises = keys.map(key => {
+        return firebase
+          .database()
+          .ref('users')
+          .child(key)
+          .once('value');
+      });
+
+      Promise.all(promises).then(snapshots => {
+        snapshots.forEach(snapshot => {
+          var userObject = snapshot.val();
+          userObject['id'] = snapshot.key;
+          userObjects.push(userObject);
+        });
+        this.setState({ users: userObjects });
+      });
     }
-
-    this.setState({ users: userObjects });
   }
 
   render() {
@@ -171,5 +210,14 @@ export default class App extends React.Component {
     } else {
       return <MainNav screenProps={{ state: this.state }} />;
     }
+  }
+
+  // fixes font loading error on android
+  async componentWillMount() {
+    await Expo.Font.loadAsync({
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+      Ionicons: require('@expo/vector-icons/fonts/Ionicons.ttf')
+    });
   }
 }
