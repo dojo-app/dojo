@@ -9,7 +9,7 @@ import {
   Label,
   Item
 } from 'native-base';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 
 import { secret } from './secret';
 import Expo from 'expo';
@@ -44,12 +44,23 @@ export class CreateDojoScreen extends React.Component {
           <Item fixedLabel>
             <Label>Dojo Name</Label>
             <Input
+              autoFocus={true}
               value={this.state.dojoName}
               onChangeText={text => this.setState({ dojoName: text })}
             />
           </Item>
         </Form>
-        <Button large full success onPress={() => this.createDojo()}>
+        <Button
+          large
+          full
+          success
+          onPress={() => {
+            if (this.state.dojoName === '') {
+              Alert.alert('Error', 'Dojo name cannot be empty.');
+            } else {
+              this.createDojo();
+            }
+          }}>
           <Text>Create Dojo</Text>
         </Button>
       </Container>

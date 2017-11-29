@@ -20,7 +20,7 @@ import * as firebase from 'firebase';
 
 export class EditTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Task'
+    title: 'Edit Task'
   };
 
   constructor(props) {
@@ -38,9 +38,12 @@ export class EditTaskScreen extends React.Component {
   }
 
   editTask() {
-    var key = firebase
+    var key = this.props.navigation.state.params.task.id;
+
+    firebase
       .database()
       .ref('tasks')
+      .child(key)
       .update({
         title: this.state.title,
         description: this.state.description,
@@ -121,11 +124,11 @@ export class EditTaskScreen extends React.Component {
                   'At least one user must be involved.'
                 );
               } else {
-                this.addTask();
+                this.editTask();
                 this.props.navigation.goBack();
               }
             }}>
-            <Text>Submit</Text>
+            <Text>Save</Text>
           </Button>
         </Content>
       </Container>

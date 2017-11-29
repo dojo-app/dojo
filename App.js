@@ -48,7 +48,7 @@ export default class App extends React.Component {
     }
 
     if (this.state.dojoInfoListener) {
-      var dojoRef = ref.child('dojos').child(this.state.dojo);
+      const refToDojo = ref.child('dojos').child(this.state.dojo);
       refToDojo.child('users').off();
       refToDojo.child('tasks').off();
       // refToDojo.child('bills').off();
@@ -83,22 +83,26 @@ export default class App extends React.Component {
       .child('dojo')
       .on('value', snapshot => {
         if (snapshot.exists()) {
-          this.setState({
-            inDojo: true,
-            dojo: snapshot.val()
-          });
-          if (!this.state.dojoInfoListener) {
-            this.addDojoInfoListeners();
-            this.setState({ dojoInfoListener: true });
-          }
+          this.setState(
+            {
+              inDojo: true,
+              dojo: snapshot.val()
+            },
+            () => {
+              if (!this.state.dojoInfoListener) {
+                this.addDojoInfoListeners();
+                this.setState({ dojoInfoListener: true });
+              }
+            }
+          );
         } else {
-          // turn off dojo info listeners
           if (this.state.dojoInfoListener) {
             var dojoRef = firebase
               .database()
               .ref('dojos')
               .child(this.state.dojo);
 
+            // turn off dojo info listeners
             dojoRef.child('users').off();
             dojoRef.child('tasks').off();
             // dojoRef.child('bills').off();
@@ -167,6 +171,9 @@ export default class App extends React.Component {
         });
         this.setState({ tasks: taskObjects.reverse() });
       });
+    } else {
+      // if the dojo has no tasks
+      this.setState({ tasks: [] });
     }
   }
 
