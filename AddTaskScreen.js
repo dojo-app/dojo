@@ -112,7 +112,6 @@ export class AddTaskScreen extends React.Component {
           <Button
             full
             onPress={() => {
-              console.log('usercount = ' + this.usersCount());
               if (this.state.title === '') {
                 Alert.alert('Submission Failed', 'Title cannot be empty.');
               } else if (this.usersCount() === 0) {
