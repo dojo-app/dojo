@@ -4,10 +4,10 @@ import {
   StyleSheet,
   Image,
   TouchableWithoutFeedback,
-  Text,
-  View
+  View,
+  TouchableOpacity
 } from 'react-native';
-
+import { Container, Content, Button, Text } from 'native-base';
 import { BarCodeScanner, Permissions } from 'expo';
 import { secret } from './secret';
 import Expo from 'expo';
@@ -16,6 +16,10 @@ import * as firebase from 'firebase';
 // TODO for deployment to standalone app, need to do stuff : https://docs.expo.io/versions/latest/sdk/google.html
 
 export class JoinDojoScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Scan QR Code '
+  };
+
   constructor(props) {
     super(props);
 
@@ -39,10 +43,29 @@ export class JoinDojoScreen extends React.Component {
     } else {
       return (
         <View style={{ flex: 1 }}>
+          <Text>Test test test</Text>
           <BarCodeScanner
             onBarCodeRead={this._handleBarCodeRead}
-            style={StyleSheet.absoluteFill}
-          />
+            style={StyleSheet.absoluteFill}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'transparent',
+                flexDirection: 'row'
+              }}>
+              <TouchableOpacity
+                style={{
+                  flex: 0.1,
+                  alignSelf: 'flex-end',
+                  alignItems: 'center'
+                }}
+                onPress={() => {
+                  this.props.navigation.goBack();
+                }}>
+                <Text style={{ color: 'white' }}>Back</Text>
+              </TouchableOpacity>
+            </View>
+          </BarCodeScanner>
         </View>
       );
     }
