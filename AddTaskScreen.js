@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 
 import {
   Container,
@@ -32,7 +32,8 @@ export class AddTaskScreen extends React.Component {
     this.state = {
       title: '',
       description: '',
-      users: users
+      users: users,
+      showToast: false
     };
   }
 
@@ -51,6 +52,14 @@ export class AddTaskScreen extends React.Component {
       .child(this.props.screenProps.state.dojo)
       .child('tasks')
       .update({ [key]: true });
+  }
+
+  usersCount() {
+    let count = 0;
+    for (const user of Object.values(this.state.users)) {
+      if (user) count++;
+    }
+    return count;
   }
 
   render() {
@@ -103,8 +112,18 @@ export class AddTaskScreen extends React.Component {
           <Button
             full
             onPress={() => {
-              this.addTask();
-              this.props.navigation.goBack();
+              console.log('usercount = ' + this.usersCount());
+              if (this.state.title === '') {
+                Alert.alert('Submission Failed', 'Title cannot be empty.');
+              } else if (this.usersCount() === 0) {
+                Alert.alert(
+                  'Submission Failed',
+                  'At least one user must be involved.'
+                );
+              } else {
+                this.addTask();
+                this.props.navigation.goBack();
+              }
             }}>
             <Text>Submit</Text>
           </Button>
