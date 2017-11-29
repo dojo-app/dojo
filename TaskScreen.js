@@ -32,18 +32,7 @@ export class TaskScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Tasks',
-    /*
-    headerRight: (
-      <Button transparent onPress={() => navigation.navigate('AddTask')}>
-        <Text>Add Task</Text>
-      </Button>
-    ),
-    headerLeft: (
-      <Button transparent onPress={() => navigation.navigate('EditTask')}>
-        <Text>Edit Task</Text>
-      </Button>
-    ),
-    */
+
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
         name={focused ? 'ios-list-box' : 'ios-list-box-outline'}
@@ -54,20 +43,19 @@ export class TaskScreen extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    var listItems = [];
 
-    for (const task of this.props.screenProps.state.tasks) {
-      listItems.push(
-        <ListItem onPress={() => navigate('TaskDetails', { task: task })}>
-          <Text>{task.title}</Text>
-        </ListItem>
-      );
-    }
+    const tasks = this.props.screenProps.state.tasks.map(task => (
+      <ListItem
+        key={task.id}
+        onPress={() => navigate('TaskDetails', { task: task })}>
+        <Text>{task.title}</Text>
+      </ListItem>
+    ));
 
     return (
       <Container style={styles.container}>
         <Content>
-          <List>{listItems}</List>
+          <List>{tasks}</List>
         </Content>
         <ActionButton
           buttonColor="rgba(231,76,60,1)"
