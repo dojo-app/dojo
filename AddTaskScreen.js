@@ -32,8 +32,7 @@ export class AddTaskScreen extends React.Component {
     this.state = {
       title: '',
       description: '',
-      users: users,
-      showToast: false
+      users: users
     };
   }
 
