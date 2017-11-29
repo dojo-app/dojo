@@ -1,127 +1,141 @@
 import React, { Component } from 'react';
+import { StyleSheet, Alert } from 'react-native';
+
 import {
   Container,
   Header,
   Content,
-  Modal,
-  TouchableHighlight,
-  View,
   Button,
   Form,
   Item,
   Input,
   Label,
   Left,
-  Text
+  Text,
+  CheckBox,
+  ListItem,
+  Body
 } from 'native-base';
 import * as firebase from 'firebase';
 
 export class EditTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Task'
+    title: 'Add Task'
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    var users = {};
+    for (const user of this.props.screenProps.state.users) {
+      users[user.id] = true;
+    }
     this.state = {
-      taskTitle: 'Important Task',
-      taskDescription: 'Cool Description',
-      taskDueDate: 'Date',
-      taskUsers: 'Users'
+      title: this.props.navigation.state.params.task.title,
+      description: this.props.navigation.state.params.task.description,
+      users: users,
+      showToast: false
     };
   }
 
-  state = {
-    modalVisible: false,
+  editTask() {
+    var key = firebase
+      .database()
+      .ref('tasks')
+      .update({
+        title: this.state.title,
+        description: this.state.description,
+        users: this.state.users
+      }).key;
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('tasks')
+      .update({ [key]: true });
   }
 
-  setModalVisible(visible) {
-    this.setState({modalVisible: visible});
+  usersCount() {
+    let count = 0;
+    for (const user of Object.values(this.state.users)) {
+      if (user) count++;
+    }
+    return count;
   }
 
   render() {
+    const users = this.props.screenProps.state.users.map(user => (
+      <ListItem
+        key={user.id}
+        onPress={() => {
+          var prevUsers = this.state.users;
+          prevUsers[user.id] = !prevUsers[user.id];
+          this.setState({
+            users: prevUsers
+          });
+        }}>
+        <CheckBox checked={this.state.users[user.id]} />
+        <Body>
+          <Text>{user.name}</Text>
+        </Body>
+      </ListItem>
+    ));
+
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
           <Form>
             <Item fixedLabel>
-              <Label>Task Title</Label>
+              <Label>Title</Label>
               <Input
-                value={this.state.taskTitle}
-                onChangeText={text => this.setState({ taskTitle: text })}
+                value={this.state.title}
+                onChangeText={text => this.setState({ title: text })}
+                autoFocus={true}
               />
             </Item>
+
             <Item fixedLabel>
-              <Label>Task Description</Label>
+              <Label>Description</Label>
               <Input
-                value={this.state.taskDescription}
-                onChangeText={text => this.setState({ taskDescription: text })}
+                value={this.state.description}
+                onChangeText={text => this.setState({ description: text })}
               />
             </Item>
-            <Item fixedLabel>
-              <Label>Users</Label>
-              <Input
-                value={this.state.taskUsers}
-                onChangeText={text => this.setState({ taskUsers: text })}
-              />
-            </Item>
-            <Item fixedLabel>
-              <Label>Due Date</Label>
-              <Input
-                value={this.state.taskDueDate}
-                onChangeText={text => this.setState({ taskDueDate: text })}
-              />
-            </Item>
+
+            <ListItem itemDivider>
+              <Body>
+                <Text>Users</Text>
+              </Body>
+            </ListItem>
+
+            {users}
           </Form>
-          <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {alert("Modal has been closed.")}}
-          >
-         <View style={{marginTop: 22}}>
-          <View>
-            <Text>Hello World!</Text>
-
-            <TouchableHighlight onPress={() => {
-              this.setModalVisible(!this.state.modalVisible)
-            }}>
-              <Text>Hide Modal</Text>
-            </TouchableHighlight>
-
-          </View>
-         </View>
-        </Modal>
-
-        <TouchableHighlight onPress={() => {
-          this.setModalVisible(true)
-        }}>
-          <Text>Show Modal</Text>
-        </TouchableHighlight>
           <Button
             full
             onPress={() => {
-              return firebase
-                .database()
-                .ref('task')
-                .push({
-                  task_title: this.state.taskTitle,
-                  tast_description: this.state.taskDescription,
-                  task_users: this.state.taskUsers,
-                  task_dueDate: this.state.taskDueDate
-                });
+              console.log('usercount = ' + this.usersCount());
+              if (this.state.title === '') {
+                Alert.alert('Submission Failed', 'Title cannot be empty.');
+              } else if (this.usersCount() === 0) {
+                Alert.alert(
+                  'Submission Failed',
+                  'At least one user must be involved.'
+                );
+              } else {
+                this.addTask();
+                this.props.navigation.goBack();
+              }
             }}>
-            <Text>Save</Text>
-          </Button>
-          <Button
-          full
-          onPress={() => {
-          this.setModalVisible(true)
-        }}>
-          <Text>Delete</Text>
+            <Text>Submit</Text>
           </Button>
         </Content>
       </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  }
+});
