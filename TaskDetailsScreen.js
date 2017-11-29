@@ -16,11 +16,32 @@ import {
   Body
 } from 'native-base';
 import * as firebase from 'firebase';
+import {Alert} from 'react-native';
 
 export class TaskDetailsScreen extends React.Component {
   static navigationOptions = {
     title: 'Task Details'
   };
+
+  deleteTask() {
+    var key = this.props.navigation.state.params.task.id
+    //Alert.alert('This is the key: ' +key)
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child(key)
+      .remove()
+      //.child('tasks')
+      //.update({ [key]: false });
+
+    firebase
+      .database()
+      .ref()
+      .child('tasks')
+      .child(key)
+      .remove()
+  }
 
   render() {
     const users = this.props.screenProps.state.users.map(user => (
@@ -62,6 +83,35 @@ export class TaskDetailsScreen extends React.Component {
 
             {users}
           </Form>
+          <Button
+            danger
+            //onPress={() =>
+              // go to edit task page
+            //}
+            >
+            <Text>Edit Task</Text>
+          </Button>
+
+          <Button
+            danger
+            onPress={() =>
+              Alert.alert(
+                'Are you sure?',
+                'The task will be permanently deleted',
+                [
+                  {text: 'Cancel'},
+                  {text: 'Delete', onPress: () => {
+                    this.deleteTask();
+                    this.props.navigation.goBack();
+                    }
+                  },
+                ],
+                { cancelable: false }
+              )
+            }>
+            <Text>Delete Task</Text>
+          </Button>
+
         </Content>
       </Container>
     );
