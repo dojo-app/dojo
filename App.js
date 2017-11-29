@@ -171,6 +171,9 @@ export default class App extends React.Component {
         });
         this.setState({ tasks: taskObjects.reverse() });
       });
+    } else {
+      // if the dojo has no tasks
+      //this.setState({ tasks: [] });
     }
   }
 
