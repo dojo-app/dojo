@@ -28,29 +28,47 @@ export class EditTaskScreen extends React.Component {
     };
   }
 
+  editTask() {
+    var key = firebase
+      .database()
+      .ref('tasks').child(this.props.screenProps.state.id)
+      // .push({
+      //   title: this.state.taskTitle,
+      //   description: this.state.taskDescription,
+      //   users: this.state.taskUsers,
+      //   dueDate: this.state.taskDueDate
+      // }).key;
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('tasks')
+      .update({ [key]: true });
+  }
+
   render() {
     return (
       <Container>
         <Content>
           <Form>
             <Item fixedLabel>
-              <Label>Task Title</Label>
+              <Label>Title</Label>
               <Input
-                value={this.state.taskTitle}
+                value={this.props.navigation.state.params.task.title}
                 onChangeText={text => this.setState({ taskTitle: text })}
               />
             </Item>
             <Item fixedLabel>
-              <Label>Task Description</Label>
+              <Label>Description</Label>
               <Input
-                value={this.state.taskDescription}
+                value={this.props.navigation.state.params.task.description}
                 onChangeText={text => this.setState({ taskDescription: text })}
               />
             </Item>
             <Item fixedLabel>
               <Label>Users</Label>
               <Input
-                value={this.state.taskUsers}
+                value={this.props.navigation.state.params.task.users}
                 onChangeText={text => this.setState({ taskUsers: text })}
               />
             </Item>
@@ -65,17 +83,20 @@ export class EditTaskScreen extends React.Component {
           <Button
             full
             onPress={() => {
-              return firebase
-                .database()
-                .ref('task')
-                .push({
-                  task_title: this.state.taskTitle,
-                  tast_description: this.state.taskDescription,
-                  task_users: this.state.taskUsers,
-                  task_dueDate: this.state.taskDueDate
-                });
-            }}
-          >
+
+              this.editTask();
+              this.props.navigation.goBack();
+
+              // return firebase
+              //   .database()
+              //   .ref('task')
+              //   .push({
+              //     task_title: this.state.taskTitle,
+              //     tast_description: this.state.taskDescription,
+              //     task_users: this.state.taskUsers,
+              //     task_dueDate: this.state.taskDueDate
+              //   });
+            }}>
             <Text>Save</Text>
           </Button>
         </Content>

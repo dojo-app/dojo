@@ -102,7 +102,8 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundImage: 'login.png'
   },
 
   h1: {
