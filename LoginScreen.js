@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   },
 
   button: { 
-    marginTop: '30%' 
+    marginTop: '40%' 
   },
 
   backgroundImage: {
