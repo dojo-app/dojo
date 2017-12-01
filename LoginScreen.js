@@ -85,30 +85,60 @@ export class LoginScreen extends React.Component {
       );
     }
     return (
-      <Container style={styles.container}>
-        <H1 style={styles.h1}>Welcome to Dojo!</H1>
-        <TouchableWithoutFeedback
-          onPress={() => this.signInWithGoogleAsync()}
-          onPressIn={() => this.setState({ button: this.pressedButton })}
-          onPressOut={() => this.setState({ button: this.normalButton })}>
-          <Image style={styles.button} source={this.state.button} />
-        </TouchableWithoutFeedback>
-      </Container>
+      <Image style={styles.backgroundImage} source={require('./login.png')}>
+        <Container style={styles.container}>
+          <Image style={styles.logo} source={require('./logo.png')}></Image>
+
+          <H1 style={styles.h1}>Welcome to Dojo!</H1>
+
+          <TouchableWithoutFeedback style={styles.google}
+            onPress={() => this.signInWithGoogleAsync()}
+            onPressIn={() => this.setState({ button: this.pressedButton })}
+            onPressOut={() => this.setState({ button: this.normalButton })}>
+            <Image style={styles.button} source={this.state.button} />
+          </TouchableWithoutFeedback>
+        </Container>
+      </Image> 
+ 
     );
   }
 }
 
 const styles = StyleSheet.create({
+
   container: {
     justifyContent: 'center',
     flex: 1,
-    alignItems: 'center',
-    backgroundImage: 'login.png'
+    alignItems: 'center' 
   },
 
   h1: {
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white', 
+    fontWeight: 'bold',
+    marginTop: '5%'
+    // ,
+    // fontFamily: 'San Francisco'
   },
 
-  button: { marginTop: '10%' }
+  button: { 
+    marginTop: '30%' 
+  },
+
+  backgroundImage: {
+    flex: 1,
+    width: null,
+    height: null,
+    resizeMode: 'cover'
+  },
+
+  logo: {
+    height: 100,
+    width: 100
+  },
+
+  google: {
+
+    marginTop: 100
+  }
 });

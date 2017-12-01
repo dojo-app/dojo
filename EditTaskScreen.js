@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { StyleSheet, Alert } from 'react-native';
+
 import {
   Container,
   Header,
@@ -9,7 +11,10 @@ import {
   Input,
   Label,
   Left,
-  Text
+  Text,
+  CheckBox,
+  ListItem,
+  Body
 } from 'native-base';
 import * as firebase from 'firebase';
 
@@ -18,26 +23,32 @@ export class EditTaskScreen extends React.Component {
     title: 'Edit Task'
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    var users = {};
+    for (const user of this.props.screenProps.state.users) {
+      users[user.id] = true;
+    }
     this.state = {
-      taskTitle: 'Important Task',
-      taskDescription: 'Cool Description',
-      taskDueDate: 'Date',
-      taskUsers: 'Users'
+      title: this.props.navigation.state.params.task.title,
+      description: this.props.navigation.state.params.task.description,
+      users: users,
+      showToast: false
     };
   }
 
   editTask() {
-    var key = firebase
+    var key = this.props.navigation.state.params.task.id;
+
+    firebase
       .database()
-      .ref('tasks').child(this.props.screenProps.state.id)
-      // .push({
-      //   title: this.state.taskTitle,
-      //   description: this.state.taskDescription,
-      //   users: this.state.taskUsers,
-      //   dueDate: this.state.taskDueDate
-      // }).key;
+      .ref('tasks')
+      .child(key)
+      .update({
+        title: this.state.title,
+        description: this.state.description,
+        users: this.state.users
+      }).key;
     firebase
       .database()
       .ref('dojos')
@@ -46,56 +57,76 @@ export class EditTaskScreen extends React.Component {
       .update({ [key]: true });
   }
 
+  usersCount() {
+    let count = 0;
+    for (const user of Object.values(this.state.users)) {
+      if (user) count++;
+    }
+    return count;
+  }
+
   render() {
+    const users = this.props.screenProps.state.users.map(user => (
+      <ListItem
+        key={user.id}
+        onPress={() => {
+          var prevUsers = this.state.users;
+          prevUsers[user.id] = !prevUsers[user.id];
+          this.setState({
+            users: prevUsers
+          });
+        }}>
+        <CheckBox checked={this.state.users[user.id]} />
+        <Body>
+          <Text>{user.name}</Text>
+        </Body>
+      </ListItem>
+    ));
+
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
           <Form>
             <Item fixedLabel>
               <Label>Title</Label>
               <Input
-                value={this.props.navigation.state.params.task.title}
-                onChangeText={text => this.setState({ taskTitle: text })}
+                value={this.state.title}
+                onChangeText={text => this.setState({ title: text })}
+                autoFocus={true}
               />
             </Item>
+
             <Item fixedLabel>
               <Label>Description</Label>
               <Input
-                value={this.props.navigation.state.params.task.description}
-                onChangeText={text => this.setState({ taskDescription: text })}
+                value={this.state.description}
+                onChangeText={text => this.setState({ description: text })}
               />
             </Item>
-            <Item fixedLabel>
-              <Label>Users</Label>
-              <Input
-                value={this.props.navigation.state.params.task.users}
-                onChangeText={text => this.setState({ taskUsers: text })}
-              />
-            </Item>
-            <Item fixedLabel>
-              <Label>Due Date</Label>
-              <Input
-                value={this.state.taskDueDate}
-                onChangeText={text => this.setState({ taskDueDate: text })}
-              />
-            </Item>
+
+            <ListItem itemDivider>
+              <Body>
+                <Text>Users</Text>
+              </Body>
+            </ListItem>
+
+            {users}
           </Form>
           <Button
             full
             onPress={() => {
-
-              this.editTask();
-              this.props.navigation.goBack();
-
-              // return firebase
-              //   .database()
-              //   .ref('task')
-              //   .push({
-              //     task_title: this.state.taskTitle,
-              //     tast_description: this.state.taskDescription,
-              //     task_users: this.state.taskUsers,
-              //     task_dueDate: this.state.taskDueDate
-              //   });
+              console.log('usercount = ' + this.usersCount());
+              if (this.state.title === '') {
+                Alert.alert('Submission Failed', 'Title cannot be empty.');
+              } else if (this.usersCount() === 0) {
+                Alert.alert(
+                  'Submission Failed',
+                  'At least one user must be involved.'
+                );
+              } else {
+                this.editTask();
+                this.props.navigation.goBack();
+              }
             }}>
             <Text>Save</Text>
           </Button>
@@ -104,3 +135,10 @@ export class EditTaskScreen extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  }
+});

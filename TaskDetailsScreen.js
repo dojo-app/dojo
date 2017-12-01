@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { StyleSheet } from 'react-native';
 import {
   Container,
   Header,
@@ -9,20 +10,39 @@ import {
   Input,
   Label,
   Left,
-  Text
+  Text,
+  ListItem,
+  CheckBox,
+  Body
 } from 'native-base';
 import * as firebase from 'firebase';
+import { Alert } from 'react-native';
 
 export class TaskDetailsScreen extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      // editMode: false
-    };
-  }
   static navigationOptions = {
     title: 'Task Details'
   };
+
+  deleteTask() {
+    var key = this.props.navigation.state.params.task.id;
+    //Alert.alert('This is the key: ' +key)
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('tasks')
+      .child(key)
+      .remove();
+    //.child('tasks')
+    //.update({ [key]: false });
+
+    firebase
+      .database()
+      .ref()
+      .child('tasks')
+      .child(key)
+      .remove();
+  }
 
   render() {
     const users = this.props.screenProps.state.users.map(user => (
@@ -64,29 +84,35 @@ export class TaskDetailsScreen extends React.Component {
 
             {users}
           </Form>
-
-
           <Button
-            large
-            warning={!this.state.editMode}
-            success={this.state.editMode}
-            full
-            onPress={() => {
-              this.props.navigation.navigate('EditTask')
-              // this.setState({ editMode: !this.state.editMode });
-            }}
-            ><Text>Edit Task</Text>
-
+            danger
+            onPress={() =>
+              this.props.navigation.navigate('EditTask', {task: this.props.navigation.state.params.task})}
+          >
+            <Text>Edit Task</Text>
           </Button>
 
           <Button
-            large
-            color='#c02b2b'
-            full
-            onPress={() => this.props.navigation.goBack()}>
-            <Text>Delete Task (not implemented)</Text>
+            danger
+            onPress={() =>
+              Alert.alert(
+                'Are you sure?',
+                'The task will be permanently deleted',
+                [
+                  { text: 'Cancel' },
+                  {
+                    text: 'Delete',
+                    onPress: () => {
+                      this.deleteTask();
+                      this.props.navigation.goBack();
+                    }
+                  }
+                ],
+                { cancelable: false }
+              )
+            }>
+            <Text>Delete Task</Text>
           </Button>
-                    
         </Content>
       </Container>
     );
@@ -99,68 +125,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   }
 });
-
-  render() {
-    return (
-      <Container>
-        <Content>
-          <Form>
-            <Item fixedLabel disabled={!this.state.editMode}>
-              <Label>Task Title</Label>
-              <Input
-                disabled={!this.state.editMode}
-                value={this.props.navigation.state.params.task.title}
-                onChangeText={text => this.setState({ taskTitle: text })}
-              />
-            </Item>
-            <Item fixedLabel disabled={!this.state.editMode}>
-              <Label>Task Description</Label>
-              <Input
-                disabled={!this.state.editMode}
-                value={this.props.navigation.state.params.task.description}
-                onChangeText={text => this.setState({ taskDescription: text })}
-              />
-            </Item>
-            <Item fixedLabel disabled={!this.state.editMode}>
-              <Label>Task Users</Label>
-              <Input
-                disabled={!this.state.editMode}
-                value={this.props.navigation.state.params.task.users}
-                onChangeText={text => this.setState({ taskUsers: text })}
-              />
-            </Item>
-            <Item fixedLabel disabled={!this.state.editMode}>
-              <Label>Task Due Date</Label>
-              <Input
-                disabled={!this.state.editMode}
-                value={this.state.taskDueDate}
-                onChangeText={text => this.setState({ taskDueDate: text })}
-              />
-            </Item>
-          </Form>
-
-          <Button
-            large
-            warning={!this.state.editMode}
-            success={this.state.editMode}
-            full
-            onPress={() => {
-              this.props.navigation.navigate('EditTask')
-              // this.setState({ editMode: !this.state.editMode });
-            }}
-            ><Text>Edit Task</Text>
-
-          </Button>
-
-          <Button
-            large
-            color='#c02b2b'
-            full
-            onPress={() => this.props.navigation.goBack()}>
-            <Text>Delete Task (not implemented)</Text>
-          </Button>
-        </Content>
-      </Container>
-    );
-  }
-}

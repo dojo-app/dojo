@@ -33,30 +33,29 @@ export class DojoScreen extends React.Component {
   });
 
   render() {
-    var listItems = [];
-    for (const user of this.props.screenProps.state.users) {
-      listItems.push(
-        <ListItem>
-          <Text>{user.name}</Text>
-        </ListItem>
-      );
-    }
+    const users = this.props.screenProps.state.users.map(user => (
+      <ListItem key={user.id}>
+        <Text>{user.name}</Text>
+      </ListItem>
+    ));
+
     return (
       <Container style={styles.container}>
         <Content>
           <Text>dojo id: {this.props.screenProps.state.dojo}</Text>
-          <QRCode
-            value={this.props.screenProps.state.dojo}
-            size={200}
-            bgColor="black"
-            fgColor="white"
-          />
-
+          <Body style={styles.qr}>
+            <QRCode
+              value={this.props.screenProps.state.dojo}
+              size={240}
+              bgColor="black"
+              fgColor="white"
+            />
+          </Body>
           <List>
             <ListItem itemDivider>
               <Text>Users:</Text>
             </ListItem>
-            {listItems}
+            {users}
           </List>
           <Button full danger large onPress={() => this.leaveDojo()}>
             <Text>Leave Dojo</Text>
@@ -87,5 +86,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+  qr: {
+    marginTop: '5%',
+    marginBottom: '5%',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
