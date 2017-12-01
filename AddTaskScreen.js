@@ -44,7 +44,7 @@ export class AddTaskScreen extends React.Component {
         title: this.state.title,
         description: this.state.description,
         users: this.state.users
-      }).key;
+    }).key;
     firebase
       .database()
       .ref('dojos')

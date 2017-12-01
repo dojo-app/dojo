@@ -86,9 +86,8 @@ export class TaskDetailsScreen extends React.Component {
           </Form>
           <Button
             danger
-            //onPress={() =>
-            // go to edit task page
-            //}
+            onPress={() =>
+              this.props.navigation.navigate('EditTask', {task: this.props.navigation.state.params.task})}
           >
             <Text>Edit Task</Text>
           </Button>
