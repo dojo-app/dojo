@@ -105,7 +105,7 @@ export default class App extends React.Component {
             // turn off dojo info listeners
             dojoRef.child('users').off();
             dojoRef.child('tasks').off();
-            // dojoRef.child('bills').off();
+            dojoRef.child('bills').off();
 
             this.setState({ dojoInfoListener: false });
           }
@@ -132,9 +132,9 @@ export default class App extends React.Component {
       this.updateTasks(snapshot);
     });
 
-    // dojoRef.child('bills').on('value', snapshot => {
-    //   this.updateBills(snapshot);
-    // });
+    dojoRef.child('bills').on('value', snapshot => {
+      this.updateBills(snapshot);
+    });
   }
 
   updateUserInfo() {
@@ -174,6 +174,32 @@ export default class App extends React.Component {
     } else {
       // if the dojo has no tasks
       this.setState({ tasks: [] });
+    }
+  }
+
+ updateBills(snapshot) {
+    var billObjects = [];
+
+    if (snapshot.val()) {
+      var keys = Object.keys(snapshot.val());
+
+      // stackoverflow.com/q/42610264/
+      var promises = keys.map(key => {
+        return firebase
+          .database()
+          .ref('bills')
+          .child(key)
+          .once('value');
+      });
+
+      Promise.all(promises).then(snapshots => {
+        snapshots.forEach(snapshot => {
+          var billObject = snapshot.val();
+          billObject['id'] = snapshot.key;
+          billObjects.push(billObject);
+        });
+        this.setState({ bills: billObjects.reverse() });
+      });
     }
   }
 

@@ -20,6 +20,14 @@ import {
 import ActionButton from 'react-native-action-button';
 
 export class BillScreen extends React.Component {
+  // added ss
+  constructor() {
+    super();
+    this.state = {
+      loading: true
+    };
+  }
+// end ss
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
 
@@ -33,8 +41,22 @@ export class BillScreen extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
+
+// start ss
+    const bills = this.props.screenProps.state.bills.map(bill => (
+      <ListItem
+        key={bill.id}
+        onPress={() => navigate('BillDetails', { bill: bill })}>
+        <Text>{bill.title}</Text>
+      </ListItem>
+    ));
+// end ss
+
     return (
       <Container style={styles.container}>
+       <Content>
+          <List>{bills}</List>
+        </Content>
         <ActionButton
           buttonColor="rgba(231,76,60,1)"
           onPress={() => navigate('AddBill')}
