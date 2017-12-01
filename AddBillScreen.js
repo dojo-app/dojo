@@ -14,13 +14,15 @@ import {
   Text,
   CheckBox,
   ListItem,
-  Body
+  Body,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 
 export class AddBillScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Bill'
+    title: 'Add Bill',
+    headerTintColor: '#c02b2b',
   };
 
   constructor(props) {
@@ -67,7 +69,29 @@ export class AddBillScreen extends React.Component {
     return count;
   }
 
+  toggleCheck(bool, user){
+    if(bool){
+      return (
+        <Thumbnail
+            medium
+            source={require('./checkmark.png')}
+            
+          />
+          );
+    }
+    else {
+      return(
+        <Thumbnail
+          medium
+          source={{ uri: user.photoURL }}
+        />
+      );
+    }
+
+  }
+
   render() {
+
     const users = this.props.screenProps.state.users.map(user => (
       <ListItem
         key={user.id}
@@ -75,10 +99,10 @@ export class AddBillScreen extends React.Component {
           var prevUsers = this.state.billUsers;
           prevUsers[user.id] = !prevUsers[user.id];
           this.setState({
-            users: prevUsers
+            billUsers: prevUsers
           });
         }}>
-        <CheckBox checked={this.state.billUsers[user.id]} />
+        {this.toggleCheck(this.state.billUsers[user.id], user)}
         <Body>
           <Text>{user.name}</Text>
         </Body>
@@ -97,7 +121,7 @@ export class AddBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Amount</Label>
+              <Label>Bill Amount &#160;&nbsp;$</Label>
               <Input
                 value={this.state.billAmount}
                 onChangeText={text => this.setState({ billAmount: text })}
