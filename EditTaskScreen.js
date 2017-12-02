@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 
 import {
   Container,
@@ -48,13 +49,22 @@ export class EditTaskScreen extends React.Component {
         title: this.state.title,
         description: this.state.description,
         users: this.state.users
-      }).key;
+      });
+
     firebase
       .database()
       .ref('dojos')
       .child(this.props.screenProps.state.dojo)
       .child('tasks')
-      .update({ [key]: true });
+      .child(key)
+      .remove();
+
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('tasks')
+      .set({ [key]: true });
   }
 
   usersCount() {
@@ -125,7 +135,12 @@ export class EditTaskScreen extends React.Component {
                 );
               } else {
                 this.editTask();
-                this.props.navigation.goBack();
+                this.props.navigation.dispatch(
+                  NavigationActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({ routeName: 'Home' })]
+                  })
+                );
               }
             }}>
             <Text>Save</Text>
