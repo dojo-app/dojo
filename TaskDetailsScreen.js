@@ -33,7 +33,7 @@ export class TaskDetailsScreen extends React.Component {
 
   deleteTask() {
     var key = this.props.navigation.state.params.task.id;
-    //Alert.alert('This is the key: ' +key)
+    
     firebase
       .database()
       .ref('dojos')
@@ -41,8 +41,6 @@ export class TaskDetailsScreen extends React.Component {
       .child('tasks')
       .child(key)
       .remove();
-    //.child('tasks')
-    //.update({ [key]: false });
 
     firebase
       .database()

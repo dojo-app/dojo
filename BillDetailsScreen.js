@@ -16,11 +16,31 @@ import {
   Body
 } from 'native-base';
 import * as firebase from 'firebase';
+import { Alert } from 'react-native';
 
 export class BillDetailsScreen extends React.Component {
   static navigationOptions = {
     title: 'Bill Details'
   };
+
+  deleteBill() {
+    var key = this.props.navigation.state.params.bill.id;
+
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('bills')
+      .child(key)
+      .remove();
+
+    firebase
+      .database()
+      .ref()
+      .child('bills')
+      .child(key)
+      .remove();
+  }
 
   constructor(props) {
       super(props);
@@ -103,21 +123,33 @@ export class BillDetailsScreen extends React.Component {
           </Form>
 
           <Button
-            full
+            danger
             onPress={() => {
                navigate('EditBill', { bill: bill })
             }}>
-            <Text>Edit</Text>
+            <Text>Edit Bill</Text>
           </Button>
 
           <Button
-            full
-            onPress={() => {
-                this.deleteBill();
-                this.props.navigation.goBack();
-            }}>
-
-            <Text>Delete</Text>
+            danger
+            onPress={() =>
+              Alert.alert(
+                'Are you sure?',
+                'The bill will be permanently deleted',
+                [
+                  { text: 'Cancel' },
+                  {
+                    text: 'Delete',
+                    onPress: () => {
+                      this.deleteBill();
+                      this.props.navigation.goBack();
+                    }
+                  }
+                ],
+                { cancelable: false }
+              )
+            }>
+            <Text>Delete Bill</Text>
           </Button>
 
         </Content>
