@@ -13,18 +13,65 @@ import {
   Text,
   ListItem,
   CheckBox,
-  Body
+  Body,
+  View
 } from 'native-base';
 import * as firebase from 'firebase';
+import { Alert } from 'react-native';
 
 export class BillDetailsScreen extends React.Component {
   static navigationOptions = {
     title: 'Bill Details'
   };
 
+  deleteBill() {
+    var key = this.props.navigation.state.params.bill.id;
+
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('bills')
+      .child(key)
+      .remove();
+
+    firebase
+      .database()
+      .ref()
+      .child('bills')
+      .child(key)
+      .remove();
+  }
+
+  constructor(props) {
+      super(props);
+      this.state = {
+          bill: this.props.navigation.state.params.bill
+      };
+  }
+
+  deleteBill() {
+
+      //From Bills collection
+      firebase
+      .database()
+      .ref('bills')
+      .child(this.state.bill.id)
+      .remove()
+
+      //From Dojo Bills collection
+      firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('bills')
+      .child(this.state.bill.id)
+      .remove()
+  }
+
   render() {
-    const bill = this.props.navigation.state.params.bill;
-    const billUsers = bill.users;
+    //const bill = this.props.navigation.state.params.bill;
+    const billUsers = this.state.bill.users;
     const user = this.props.screenProps.state.user;
     const users = this.props.screenProps.state.users.filter(user => billUsers[user.id]).map(user => (
       <ListItem key={user.id}>
@@ -47,7 +94,7 @@ export class BillDetailsScreen extends React.Component {
               <Label>Title</Label>
               <Input
                 disabled
-                value={bill.title}
+                value={this.state.bill.title}
               />
             </Item>
 
@@ -55,7 +102,7 @@ export class BillDetailsScreen extends React.Component {
               <Label>Description</Label>
               <Input
                 disabled
-                value={bill.description}
+                value={this.state.bill.description}
               />
             </Item>
 
@@ -63,7 +110,7 @@ export class BillDetailsScreen extends React.Component {
               <Label>Amount</Label>
               <Input
                 disabled
-                value={bill.amount}
+                value={this.state.bill.amount}
               />
             </Item>
 
@@ -76,38 +123,41 @@ export class BillDetailsScreen extends React.Component {
             {users}
           </Form>
 
+          <View style={styles.inline}>
+
           <Button
-            full
+            style={styles.left}
+            danger
             onPress={() => {
-               navigate('EditBill', { bill: bill })
+               navigate('EditBill', { bill: this.props.navigation.state.params.bill })
             }}>
-            <Text>Edit</Text>
+            <Text style={{alignItems: 'center' }}>Edit</Text>
           </Button>
 
           <Button
-            full
-            onPress={() => {
+            style={styles.right}
+            danger
+            onPress={() =>
+              Alert.alert(
+                'Are you sure?',
+                'The bill will be permanently deleted',
+                [
+                  { text: 'Cancel' },
+                  {
+                    text: 'Delete',
+                    onPress: () => {
+                      this.deleteBill();
+                      this.props.navigation.goBack();
+                    }
+                  }
+                ],
+                { cancelable: false }
+              )
+            }>
 
-
-                firebase
-                .database()
-                .ref('bills')
-                .child('bill')
-                .child(key)
-                .remove()
-
-                firebase
-                .database()
-                .ref('dojos')
-                .child('todo')
-                .child(todo)
-                .remove()
-            }}>
-
-
- 
-            <Text>Delete</Text>
+            <Text style={{alignItems: 'center' }}>Delete</Text>
           </Button>
+          </View>
 
         </Content>
       </Container>
@@ -118,6 +168,25 @@ export class BillDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+
+  },
+
+  inline: {
+    flexDirection:'row',
+    justifyContent:'space-between'
+
+  },
+
+  right: {
+    justifyContent: 'flex-start',
+    marginRight: 30,
+    width: 100,
+  },
+
+  left: {
+    justifyContent: 'flex-end',
+    marginLeft: 30,
+    width: 100,
   }
 });

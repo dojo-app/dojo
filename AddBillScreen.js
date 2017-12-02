@@ -15,13 +15,26 @@ import {
   Text,
   CheckBox,
   ListItem,
-  Body
+  Body,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 
+function removeFalseEntries(obj) {
+    let result = {};
+    for (const key in obj) {
+        if (obj[key]) { //holds a true
+            result[key] = true;
+        }
+    }
+
+    return result;
+}
+
 export class AddBillScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Bill'
+    title: 'Add Bill',
+    headerTintColor: '#c02b2b',
   };
 
   constructor(props) {
@@ -33,7 +46,7 @@ export class AddBillScreen extends React.Component {
 
     this.state = {
       billTitle: '',
-      billAmount: '',
+      billAmount: '$0.00',
       billDescription: '',
       billDueDate: '',
       billUsers: users,
@@ -69,18 +82,58 @@ export class AddBillScreen extends React.Component {
     return count;
   }
 
+  toggleCheck(bool, user){
+    if(bool){
+      return (
+        <Thumbnail
+            medium
+            source={require('./checkmark.png')}
+
+          />
+          );
+    }
+    else {
+      return(
+        <Thumbnail
+          medium
+          source={{ uri: user.photoURL }}
+        />
+      );
+    }
+
+  }
+
+  formatAmount(text){
+    var txtLen = text.length-1;
+    var check = text;
+
+    if(check.charAt(txtLen) < '0' || check.charAt(txtLen) > '9'){
+      check = check.substr(0, txtLen)
+    }
+
+    check = check.replace(/[^0-9]/g,'');
+    var accounting = require('accounting');
+    return accounting.formatMoney(parseFloat(check)/100);
+
+
+
+  }
+
   render() {
+
     const users = this.props.screenProps.state.users.map(user => (
       <ListItem
         key={user.id}
         onPress={() => {
           var prevUsers = this.state.billUsers;
           prevUsers[user.id] = !prevUsers[user.id];
+
+          //Fix : false ones are not included in the object
           this.setState({
-            users: prevUsers
+            billUsers: removeFalseEntries(prevUsers)
           });
         }}>
-        <CheckBox checked={this.state.billUsers[user.id]} />
+        {this.toggleCheck(this.state.billUsers[user.id], user)}
         <Body>
           <Text>{user.name}</Text>
         </Body>
@@ -99,10 +152,12 @@ export class AddBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Amount</Label>
+              <Label>Bill Amount </Label>
               <Input
+                style = {styles.right}
+                onChangeText={text => this.setState({ billAmount: this.formatAmount(text) })}
                 value={this.state.billAmount}
-                onChangeText={text => this.setState({ billAmount: text })}
+
               />
             </Item>
             <Item fixedLabel>
@@ -156,7 +211,12 @@ export class AddBillScreen extends React.Component {
               console.log('usercount = ' + this.usersCount());
               if (this.state.billTitle === '') {
                 Alert.alert('Submission Failed', 'Title cannot be empty.');
-              } else if (this.usersCount() === 0) {
+              } else if (this.billAmount === '$0.00') {
+                Alert.alert(
+                  'Submission Failed',
+                  'Your Bill Amount cannot be $0.00'
+                );
+              }  else if (this.usersCount() === 0) {
                 Alert.alert(
                   'Submission Failed',
                   'At least one user must be involved.'
@@ -173,3 +233,12 @@ export class AddBillScreen extends React.Component {
     );
   }
 }
+
+
+const styles = StyleSheet.create({
+  right: {
+    marginRight:20,
+    textAlign: 'right' ,
+  }
+});
+

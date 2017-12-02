@@ -58,7 +58,7 @@ export class TaskScreen extends React.Component {
           <List>{tasks}</List>
         </Content>
         <ActionButton
-          buttonColor="rgba(231,76,60,1)"
+          buttonColor="#c02b2b"
           onPress={() => this.props.navigation.navigate('AddTask')}
         />
       </Container>

@@ -44,7 +44,7 @@ export class AddTaskScreen extends React.Component {
         title: this.state.title,
         description: this.state.description,
         users: this.state.users
-    }).key;
+      }).key;
     firebase
       .database()
       .ref('dojos')
@@ -81,7 +81,7 @@ export class AddTaskScreen extends React.Component {
 
     return (
       <Container style={styles.container}>
-        <Content>
+        <Content keyboardShouldPersistTaps={'handled'}>
           <Form>
             <Item fixedLabel>
               <Label>Title</Label>
