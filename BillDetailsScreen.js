@@ -13,7 +13,8 @@ import {
   Text,
   ListItem,
   CheckBox,
-  Body
+  Body,
+  View
 } from 'native-base';
 import * as firebase from 'firebase';
 import { Alert } from 'react-native';
@@ -122,15 +123,19 @@ export class BillDetailsScreen extends React.Component {
             {users}
           </Form>
 
+          <View style={styles.inline}>
+
           <Button
+            style={styles.left}
             danger
             onPress={() => {
                navigate('EditBill', { bill: this.props.navigation.state.params.bill })
             }}>
-            <Text>Edit Bill</Text>
+            <Text style={{alignItems: 'center' }}>Bill</Text>
           </Button>
 
           <Button
+            style={styles.right}
             danger
             onPress={() =>
               Alert.alert(
@@ -149,8 +154,10 @@ export class BillDetailsScreen extends React.Component {
                 { cancelable: false }
               )
             }>
-            <Text>Delete Bill</Text>
+
+            <Text style={{alignItems: 'center' }}>Delete</Text>
           </Button>
+          </View>
 
         </Content>
       </Container>
@@ -161,6 +168,25 @@ export class BillDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+
+  },
+
+  inline: {
+    flexDirection:'row',
+    justifyContent:'space-between'
+
+  },
+
+  right: {
+    justifyContent: 'flex-start',
+    marginRight: 30,
+    width: 100,
+  },
+
+  left: {
+    justifyContent: 'flex-end',
+    marginLeft: 30,
+    width: 100,
   }
 });
