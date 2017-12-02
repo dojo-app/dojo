@@ -13,6 +13,7 @@ import {
   Body,
   Title,
   Right,
+  Segment,
   List,
   ListItem,
   Switch,
@@ -52,7 +53,59 @@ export class TaskScreen extends React.Component {
       </ListItem>
     ));
 
+    const AssignedByMe = (
+      <Content>
+        <Container style={styles.container}>
+          <Content>
+            <List>{tasks}</List>
+          </Content>
+        </Container>
+      </Content>
+    );
+
+    const AssignedToMe = (
+      <Content>
+        <Container style={styles.container}>
+          <Content>
+
+          </Content>
+        </Container>
+      </Content>
+    );
+
     return (
+      <Container style={styles.container}>
+        <Header hasTabs style={styles.segment}>
+          <Segment style={styles.segment}>
+            <Button
+              first
+              active={this.state.onList}
+              onPress={() => {
+                if (!this.state.onList) {
+                  this.setState({ onList: true });
+                }
+              }}>
+              <Text>Assigned By Me</Text>
+            </Button>
+            <Button
+              last
+              active={!this.state.onList}
+              onPress={() => {
+                if (this.state.onList) {
+                  this.setState({ onList: false });
+                }
+              }}>
+              <Text>Assigned To Me</Text>
+            </Button>
+          </Segment>
+        </Header>
+        {this.state.onList ? AssignedByMe : AssignedToMe}
+        <ActionButton
+          buttonColor="#c02b2b"
+          onPress={() => navigate('AddTask')}
+        />
+      </Container>
+      /*
       <Container style={styles.container}>
         <Content>
           <List>{tasks}</List>
@@ -62,6 +115,7 @@ export class TaskScreen extends React.Component {
           onPress={() => this.props.navigation.navigate('AddTask')}
         />
       </Container>
+      */
     );
   }
 }
@@ -70,5 +124,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+  segment: {
+    backgroundColor: 'white'
+  },
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: 'white'
   }
 });
