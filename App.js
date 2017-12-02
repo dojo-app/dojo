@@ -214,6 +214,9 @@ export default class App extends React.Component {
         });
         this.setState({ bills: billObjects.reverse() });
       });
+    } else {
+      // if the dojo has no bills
+      this.setState({ bills: [] });
     }
   }
 

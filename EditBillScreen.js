@@ -55,13 +55,15 @@ export class EditBillScreen extends React.Component {
         requester: this.props.screenProps.state.user.uid,
         users: this.state.billUsers,
         title: this.state.billTitle
-      }).key;
-    firebase
+      });
+    
+    /* do not need to update this, key is true either way
+      firebase
       .database()
       .ref('dojos')
       .child(this.props.screenProps.state.dojo)
-      .child('tasks')
-      .update({ [key]: true });
+      .child('bills')
+      .update({ [key]: true });*/
   }
 
   usersCount() {
