@@ -54,10 +54,6 @@ export class TaskDetailsScreen extends React.Component {
 
   render() {
 
-    console.log("HELLO WORLD");
-    console.log(this.state.taskTarget);
-    //console.log(this.props.screenProps.state.tasks.find(task => task.id === taskID));
-
     const users = this.props.screenProps.state.users.map(user => (
       <ListItem key={user.id}>
         <CheckBox
