@@ -91,7 +91,7 @@ export class EditTaskScreen extends React.Component {
 
     return (
       <Container style={styles.container}>
-        <Content>
+        <Content keyboardShouldPersistTaps={'handled'}>
           <Form>
             <Item fixedLabel>
               <Label>Title</Label>
