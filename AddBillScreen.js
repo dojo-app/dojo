@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
+import DatePicker from 'react-native-datepicker'
 
 import {
   Container,
@@ -44,12 +45,14 @@ export class AddBillScreen extends React.Component {
     }
 
     this.state = {
+      date:"2016-05-15",
       billTitle: '',
-      billAmount: '',
+      billAmount: '$0.00',
       billDescription: '',
       billDueDate: '',
       billUsers: users,
-      showToast: false
+      showToast: false,
+      date: '2016-05-15'
     };
   }
   addBill() {
@@ -101,6 +104,23 @@ export class AddBillScreen extends React.Component {
 
   }
 
+  formatAmount(text){
+    var txtLen = text.length-1;
+    var check = text;
+
+    if(check.charAt(txtLen) < '0' || check.charAt(txtLen) > '9'){
+      check = check.substr(0, txtLen)
+    }
+
+    check = check.replace(/[^0-9]/g,'');
+    var accounting = require('accounting');
+    return accounting.formatMoney(parseFloat(check)/100);
+
+
+
+  }
+
+
   render() {
 
     const users = this.props.screenProps.state.users.map(user => (
@@ -134,10 +154,12 @@ export class AddBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Amount &#160;&nbsp;$</Label>
+              <Label>Bill Amount </Label>
               <Input
+                style = {styles.right}
+                onChangeText={text => this.setState({ billAmount: this.formatAmount(text) })}
                 value={this.state.billAmount}
-                onChangeText={text => this.setState({ billAmount: text })}
+
               />
             </Item>
             <Item fixedLabel>
@@ -149,11 +171,24 @@ export class AddBillScreen extends React.Component {
             </Item>
             <Item fixedLabel>
               <Label>Bill Due Date</Label>
-              <Input
-                value={this.state.billDueDate}
-                onChangeText={text => this.setState({ billDueDate: text })}
-              />
+              <Text style={styles.text}
+                //value={this.state.billDueDate}
+                onPress={() => {this.refs.datepicker.onPressDate()}}
+              >
+               {this.state.date}
+              </Text>
             </Item>
+            <DatePicker
+              date={this.state.date}
+              mode="date"
+              style={{width: 0, height: 0}}
+              showIcon={false}
+              confirmBtnText='Submit'
+              cancelBtnText='Cancel'
+              //customStyles={customStyles}
+              ref="datepicker"
+              onDateChange={(date) => {this.setState({date: date})}}
+            />
             <ListItem itemDivider>
               <Body>
                 <Text>Users</Text>
@@ -167,7 +202,12 @@ export class AddBillScreen extends React.Component {
               console.log('usercount = ' + this.usersCount());
               if (this.state.billTitle === '') {
                 Alert.alert('Submission Failed', 'Title cannot be empty.');
-              } else if (this.usersCount() === 0) {
+              } else if (this.billAmount === '$0.00') {
+                Alert.alert(
+                  'Submission Failed',
+                  'Your Bill Amount cannot be $0.00'
+                );
+              }  else if (this.usersCount() === 0) {
                 Alert.alert(
                   'Submission Failed',
                   'At least one user must be involved.'
@@ -184,3 +224,17 @@ export class AddBillScreen extends React.Component {
     );
   }
 }
+
+
+const styles = StyleSheet.create({
+  right: {
+    marginRight:20,
+    textAlign: 'right' ,
+  },
+
+  text: {
+    marginTop: 17,
+    marginBottom: 17,
+    marginRight: 25
+  }
+});

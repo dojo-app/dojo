@@ -33,7 +33,7 @@ export class TaskDetailsScreen extends React.Component {
 
   deleteTask() {
     var key = this.props.navigation.state.params.task.id;
-    
+
     firebase
       .database()
       .ref('dojos')
@@ -83,6 +83,14 @@ export class TaskDetailsScreen extends React.Component {
               />
             </Item>
 
+            <Item fixedLabel>
+              <Label>Due Date</Label>
+              <Input
+                disabled
+                value={this.state.taskTarget.date}
+              />
+            </Item>
+
             <ListItem itemDivider>
               <Body>
                 <Text>Users</Text>
@@ -94,8 +102,10 @@ export class TaskDetailsScreen extends React.Component {
           <Button
             danger
             onPress={() =>
-              this.props.navigation.navigate('EditTask', {task: this.state.taskTarget})}
-          >
+              this.props.navigation.navigate('EditTask', {
+                task: this.props.navigation.state.params.task
+              })
+            }>
             <Text>Edit Task</Text>
           </Button>
 
