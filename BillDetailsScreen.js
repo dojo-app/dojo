@@ -125,7 +125,7 @@ export class BillDetailsScreen extends React.Component {
           <Button
             danger
             onPress={() => {
-               navigate('EditBill', { bill: bill })
+               navigate('EditBill', { bill: this.props.navigation.state.params.bill })
             }}>
             <Text>Edit Bill</Text>
           </Button>
