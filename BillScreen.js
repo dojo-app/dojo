@@ -58,7 +58,7 @@ export class BillScreen extends React.Component {
           <List>{bills}</List>
         </Content>
         <ActionButton
-          buttonColor="rgba(231,76,60,1)"
+          buttonColor="#c02b2b"
           onPress={() => navigate('AddBill')}
         />
       </Container>
