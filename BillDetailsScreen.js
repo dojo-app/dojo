@@ -131,7 +131,7 @@ export class BillDetailsScreen extends React.Component {
             onPress={() => {
                navigate('EditBill', { bill: this.props.navigation.state.params.bill })
             }}>
-            <Text style={{alignItems: 'center' }}>Bill</Text>
+            <Text style={{alignItems: 'center' }}>Edit</Text>
           </Button>
 
           <Button
