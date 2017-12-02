@@ -23,6 +23,14 @@ export class TaskDetailsScreen extends React.Component {
     title: 'Task Details'
   };
 
+  constructor(props) {
+      super(props);
+      const taskID = this.props.navigation.state.params.task.id;
+      this.state = {
+          taskTarget: this.props.screenProps.state.tasks.find(task => task.id === taskID)
+      };
+  }
+
   deleteTask() {
     var key = this.props.navigation.state.params.task.id;
     //Alert.alert('This is the key: ' +key)
@@ -45,10 +53,15 @@ export class TaskDetailsScreen extends React.Component {
   }
 
   render() {
+
+    console.log("HELLO WORLD");
+    console.log(this.state.taskTarget);
+    //console.log(this.props.screenProps.state.tasks.find(task => task.id === taskID));
+
     const users = this.props.screenProps.state.users.map(user => (
       <ListItem key={user.id}>
         <CheckBox
-          checked={this.props.navigation.state.params.task.users[user.id]}
+          checked={this.state.taskTarget.users[user.id]}
         />
         <Body>
           <Text>{user.name}</Text>
@@ -64,7 +77,7 @@ export class TaskDetailsScreen extends React.Component {
               <Label>Title</Label>
               <Input
                 disabled
-                value={this.props.navigation.state.params.task.title}
+                value={this.state.taskTarget.title}
               />
             </Item>
 
@@ -72,7 +85,7 @@ export class TaskDetailsScreen extends React.Component {
               <Label>Description</Label>
               <Input
                 disabled
-                value={this.props.navigation.state.params.task.description}
+                value={this.state.taskTarget.description}
               />
             </Item>
 
@@ -87,7 +100,7 @@ export class TaskDetailsScreen extends React.Component {
           <Button
             danger
             onPress={() =>
-              this.props.navigation.navigate('EditTask', {task: this.props.navigation.state.params.task})}
+              this.props.navigation.navigate('EditTask', {task: this.state.taskTarget})}
           >
             <Text>Edit Task</Text>
           </Button>
