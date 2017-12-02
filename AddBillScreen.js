@@ -39,6 +39,7 @@ export class AddBillScreen extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {date:"2016-05-15"};
     var users = {};
     for (const user of this.props.screenProps.state.users) {
       users[user.id] = true;
@@ -119,6 +120,7 @@ export class AddBillScreen extends React.Component {
 
   }
 
+
   render() {
 
     const users = this.props.screenProps.state.users.map(user => (
@@ -169,35 +171,24 @@ export class AddBillScreen extends React.Component {
             </Item>
             <Item fixedLabel>
               <Label>Bill Due Date</Label>
-              <Input
-                value={this.state.billDueDate}
-                onChangeText={text => this.setState({ billDueDate: text })}
-              />
-              <DatePicker
-         style={{width: 250}}
-         date={this.state.date}
-         mode="date"
-         placeholder="select date"
-         format="YYYY-MM-DD"
-         minDate="2016-05-01"
-         maxDate="2016-06-01"
-         confirmBtnText="Confirm"
-         cancelBtnText="Cancel"
-         customStyles={{
-           dateIcon: {
-             position: 'absolute',
-             left: 0,
-             top: 4,
-             marginLeft: 0
-           },
-           dateInput: {
-             marginLeft: 36
-           }
-           // ... You can check the source to find the other keys.
-         }}
-         onDateChange={(date) => {this.setState({date: date})}}
-       />
+              <Text style={styles.text}
+                //value={this.state.billDueDate}
+                onPress={() => {this.refs.datepicker.onPressDate()}}
+              >
+               {this.state.date}
+              </Text>
             </Item>
+            <DatePicker
+              date={this.state.date}
+              mode="date"
+              style={{width: 0, height: 0}}
+              showIcon={false}
+              confirmBtnText='Submit'
+              cancelBtnText='Cancel'
+              //customStyles={customStyles}
+              ref="datepicker"
+              onDateChange={(date) => {this.setState({date: date})}}
+            />
             <ListItem itemDivider>
               <Body>
                 <Text>Users</Text>
@@ -239,6 +230,11 @@ const styles = StyleSheet.create({
   right: {
     marginRight:20,
     textAlign: 'right' ,
+  },
+
+  text: {
+    marginTop: 17,
+    marginBottom: 17,
+    marginRight: 25
   }
 });
-
