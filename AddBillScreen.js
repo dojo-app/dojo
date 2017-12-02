@@ -19,6 +19,17 @@ import {
 } from 'native-base';
 import * as firebase from 'firebase';
 
+function removeFalseEntries(obj) {
+    let result = {};
+    for (const key in obj) {
+        if (obj[key]) { //holds a true
+            result[key] = true;
+        }
+    }
+
+    return result;
+}
+
 export class AddBillScreen extends React.Component {
   static navigationOptions = {
     title: 'Add Bill',
@@ -75,7 +86,7 @@ export class AddBillScreen extends React.Component {
         <Thumbnail
             medium
             source={require('./checkmark.png')}
-            
+
           />
           );
     }
@@ -98,8 +109,10 @@ export class AddBillScreen extends React.Component {
         onPress={() => {
           var prevUsers = this.state.billUsers;
           prevUsers[user.id] = !prevUsers[user.id];
+
+          //Fix : false ones are not included in the object
           this.setState({
-            billUsers: prevUsers
+            billUsers: removeFalseEntries(prevUsers)
           });
         }}>
         {this.toggleCheck(this.state.billUsers[user.id], user)}
