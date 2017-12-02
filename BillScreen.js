@@ -48,7 +48,7 @@ export class BillScreen extends React.Component {
     let excess = 0.0;
     const billCreated = this.props.screenProps.state.bills
       .filter(bill => bill.requester === this.props.screenProps.state.user.uid)
-      .map(bill => (sumPaid += parseInt(bill.amount)));
+      .map(bill => (sumPaid += parseInt(bill.amount.substring(1))));
     const billInvolved = this.props.screenProps.state.bills
       .filter(bill => {
         return this.props.screenProps.state.user.uid in bill.users;
@@ -56,7 +56,8 @@ export class BillScreen extends React.Component {
       .map(
         bill =>
           (sumOwed +=
-            parseInt(bill.amount) / parseInt(Object.keys(bill.users).length)) // +1 includes the requester MOD THIS ACCORDING TO UDPATED TEST
+            parseInt(bill.amount.substring(1)) /
+            parseInt(Object.keys(bill.users).length)) // +1 includes the requester MOD THIS ACCORDING TO UDPATED TEST
       );
     excess = sumPaid - sumOwed;
     // if positve then they're in deficit, people owe this person money.
