@@ -83,6 +83,14 @@ export class TaskDetailsScreen extends React.Component {
               />
             </Item>
 
+            <Item fixedLabel>
+              <Label>Due Date</Label>
+              <Input
+                disabled
+                value={this.state.taskTarget.date}
+              />
+            </Item>
+
             <ListItem itemDivider>
               <Body>
                 <Text>Users</Text>

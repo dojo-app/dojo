@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation';
+import DatePicker from 'react-native-datepicker'
+
 
 import {
   Container,
@@ -30,6 +32,7 @@ export class EditTaskScreen extends React.Component {
     this.state = {
       title: this.props.navigation.state.params.task.title,
       description: this.props.navigation.state.params.task.description,
+      date: this.props.navigation.state.params.task.date,
       users: this.props.navigation.state.params.task.users
     };
   }
@@ -44,7 +47,8 @@ export class EditTaskScreen extends React.Component {
       .update({
         title: this.state.title,
         description: this.state.description,
-        users: this.state.users
+        users: this.state.users,
+        date: this.state.date
       });
 
     firebase
@@ -110,6 +114,27 @@ export class EditTaskScreen extends React.Component {
               />
             </Item>
 
+            <Item fixedLabel>
+              <Label>Due Date</Label>
+              <Text style={styles.text}
+                //value={this.state.billDueDate}
+                onPress={() => {this.refs.datepicker.onPressDate()}}
+              >
+               {this.state.date}
+              </Text>
+            </Item>
+            <DatePicker
+              date={this.state.date}
+              mode="date"
+              style={{width: 0, height: 0}}
+              showIcon={false}
+              confirmBtnText='Submit'
+              cancelBtnText='Cancel'
+              //customStyles={customStyles}
+              ref="datepicker"
+              onDateChange={(date) => {this.setState({date: date})}}
+            />
+
             <ListItem itemDivider>
               <Body>
                 <Text>Users</Text>
@@ -151,5 +176,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+  text: {
+    marginTop: 17,
+    marginBottom: 17,
+    marginRight: 25
   }
 });

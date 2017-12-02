@@ -39,13 +39,13 @@ export class AddBillScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {date:"2016-05-15"};
     var users = {};
     for (const user of this.props.screenProps.state.users) {
       users[user.id] = true;
     }
 
     this.state = {
+      date:"2016-05-15",
       billTitle: '',
       billAmount: '$0.00',
       billDescription: '',
