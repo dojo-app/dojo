@@ -26,15 +26,11 @@ export class EditTaskScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    var users = {};
-    for (const user of this.props.screenProps.state.users) {
-      users[user.id] = true;
-    }
+
     this.state = {
       title: this.props.navigation.state.params.task.title,
       description: this.props.navigation.state.params.task.description,
-      users: users,
-      showToast: false
+      users: this.props.navigation.state.params.task.users
     };
   }
 
@@ -64,7 +60,7 @@ export class EditTaskScreen extends React.Component {
       .ref('dojos')
       .child(this.props.screenProps.state.dojo)
       .child('tasks')
-      .set({ [key]: true });
+      .update({ [key]: true });
   }
 
   usersCount() {
