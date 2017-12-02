@@ -13,55 +13,78 @@ import {
   Text,
   ListItem,
   CheckBox,
-  Body
+  Body,
+  View
 } from 'native-base';
 import * as firebase from 'firebase';
 import { Alert } from 'react-native';
 
-export class TaskDetailsScreen extends React.Component {
+export class BillDetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Task Details'
+    title: 'Bill Details'
   };
 
-  constructor(props) {
-      super(props);
-      const taskID = this.props.navigation.state.params.task.id;
-      this.state = {
-          taskTarget: this.props.screenProps.state.tasks.find(task => task.id === taskID)
-      };
-  }
-
-  deleteTask() {
-    var key = this.props.navigation.state.params.task.id;
+  deleteBill() {
+    var key = this.props.navigation.state.params.bill.id;
 
     firebase
       .database()
       .ref('dojos')
       .child(this.props.screenProps.state.dojo)
-      .child('tasks')
+      .child('bills')
       .child(key)
       .remove();
 
     firebase
       .database()
       .ref()
-      .child('tasks')
+      .child('bills')
       .child(key)
       .remove();
   }
 
-  render() {
+  constructor(props) {
+      super(props);
+      this.state = {
+          bill: this.props.navigation.state.params.bill
+      };
+  }
 
-    const users = this.props.screenProps.state.users.map(user => (
+  deleteBill() {
+
+      //From Bills collection
+      firebase
+      .database()
+      .ref('bills')
+      .child(this.state.bill.id)
+      .remove()
+
+      //From Dojo Bills collection
+      firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('bills')
+      .child(this.state.bill.id)
+      .remove()
+  }
+
+  render() {
+    //const bill = this.props.navigation.state.params.bill;
+    const billUsers = this.state.bill.users;
+    const user = this.props.screenProps.state.user;
+    const users = this.props.screenProps.state.users.filter(user => billUsers[user.id]).map(user => (
       <ListItem key={user.id}>
         <CheckBox
-          checked={this.state.taskTarget.users[user.id]}
+          checked={billUsers[user.id]}
         />
         <Body>
           <Text>{user.name}</Text>
         </Body>
       </ListItem>
     ));
+
+    const { navigate } = this.props.navigation;
 
     return (
       <Container style={styles.container}>
@@ -71,7 +94,7 @@ export class TaskDetailsScreen extends React.Component {
               <Label>Title</Label>
               <Input
                 disabled
-                value={this.state.taskTarget.title}
+                value={this.state.bill.title}
               />
             </Item>
 
@@ -79,48 +102,51 @@ export class TaskDetailsScreen extends React.Component {
               <Label>Description</Label>
               <Input
                 disabled
-                value={this.state.taskTarget.description}
+                value={this.state.bill.description}
               />
             </Item>
 
             <Item fixedLabel>
-              <Label>Due Date</Label>
+              <Label>Amount</Label>
               <Input
                 disabled
-                value={this.state.taskTarget.date}
+                value={this.state.bill.amount}
               />
             </Item>
+
 
             <ListItem itemDivider>
               <Body>
                 <Text>Users</Text>
               </Body>
             </ListItem>
-
             {users}
           </Form>
+
+          <View style={styles.inline}>
+
           <Button
+            style={styles.left}
             danger
-            onPress={() =>
-              this.props.navigation.navigate('EditTask', {
-                task: this.props.navigation.state.params.task
-              })
-            }>
-            <Text>Edit Task</Text>
+            onPress={() => {
+               navigate('EditBill', { bill: this.props.navigation.state.params.bill })
+            }}>
+            <Text style={{alignItems: 'center' }}>Edit</Text>
           </Button>
 
           <Button
+            style={styles.right}
             danger
             onPress={() =>
               Alert.alert(
                 'Are you sure?',
-                'The task will be permanently deleted',
+                'The bill will be permanently deleted',
                 [
                   { text: 'Cancel' },
                   {
                     text: 'Delete',
                     onPress: () => {
-                      this.deleteTask();
+                      this.deleteBill();
                       this.props.navigation.goBack();
                     }
                   }
@@ -128,8 +154,11 @@ export class TaskDetailsScreen extends React.Component {
                 { cancelable: false }
               )
             }>
-            <Text>Delete Task</Text>
+
+            <Text style={{alignItems: 'center' }}>Delete</Text>
           </Button>
+          </View>
+
         </Content>
       </Container>
     );
@@ -139,6 +168,25 @@ export class TaskDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+
+  },
+
+  inline: {
+    flexDirection:'row',
+    justifyContent:'space-between'
+
+  },
+
+  right: {
+    justifyContent: 'flex-start',
+    marginRight: 30,
+    width: 100,
+  },
+
+  left: {
+    justifyContent: 'flex-end',
+    marginLeft: 30,
+    width: 100,
   }
 });

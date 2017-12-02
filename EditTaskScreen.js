@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import { StyleSheet, Alert } from 'react-native';
+import { NavigationActions } from 'react-navigation';
+import DatePicker from 'react-native-datepicker'
+
+
 import {
   Container,
   Header,
@@ -9,7 +14,10 @@ import {
   Input,
   Label,
   Left,
-  Text
+  Text,
+  CheckBox,
+  ListItem,
+  Body
 } from 'native-base';
 import * as firebase from 'firebase';
 
@@ -18,62 +26,143 @@ export class EditTaskScreen extends React.Component {
     title: 'Edit Task'
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
     this.state = {
-      taskTitle: 'Important Task',
-      taskDescription: 'Cool Description',
-      taskDueDate: 'Date',
-      taskUsers: 'Users'
+      title: this.props.navigation.state.params.task.title,
+      description: this.props.navigation.state.params.task.description,
+      date: this.props.navigation.state.params.task.date,
+      users: this.props.navigation.state.params.task.users
     };
   }
 
+  editTask() {
+    var key = this.props.navigation.state.params.task.id;
+
+    firebase
+      .database()
+      .ref('tasks')
+      .child(key)
+      .update({
+        title: this.state.title,
+        description: this.state.description,
+        users: this.state.users,
+        date: this.state.date
+      });
+
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('tasks')
+      .child(key)
+      .remove();
+
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('tasks')
+      .update({ [key]: true });
+  }
+
+  usersCount() {
+    let count = 0;
+    for (const user of Object.values(this.state.users)) {
+      if (user) count++;
+    }
+    return count;
+  }
+
   render() {
+    const users = this.props.screenProps.state.users.map(user => (
+      <ListItem
+        key={user.id}
+        onPress={() => {
+          var prevUsers = this.state.users;
+          prevUsers[user.id] = !prevUsers[user.id];
+          this.setState({
+            users: prevUsers
+          });
+        }}>
+        <CheckBox checked={this.state.users[user.id]} />
+        <Body>
+          <Text>{user.name}</Text>
+        </Body>
+      </ListItem>
+    ));
+
     return (
-      <Container>
-        <Content>
+      <Container style={styles.container}>
+        <Content keyboardShouldPersistTaps={'handled'}>
           <Form>
             <Item fixedLabel>
-              <Label>Task Title</Label>
+              <Label>Title</Label>
               <Input
-                value={this.state.taskTitle}
-                onChangeText={text => this.setState({ taskTitle: text })}
+                value={this.state.title}
+                onChangeText={text => this.setState({ title: text })}
+                autoFocus={true}
               />
             </Item>
+
             <Item fixedLabel>
-              <Label>Task Description</Label>
+              <Label>Description</Label>
               <Input
-                value={this.state.taskDescription}
-                onChangeText={text => this.setState({ taskDescription: text })}
+                value={this.state.description}
+                onChangeText={text => this.setState({ description: text })}
               />
             </Item>
-            <Item fixedLabel>
-              <Label>Users</Label>
-              <Input
-                value={this.state.taskUsers}
-                onChangeText={text => this.setState({ taskUsers: text })}
-              />
-            </Item>
+
             <Item fixedLabel>
               <Label>Due Date</Label>
-              <Input
-                value={this.state.taskDueDate}
-                onChangeText={text => this.setState({ taskDueDate: text })}
-              />
+              <Text style={styles.text}
+                //value={this.state.billDueDate}
+                onPress={() => {this.refs.datepicker.onPressDate()}}
+              >
+               {this.state.date}
+              </Text>
             </Item>
+            <DatePicker
+              date={this.state.date}
+              mode="date"
+              style={{width: 0, height: 0}}
+              showIcon={false}
+              confirmBtnText='Submit'
+              cancelBtnText='Cancel'
+              //customStyles={customStyles}
+              ref="datepicker"
+              onDateChange={(date) => {this.setState({date: date})}}
+            />
+
+            <ListItem itemDivider>
+              <Body>
+                <Text>Users</Text>
+              </Body>
+            </ListItem>
+
+            {users}
           </Form>
           <Button
             full
             onPress={() => {
-              return firebase
-                .database()
-                .ref('task')
-                .push({
-                  task_title: this.state.taskTitle,
-                  tast_description: this.state.taskDescription,
-                  task_users: this.state.taskUsers,
-                  task_dueDate: this.state.taskDueDate
-                });
+              console.log('usercount = ' + this.usersCount());
+              if (this.state.title === '') {
+                Alert.alert('Submission Failed', 'Title cannot be empty.');
+              } else if (this.usersCount() === 0) {
+                Alert.alert(
+                  'Submission Failed',
+                  'At least one user must be involved.'
+                );
+              } else {
+                this.editTask();
+                this.props.navigation.dispatch(
+                  NavigationActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({ routeName: 'Home' })]
+                  })
+                );
+              }
             }}>
             <Text>Save</Text>
           </Button>
@@ -82,3 +171,15 @@ export class EditTaskScreen extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
+  text: {
+    marginTop: 17,
+    marginBottom: 17,
+    marginRight: 25
+  }
+});
