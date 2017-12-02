@@ -124,6 +124,10 @@ export default class App extends React.Component {
       .ref('dojos')
       .child(this.state.dojo);
 
+    dojoRef.child('name').on('value', snapshot => { //TEMP TODO better system
+        this.updateDojoName(snapshot);
+    });
+
     dojoRef.child('users').on('value', snapshot => {
       this.updateUsers(snapshot);
     });
@@ -148,7 +152,17 @@ export default class App extends React.Component {
       });
   }
 
+  updateDojoName(snapshot) {    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
+
+    var taskObjects = [];
+
+    if (snapshot.val()) {
+      this.setState({ dojoName: snapshot.val() });
+    }
+  }
+
   updateTasks(snapshot) {
+
     var taskObjects = [];
 
     if (snapshot.val()) {
@@ -200,6 +214,9 @@ export default class App extends React.Component {
         });
         this.setState({ bills: billObjects.reverse() });
       });
+    } else {
+      // if the dojo has no bills
+      this.setState({ bills: [] });
     }
   }
 

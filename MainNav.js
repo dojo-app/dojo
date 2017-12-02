@@ -8,6 +8,7 @@ import { TaskDetailsScreen } from './TaskDetailsScreen';
 import { JoinDojoScreen } from './JoinDojoScreen';
 import { NotInDojoScreen } from './NotInDojoScreen';
 import { BillDetailsScreen } from './BillDetailsScreen';
+import { DojoQRCodeScreen } from './DojoQRCodeScreen';
 
 const options = {};
 
@@ -21,7 +22,8 @@ export const MainNav = StackNavigator(
     TaskDetails: { screen: TaskDetailsScreen },
     NotInDojo: { screen: NotInDojoScreen },
     JoinDojo: { screen: JoinDojoScreen },
-    BillDetails: { screen: BillDetailsScreen }
+    BillDetails: { screen: BillDetailsScreen },
+    DojoQRCode: { screen: DojoQRCodeScreen }
   },
   options
 );

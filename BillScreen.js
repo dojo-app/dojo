@@ -165,7 +165,7 @@ export class BillScreen extends React.Component {
         </Header>
         {this.state.onList ? listBill : personalTotal}
         <ActionButton
-          buttonColor="rgba(231,76,60,1)"
+          buttonColor="#c02b2b"
           onPress={() => navigate('AddBill')}
         />
       </Container>
