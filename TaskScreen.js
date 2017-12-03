@@ -22,6 +22,7 @@ import {
 } from 'native-base';
 import * as firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
+import { FontAwesome } from '@expo/vector-icons';
 
 export class TaskScreen extends React.Component {
   constructor(props) {
@@ -33,6 +34,7 @@ export class TaskScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Tasks',
+    headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -104,6 +106,10 @@ export class TaskScreen extends React.Component {
         <Header hasTabs style={styles.segment}>
           <Segment style={styles.segment}>
             <Button
+            style={{
+                backgroundColor: this.state.onList ? "#c02b2b" : undefined,
+                borderColor: "#c02b2b",
+              }}
               first
               active={this.state.onList}
               onPress={() => {
@@ -111,17 +117,23 @@ export class TaskScreen extends React.Component {
                   this.setState({ onList: true });
                 }
               }}>
-              <Text>Assigned By Me</Text>
+              <Text style={{ color: this.state.onList ? "#FFF" : "#c02b2b" }}>
+              Assigned By Me</Text>
             </Button>
             <Button
               last
+              style={{
+									backgroundColor: !this.state.onList ? "#c02b2b" : undefined,
+									borderColor: "#c02b2b",
+							}}
               active={!this.state.onList}
               onPress={() => {
                 if (this.state.onList) {
                   this.setState({ onList: false });
                 }
               }}>
-              <Text>Assigned To Me</Text>
+              <Text style={{ color: !this.state.onList ? "#FFF" : "#c02b2b" }}>
+              Assigned To Me</Text>
             </Button>
           </Segment>
         </Header>
@@ -153,6 +165,7 @@ const styles = StyleSheet.create({
   },
   segment: {
     backgroundColor: 'white'
+
   },
   seg: {
     backgroundColor: 'green'

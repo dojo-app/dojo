@@ -13,35 +13,19 @@ import {
   Text,
   ListItem,
   CheckBox,
-  Body,
-  View
+  View,
+  Icon,
+  Body
 } from 'native-base';
 import * as firebase from 'firebase';
 import { Alert } from 'react-native';
 
+
 export class BillDetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Bill Details'
+    title: 'Bill Details',
+    headerTintColor: '#c02b2b'        
   };
-
-  deleteBill() {
-    var key = this.props.navigation.state.params.bill.id;
-
-    firebase
-      .database()
-      .ref('dojos')
-      .child(this.props.screenProps.state.dojo)
-      .child('bills')
-      .child(key)
-      .remove();
-
-    firebase
-      .database()
-      .ref()
-      .child('bills')
-      .child(key)
-      .remove();
-  }
 
   constructor(props) {
       super(props);
@@ -123,24 +107,19 @@ export class BillDetailsScreen extends React.Component {
             {users}
           </Form>
 
-          <View style={styles.inline}>
-
-          <Button
-            style={styles.left}
-            danger
+          <View style={styles.container}>
+            <Button iconLeft style={ styles.editButton }
             onPress={() => {
                navigate('EditBill', { bill: this.props.navigation.state.params.bill })
             }}>
-            <Text style={{alignItems: 'center' }}>Edit</Text>
-          </Button>
+              <Icon name='ios-create-outline' />
+              <Text>Edit Bill</Text>
+            </Button>
 
-          <Button
-            style={styles.right}
-            danger
-            onPress={() =>
+            <Button iconLeft style={styles.deleteButton} onPress={() =>
               Alert.alert(
                 'Are you sure?',
-                'The bill will be permanently deleted',
+                'This bill will be permanently deleted',
                 [
                   { text: 'Cancel' },
                   {
@@ -154,9 +133,10 @@ export class BillDetailsScreen extends React.Component {
                 { cancelable: false }
               )
             }>
+              <Icon name='ios-trash' />
+              <Text>Delete Bill</Text>
+            </Button>
 
-            <Text style={{alignItems: 'center' }}>Delete</Text>
-          </Button>
           </View>
 
         </Content>
@@ -168,25 +148,22 @@ export class BillDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-
+    backgroundColor: 'white',   
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
 
-  inline: {
-    flexDirection:'row',
-    justifyContent:'space-between'
-
+  deleteButton: {
+    backgroundColor: '#c02b2b',
+    marginRight: '10%',
+    marginTop: 30,
+    marginBottom: 10
   },
 
-  right: {
-    justifyContent: 'flex-start',
-    marginRight: 30,
-    width: 100,
-  },
-
-  left: {
-    justifyContent: 'flex-end',
-    marginLeft: 30,
-    width: 100,
+  editButton: {
+    backgroundColor: '#d3d3d3',
+    marginLeft: '10%',
+    marginTop: 30,
+    marginBottom: 10
   }
 });

@@ -9,6 +9,7 @@ import { JoinDojoScreen } from './JoinDojoScreen';
 import { NotInDojoScreen } from './NotInDojoScreen';
 import { BillDetailsScreen } from './BillDetailsScreen';
 import { DojoQRCodeScreen } from './DojoQRCodeScreen';
+import { DojoSettingsScreen } from './DojoSettingsScreen';
 
 const options = {};
 
@@ -23,7 +24,8 @@ export const MainNav = StackNavigator(
     NotInDojo: { screen: NotInDojoScreen },
     JoinDojo: { screen: JoinDojoScreen },
     BillDetails: { screen: BillDetailsScreen },
-    DojoQRCode: { screen: DojoQRCodeScreen }
+    DojoQRCode: { screen: DojoQRCodeScreen },
+    DojoSettings: { screen: DojoSettingsScreen }
   },
   options
 );

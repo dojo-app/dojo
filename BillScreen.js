@@ -34,6 +34,7 @@ export class BillScreen extends React.Component {
   }
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
+    headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -84,10 +85,13 @@ export class BillScreen extends React.Component {
     if (this.getExcess() > -1) {
 
       // people owe this person money.
-      // iterate through all the users who are in excess. So where users.id.getExcess()<-1
+      // iterate through all the users who are in excess. So where users.id.getExcess()<0
       const Payers = this.props.screenProps.state.user // iterates through all the users in the dojo.
         .filter(user => {
           // only considers the users who are in excess.
+          // if users.getExcess==this.getExcess) then return that user pays this user.
+          // else grab the largest user.getExcess thats still less than this users.getExcess and display that user pays this user all that user.getExcess has
+          // else have next largest user.getExcess pay this user the rest of their getExcess amount.
           return this.props.screenProps.state.user.uid.getExcess() > 0;
         })
         .map(
@@ -97,6 +101,8 @@ export class BillScreen extends React.Component {
         );
     } else {
       // this person owes someone else money.
+      // iterate through all the users who are in deficit. So where users.id.getExcess()>0
+      // opposite of above code.
       const Payee = this.props.screenProps.state.bills
         .filter(bill => {
           return this.props.screenProps.state.user.uid in bill.users;
@@ -210,6 +216,10 @@ export class BillScreen extends React.Component {
         <Header hasTabs style={styles.segment}>
           <Segment style={styles.segment}>
             <Button
+              style={{
+                backgroundColor: this.state.onList ? '#c02b2b' : undefined,
+                borderColor: '#c02b2b'
+              }}
               first
               active={this.state.onList}
               onPress={() => {
@@ -217,17 +227,25 @@ export class BillScreen extends React.Component {
                   this.setState({ onList: true });
                 }
               }}>
-              <Text>List of Bills</Text>
+              <Text style={{ color: this.state.onList ? '#FFF' : '#c02b2b' }}>
+                List of Bills
+              </Text>
             </Button>
             <Button
               last
+              style={{
+                backgroundColor: !this.state.onList ? '#c02b2b' : undefined,
+                borderColor: '#c02b2b'
+              }}
               active={!this.state.onList}
               onPress={() => {
                 if (this.state.onList) {
                   this.setState({ onList: false });
                 }
               }}>
-              <Text>Personal Total</Text>
+              <Text style={{ color: !this.state.onList ? '#FFF' : '#c02b2b' }}>
+                Personal Totals
+              </Text>
             </Button>
           </Segment>
         </Header>
