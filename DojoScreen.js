@@ -22,15 +22,16 @@ import {
   Button
 } from 'native-base';
 
+import { StyleSheet, View, TouchableHighlight } from 'react-native';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import * as firebase from 'firebase';
+import * as theme from './public/styles/theme';
+
 // Assets
 const normalButton = require('./public/images/add_button.png');
 const dojoImage = require('./public/images/logo.png');
 const dojoEdit = require('./public/images/edit.png');
 
-import { StyleSheet, View, TouchableHighlight } from 'react-native';
-//import * as theme from './styles/theme';
-
-import * as firebase from 'firebase';
 
 function formatFirstName(name) {
     let words = name.split(' ');
@@ -39,84 +40,69 @@ function formatFirstName(name) {
 }
 
 export class DojoScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
-    title: 'Dojo',
-    headerTintColor: '#c02b2b',
 
-    tabBarIcon: ({ tintColor, focused }) => (
-      <Icon
-        name={focused ? 'ios-home' : 'ios-home-outline'}
-        style={{ color: tintColor }}
-      />
-    )
-  });
+    static navigationOptions = ({ navigation }) => ({
+      title: 'Dojo',
+      tabBarIcon: ({ tintColor, focused }) => (
+        <Icon
+          name={focused ? 'ios-home' : 'ios-home-outline'}
+          style={{ color: tintColor }}
+        />
+      )
+    });
 
-  render() {
-    const users = this.props.screenProps.state.users.map(user => (
-      <ListItem key={user.id}>
-        <Text>{user.name}</Text>
-      </ListItem>
-    ));
+    render() {
+        const users = this.props.screenProps.state.users.map(user => (
+        <ListItem key={user.id}>
+          <Text>{user.name}</Text>
+        </ListItem>
+        ));
 
-    const members = this.props.screenProps.state.users.map(user => (
-        <View style={styles.member} key={user.id}>
-          <Thumbnail large source={{ uri: user.photoURL }}></Thumbnail>
-          <Text>{formatFirstName(user.name)}</Text>
-        </View>
-    ));
+        const members = this.props.screenProps.state.users.map(user => (
+          <View style={styles.member} key={user.id}>
+            <Thumbnail large source={{ uri: user.photoURL }}></Thumbnail>
+            <Text>{formatFirstName(user.name)}</Text>
+          </View>
+        ));
 
-    const { navigate } = this.props.navigation;
+        const { navigate } = this.props.navigation;
 
-    return (
+        return (
 
-        <Container style={styles.container}>
-            <Content>
-                <View style={styles.dojoContainer}>
-                    <View style={styles.dojoHead}>
-                        <Thumbnail style={styles.dojoImage} source={ dojoImage }></Thumbnail>
-                        <Text>{this.props.screenProps.state.dojoName}</Text>
-                    </View>
-                    <View>
-                        <H1 style={styles.membersTitle}>Members</H1>
-                        <View style={styles.membersContainer}>
-                            {members}
-
-                                <View style={styles.member}>
-                                  <TouchableHighlight onPress={() => navigate('DojoQRCode')}>
-                                    <Thumbnail large source={ normalButton }></Thumbnail>
-                                  </TouchableHighlight>
-                                  <Text>Add member</Text>
+            <Container style={styles.container}>
+                <Content>
+                    <View style={styles.dojoContainer}>
+                        <View style={styles.dojoHeadContainer}>
+                            <TouchableHighlight onPress={() => navigate('DojoSettings')}>
+                            <View style={styles.dojoHead}>
+                                <Thumbnail style={styles.dojoImage} source={ dojoImage }></Thumbnail>
+                                <View style={styles.dojoNameContainer}>
+                                    <Text style={styles.dojoName}>{this.props.screenProps.state.dojoName}</Text>
+                                    <FontAwesome name="gear" size={16} color="black" />
                                 </View>
-
+                            </View>
+                            </TouchableHighlight>
                         </View>
                     </View>
 
-                </View>
+                    <View>
+                        <H1 style={styles.membersTitle}>Members</H1>
+                        <View style={styles.listMembersContainer}>
+                            {members}
 
-              <Button style={styles.leaveButton} full large onPress={() => this.leaveDojo()}>
-                <Text>Leave Dojo</Text>
-              </Button>
+                            <View style={styles.member}>
+                                <TouchableHighlight onPress={() => navigate('DojoQRCode')}>
+                                    <Thumbnail large source={ normalButton }></Thumbnail>
+                                </TouchableHighlight>
+                                <Text>Add member</Text>
+                            </View>
 
-            </Content>
-        </Container>
-    );
-  }
-
-  leaveDojo() {
-    firebase
-      .database()
-      .ref('dojos')
-      .child(this.props.screenProps.state.dojo)
-      .child('users')
-      .child(this.props.screenProps.state.user.uid)
-      .remove();
-    firebase
-      .database()
-      .ref('users')
-      .child(this.props.screenProps.state.user.uid)
-      .child('dojo')
-      .remove();
-  }
+                        </View>
+                    </View>
+                </Content>
+            </Container>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
@@ -146,7 +132,7 @@ const styles = StyleSheet.create({
       alignItems: 'center'
   },
 
-  membersContainer: {
+  listMembersContainer: {
       flex: 1,
       flexDirection: 'row',
       flexWrap: "wrap",
@@ -155,11 +141,15 @@ const styles = StyleSheet.create({
 
   dojoContainer: {
       flex: 1,
-      flexDirection: 'column',
+      flexDirection: 'column'
+  },
+
+  dojoHeadContainer: {
+      marginTop: 10,
+      marginBottom: 30
   },
 
   dojoHead: {
-      margin: 20,
       justifyContent: 'center',
       alignItems: 'center'
   },
@@ -167,5 +157,18 @@ const styles = StyleSheet.create({
   dojoImage: {
       width: 150,
       height: 150
+  },
+
+  dojoNameContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      flexWrap: "wrap",
+      justifyContent: "center",
+      alignItems: "center"
+  },
+
+  dojoName: {
+      paddingLeft: 10,
+      paddingRight: 10
   }
 });
