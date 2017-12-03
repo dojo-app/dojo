@@ -15,5 +15,10 @@ export const TabNav = TabNavigator(
     Dojo: { screen: DojoScreen },
     Profile: { screen: ProfileScreen }
   },
+  {
+    tabBarOptions: {
+      activeTintColor: '#c02b2b',
+    },
+  },
   options
 );
