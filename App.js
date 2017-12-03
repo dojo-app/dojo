@@ -85,7 +85,7 @@ export default class App extends React.Component {
       .on('value', snapshot => {
         if (snapshot.exists()) {
           this.setState({
-            // inDojo: true,
+            inDojo: true,
             dojo: snapshot.val()
           },
             () => {
