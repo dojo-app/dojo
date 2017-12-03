@@ -118,6 +118,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 
+  leaveButton: {
+    backgroundColor: '#c02b2b'
+  },
+
   membersTitle: {
       marginLeft: 10
   },

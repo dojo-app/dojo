@@ -17,13 +17,15 @@ import {
   Text,
   CheckBox,
   ListItem,
+  View,
   Body
 } from 'native-base';
 import * as firebase from 'firebase';
 
 export class EditTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Task'
+    title: 'Edit Task',
+    headerTintColor: '#c02b2b'    
   };
 
   constructor(props) {
@@ -143,8 +145,9 @@ export class EditTaskScreen extends React.Component {
 
             {users}
           </Form>
-          <Button
-            full
+
+          <View style={styles.view}>
+          <Button style={styles.button}
             onPress={() => {
               console.log('usercount = ' + this.usersCount());
               if (this.state.title === '') {
@@ -166,6 +169,7 @@ export class EditTaskScreen extends React.Component {
             }}>
             <Text>Save</Text>
           </Button>
+          </View>
         </Content>
       </Container>
     );
@@ -177,9 +181,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white'
   },
+
+  button: {
+    marginTop: '10%',
+    backgroundColor: '#c02b2b'
+  },
+
   text: {
     marginTop: 17,
     marginBottom: 17,
     marginRight: 25
+  },
+
+  view: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center'
   }
 });

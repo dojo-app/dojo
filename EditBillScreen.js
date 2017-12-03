@@ -15,13 +15,15 @@ import {
   CheckBox,
   Text,
   Body,
-  Thumbnail
+  Thumbnail, 
+  View
 } from 'native-base';
 import * as firebase from 'firebase';
 
 export class EditBillScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Bill'
+    title: 'Edit Bill',
+    headerTintColor: '#c02b2b'    
   };
 
   constructor(props) {
@@ -133,7 +135,7 @@ export class EditBillScreen extends React.Component {
     ));
 
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
           <Form>
             <Item fixedLabel>
@@ -174,8 +176,9 @@ export class EditBillScreen extends React.Component {
             </ListItem>
             {users}
           </Form>
-          <Button
-            full
+
+          <View style={styles.view}>
+          <Button style={styles.button}
             onPress={() => {
               console.log('usercount = ' + this.usersCount());
               if (this.state.billTitle === '') {
@@ -200,8 +203,10 @@ export class EditBillScreen extends React.Component {
                 this.props.navigation.goBack();
               }
             }}>
-            <Text>Submit</Text>
+            <Text>Save</Text>
           </Button>
+          </View>
+
         </Content>
       </Container>
     );
@@ -212,5 +217,20 @@ const styles = StyleSheet.create({
   right: {
     marginRight:20,
     textAlign: 'right' ,
-  }
+  },
+
+  container: {
+    backgroundColor: 'white'
+  },
+
+  button: {
+    marginTop: 30,
+    backgroundColor: '#c02b2b'
+  },
+
+  view: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center'
+  }  
 });

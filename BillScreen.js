@@ -33,6 +33,7 @@ export class BillScreen extends React.Component {
   }
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
+    headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -143,6 +144,10 @@ export class BillScreen extends React.Component {
         <Header hasTabs style={styles.segment}>
           <Segment style={styles.segment}>
             <Button
+            style={{
+                backgroundColor: this.state.onList ? "#c02b2b" : undefined,
+                borderColor: "#c02b2b",
+              }}
               first
               active={this.state.onList}
               onPress={() => {
@@ -150,17 +155,23 @@ export class BillScreen extends React.Component {
                   this.setState({ onList: true });
                 }
               }}>
-              <Text>List of Bills</Text>
+              <Text style={{ color: this.state.onList ? "#FFF" : "#c02b2b" }}>
+              List of Bills</Text>
             </Button>
             <Button
               last
+              style={{
+									backgroundColor: !this.state.onList ? "#c02b2b" : undefined,
+									borderColor: "#c02b2b",
+							}}
               active={!this.state.onList}
               onPress={() => {
                 if (this.state.onList) {
                   this.setState({ onList: false });
                 }
               }}>
-              <Text>Personal Total</Text>
+              <Text style={{ color: !this.state.onList ? "#FFF" : "#c02b2b" }}>
+              Personal Totals</Text>
             </Button>
           </Segment>
         </Header>
