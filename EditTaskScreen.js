@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
+import { NavigationActions } from 'react-navigation';
+import DatePicker from 'react-native-datepicker'
+
 
 import {
   Container,
@@ -14,6 +17,7 @@ import {
   Text,
   CheckBox,
   ListItem,
+  View,
   Body
 } from 'native-base';
 import * as firebase from 'firebase';
@@ -26,15 +30,12 @@ export class EditTaskScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    var users = {};
-    for (const user of this.props.screenProps.state.users) {
-      users[user.id] = true;
-    }
+
     this.state = {
       title: this.props.navigation.state.params.task.title,
       description: this.props.navigation.state.params.task.description,
-      users: users,
-      showToast: false
+      date: this.props.navigation.state.params.task.date,
+      users: this.props.navigation.state.params.task.users
     };
   }
 
@@ -48,8 +49,18 @@ export class EditTaskScreen extends React.Component {
       .update({
         title: this.state.title,
         description: this.state.description,
-        users: this.state.users
-      }).key;
+        users: this.state.users,
+        date: this.state.date
+      });
+
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('tasks')
+      .child(key)
+      .remove();
+
     firebase
       .database()
       .ref('dojos')
@@ -86,7 +97,7 @@ export class EditTaskScreen extends React.Component {
 
     return (
       <Container style={styles.container}>
-        <Content>
+        <Content keyboardShouldPersistTaps={'handled'}>
           <Form>
             <Item fixedLabel>
               <Label>Title</Label>
@@ -105,6 +116,27 @@ export class EditTaskScreen extends React.Component {
               />
             </Item>
 
+            <Item fixedLabel>
+              <Label>Due Date</Label>
+              <Text style={styles.text}
+                //value={this.state.billDueDate}
+                onPress={() => {this.refs.datepicker.onPressDate()}}
+              >
+               {this.state.date}
+              </Text>
+            </Item>
+            <DatePicker
+              date={this.state.date}
+              mode="date"
+              style={{width: 0, height: 0}}
+              showIcon={false}
+              confirmBtnText='Submit'
+              cancelBtnText='Cancel'
+              //customStyles={customStyles}
+              ref="datepicker"
+              onDateChange={(date) => {this.setState({date: date})}}
+            />
+
             <ListItem itemDivider>
               <Body>
                 <Text>Users</Text>
@@ -113,8 +145,9 @@ export class EditTaskScreen extends React.Component {
 
             {users}
           </Form>
+
+          <View style={styles.view}>
           <Button style={styles.button}
-            full
             onPress={() => {
               console.log('usercount = ' + this.usersCount());
               if (this.state.title === '') {
@@ -126,11 +159,17 @@ export class EditTaskScreen extends React.Component {
                 );
               } else {
                 this.editTask();
-                this.props.navigation.goBack();
+                this.props.navigation.dispatch(
+                  NavigationActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({ routeName: 'Home' })]
+                  })
+                );
               }
             }}>
             <Text>Save</Text>
           </Button>
+          </View>
         </Content>
       </Container>
     );
@@ -144,6 +183,19 @@ const styles = StyleSheet.create({
   },
 
   button: {
+    marginTop: '10%',
     backgroundColor: '#c02b2b'
+  },
+
+  text: {
+    marginTop: 17,
+    marginBottom: 17,
+    marginRight: 25
+  },
+
+  view: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center'
   }
 });

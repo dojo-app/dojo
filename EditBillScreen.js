@@ -15,7 +15,8 @@ import {
   CheckBox,
   Text,
   Body,
-  Thumbnail
+  Thumbnail, 
+  View
 } from 'native-base';
 import * as firebase from 'firebase';
 
@@ -50,19 +51,22 @@ export class EditBillScreen extends React.Component {
       .ref('bills')
       .child(key)
       .update({
-        amount: 10,
+        amount: this.state.billAmount,
         date: this.state.billDueDate,
         description: this.state.billDescription,
         requester: this.props.screenProps.state.user.uid,
         users: this.state.billUsers,
         title: this.state.billTitle
-      }).key;
-    firebase
+      });
+    
+    /* do not need to update this, key is true either way
+      firebase
       .database()
       .ref('dojos')
       .child(this.props.screenProps.state.dojo)
-      .child('tasks')
-      .update({ [key]: true });
+      .child('bills')
+<<<<<<< Updated upstream
+      .update({ [key]: true });*/
   }
 
   usersCount() {
@@ -95,7 +99,19 @@ export class EditBillScreen extends React.Component {
 
   }
 
-  checkAmount(){
+  formatAmount(text){
+    var txtLen = text.length-1;
+    var check = text;
+
+    if(check.charAt(txtLen) < '0' || check.charAt(txtLen) > '9'){
+      check = check.substr(0, txtLen)
+    }
+
+    check = check.replace(/[^0-9]/g,'');
+    var accounting = require('accounting');
+    return accounting.formatMoney(parseFloat(check)/100);
+
+
 
   }
 
@@ -119,7 +135,7 @@ export class EditBillScreen extends React.Component {
     ));
 
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
           <Form>
             <Item fixedLabel>
@@ -130,10 +146,12 @@ export class EditBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Amount &#160;&nbsp;$</Label>
+              <Label>Bill Amount </Label>
               <Input
+              style = {styles.right}
+                onChangeText={text => this.setState({ billAmount: this.formatAmount(text) })}
                 value={this.state.billAmount}
-                onChangeText={text => this.setState({ billAmount: text })}
+
               />
             </Item>
             <Item fixedLabel>
@@ -158,13 +176,19 @@ export class EditBillScreen extends React.Component {
             </ListItem>
             {users}
           </Form>
-          <Button
-            full
+
+          <View style={styles.view}>
+          <Button style={styles.button}
             onPress={() => {
               console.log('usercount = ' + this.usersCount());
               if (this.state.billTitle === '') {
                 Alert.alert('Submission Failed', 'Title cannot be empty.');
-              } else if (this.usersCount() === 0) {
+              } else if (this.state.billAmount === '$0.00') {
+                Alert.alert(
+                  'Submission Failed',
+                  'Your Bill Amount cannot be $0.00'
+                );
+              }else if (this.usersCount() === 0) {
                 Alert.alert(
                   'Submission Failed',
                   'At least one user must be involved.'
@@ -179,10 +203,34 @@ export class EditBillScreen extends React.Component {
                 this.props.navigation.goBack();
               }
             }}>
-            <Text>Submit</Text>
+            <Text>Save</Text>
           </Button>
+          </View>
+
         </Content>
       </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  right: {
+    marginRight:20,
+    textAlign: 'right' ,
+  },
+
+  container: {
+    backgroundColor: 'white'
+  },
+
+  button: {
+    marginTop: 30,
+    backgroundColor: '#c02b2b'
+  },
+
+  view: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center'
+  }  
+});

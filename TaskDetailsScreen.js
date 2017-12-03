@@ -27,9 +27,17 @@ export class TaskDetailsScreen extends React.Component {
 
   };
 
+  constructor(props) {
+      super(props);
+      const taskID = this.props.navigation.state.params.task.id;
+      this.state = {
+          taskTarget: this.props.screenProps.state.tasks.find(task => task.id === taskID)
+      };
+  }
+
   deleteTask() {
     var key = this.props.navigation.state.params.task.id;
-    //Alert.alert('This is the key: ' +key)
+
     firebase
       .database()
       .ref('dojos')
@@ -37,8 +45,6 @@ export class TaskDetailsScreen extends React.Component {
       .child('tasks')
       .child(key)
       .remove();
-    //.child('tasks')
-    //.update({ [key]: false });
 
     firebase
       .database()
@@ -52,7 +58,7 @@ export class TaskDetailsScreen extends React.Component {
     const users = this.props.screenProps.state.users.map(user => (
       <ListItem key={user.id}>
         <CheckBox
-          checked={this.props.navigation.state.params.task.users[user.id]}
+          checked={this.state.taskTarget.users[user.id]}
         />
         <Body>
           <Text>{user.name}</Text>
@@ -68,7 +74,7 @@ export class TaskDetailsScreen extends React.Component {
               <Label>Title</Label>
               <Input
                 disabled
-                value={this.props.navigation.state.params.task.title}
+                value={this.state.taskTarget.title}
               />
             </Item>
 
@@ -76,7 +82,15 @@ export class TaskDetailsScreen extends React.Component {
               <Label>Description</Label>
               <Input
                 disabled
-                value={this.props.navigation.state.params.task.description}
+                value={this.state.taskTarget.description}
+              />
+            </Item>
+
+            <Item fixedLabel>
+              <Label>Due Date</Label>
+              <Input
+                disabled
+                value={this.state.taskTarget.date}
               />
             </Item>
 
@@ -88,6 +102,7 @@ export class TaskDetailsScreen extends React.Component {
 
             {users}
           </Form>
+
 
           <View style={styles.container}>
             <Button iconLeft style={ styles.editButton }
@@ -129,20 +144,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',   
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
 
   deleteButton: {
     backgroundColor: '#c02b2b',
-    marginRight: 20,
-    marginTop: 30
+    marginRight: '10%',
+    marginTop: 30,
+    marginBottom: 10
 
   },
 
   editButton: {
     backgroundColor: '#d3d3d3',
-    marginRight: 50,
-    marginLeft: 20,
-    marginTop: 30
+    marginLeft: '10%',
+    marginTop: 30,
+    marginBottom: 10
   }
 });

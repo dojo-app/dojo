@@ -5,9 +5,9 @@ import {
   Image,
   TouchableWithoutFeedback,
   View,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
-import { Container, Content, Button, Text } from 'native-base';
+import { Container, Content, Button, Text, Spinner } from 'native-base';
 import { BarCodeScanner, Permissions } from 'expo';
 import { secret } from './secret';
 import Expo from 'expo';
@@ -37,9 +37,14 @@ export class JoinDojoScreen extends React.Component {
     const { hasCameraPermission } = this.state;
 
     if (hasCameraPermission === null) {
-      return <Text>Requesting for camera permission</Text>;
+      return (
+        <Container>
+          <Text>Requesting for camera permission</Text>
+          <Spinner color="black" />
+        </Container>
+      );
     } else if (hasCameraPermission === false) {
-      return <Text>No access to camera</Text>;
+      return <Text>Please allow camera permission in your settings.</Text>;
     } else {
       return (
         <View style={{ flex: 1 }}>
