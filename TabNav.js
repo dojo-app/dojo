@@ -20,7 +20,7 @@ const options = {
   },
   tabBarOptions: {
     showIcon: true,
-    activeTintColor: theme.COLORS.primary, // done for label and icon (but icon used in tabs are Expo ones so it doesn't affect them)
+    activeTintColor: theme.COLORS.primary,
     inactiveTintColor: theme.COLORS.default,
     labelStyle: {
       fontSize: 10
