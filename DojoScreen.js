@@ -23,9 +23,9 @@ import {
 } from 'native-base';
 
 import { StyleSheet, View, TouchableHighlight } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import * as firebase from 'firebase';
-//import * as theme from './styles/theme';
+import * as theme from './public/styles/theme';
 
 // Assets
 const normalButton = require('./public/images/add_button.png');
