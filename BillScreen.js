@@ -18,7 +18,8 @@ import {
   Title,
   Right,
   Segment,
-  List
+  List,
+  View
 } from 'native-base';
 import ActionButton from 'react-native-action-button';
 import * as firebase from 'firebase';
@@ -108,9 +109,11 @@ export class BillScreen extends React.Component {
     }
   }
 */
-  render() {
+
+  // creates an object of list items from array
+  createList(array) {
     const { navigate } = this.props.navigation;
-    const bills = this.props.screenProps.state.bills.map(bill => (
+    var list = array.map(bill => (
       <ListItem
         key={bill.id}
         onPress={() => navigate('BillDetails', { bill: bill })}>
@@ -118,11 +121,75 @@ export class BillScreen extends React.Component {
       </ListItem>
     ));
 
+    return list;
+  }
+
+  // decide which view to show
+  showBills(involvingMe, assignedByMe) {
+    if (involvingMe.length > 0 && assignedByMe.length > 0) {
+      return (
+        <View>
+          <ListItem itemDivider>
+            <Text>Involving Me </Text>
+          </ListItem>
+          {this.createList(involvingMe)}
+          <ListItem itemDivider>
+            <Text>Assigned By Me </Text>
+          </ListItem>
+          {this.createList(assignedByMe)}
+        </View>
+      );
+    } else if (involvingMe.length > 0) {
+      return (
+        <View>
+          <ListItem itemDivider>
+            <Text>Involving Me</Text>
+          </ListItem>
+          {this.createList(involvingMe)}
+        </View>
+      );
+    } else if (assignedByMe.length > 0) {
+      return (
+        <View>
+          <ListItem itemDivider>
+            <Text>Assigned By Me</Text>
+          </ListItem>
+          {this.createList(assignedByMe)}
+        </View>
+      );
+    } else {
+      return <Text> No Bills to Display :( </Text>;
+    }
+  }
+
+  render() {
+    const { navigate } = this.props.navigation;
+    /*const bills = this.props.screenProps.state.bills.map(bill => (
+      <ListItem
+        key={bill.id}
+        onPress={() => navigate('BillDetails', { bill: bill })}>
+        <Text>{bill.title}</Text>
+      </ListItem>
+    ));*/
+
+    // build array of bills assigned by me
+    const assignedByMeArray = this.props.screenProps.state.bills.filter(
+      bill => {
+        return bill.requester === this.props.screenProps.state.user.uid;
+      }
+    );
+
+    // build array of bills assigned to me
+    const involvingMeArray = this.props.screenProps.state.bills.filter(bill => {
+      var uid = this.props.screenProps.state.user.uid;
+      return bill.users[uid];
+    });
+
     const listBill = (
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{bills}</List>
+            <List>{this.showBills(involvingMeArray, assignedByMeArray)}</List>
           </Content>
         </Container>
       </Content>

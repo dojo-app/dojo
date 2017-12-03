@@ -24,8 +24,8 @@ import * as firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
 
 export class TaskScreen extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       loading: true
     };
@@ -42,10 +42,10 @@ export class TaskScreen extends React.Component {
     )
   });
 
-  render() {
+  // creates an object of list items from array
+  createList(array) {
     const { navigate } = this.props.navigation;
-
-    const tasks = this.props.screenProps.state.tasks.map(task => (
+    var list = array.map(task => (
       <ListItem
         key={task.id}
         onPress={() => navigate('TaskDetails', { task: task })}>
@@ -53,11 +53,37 @@ export class TaskScreen extends React.Component {
       </ListItem>
     ));
 
+    return list;
+  }
+
+  render() {
+    const { navigate } = this.props.navigation;
+
+    // build array of tasks assigned by me
+    const assignedByMeArray = this.props.screenProps.state.tasks.filter(
+      task => {
+        return task.source === this.props.screenProps.state.user.uid;
+      }
+    );
+
+    // build array of tasks assigned to me
+    const assignedToMeArray = this.props.screenProps.state.tasks.filter(
+      task => {
+        var uid = this.props.screenProps.state.user.uid;
+        return task.users[uid];
+      }
+    );
+
+    // create list items from array
+    const assignedByMeList = this.createList(assignedByMeArray);
+
+    const assignedToMeList = this.createList(assignedToMeArray);
+
     const AssignedByMe = (
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{tasks}</List>
+            <List>{assignedByMeList}</List>
           </Content>
         </Container>
       </Content>
@@ -67,7 +93,7 @@ export class TaskScreen extends React.Component {
       <Content>
         <Container style={styles.container}>
           <Content>
-
+            <List>{assignedToMeList}</List>
           </Content>
         </Container>
       </Content>
@@ -127,6 +153,9 @@ const styles = StyleSheet.create({
   },
   segment: {
     backgroundColor: 'white'
+  },
+  seg: {
+    backgroundColor: 'green'
   },
   actionButtonIcon: {
     fontSize: 20,
