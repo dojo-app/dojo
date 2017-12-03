@@ -31,6 +31,7 @@ import { StyleSheet, View, TouchableHighlight } from 'react-native';
 //import * as theme from './styles/theme';
 
 import * as firebase from 'firebase';
+import { ViewMember } from './component/Profile.js';
 
 function formatFirstName(name) {
     let words = name.split(' ');
@@ -39,6 +40,13 @@ function formatFirstName(name) {
 }
 
 export class DojoScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loadMember: false
+    };
+  }
+
   static navigationOptions = ({ navigation }) => ({
     title: 'Dojo',
     tabBarIcon: ({ tintColor, focused }) => (
@@ -58,7 +66,10 @@ export class DojoScreen extends React.Component {
 
     const members = this.props.screenProps.state.users.map(user => (
         <View style={styles.member} key={user.id}>
-          <Thumbnail large source={{ uri: user.photoURL }}></Thumbnail>
+          <TouchableHighlight underlayColor='transparent'
+            onPress={() => navigate('MemberProfile', {member: user})}>
+            <Thumbnail large source={{ uri: user.photoURL }}></Thumbnail>
+          </TouchableHighlight>
           <Text>{formatFirstName(user.name)}</Text>
         </View>
     ));
@@ -66,7 +77,6 @@ export class DojoScreen extends React.Component {
     const { navigate } = this.props.navigation;
 
     return (
-
         <Container style={styles.container}>
             <Content>
                 <View style={styles.dojoContainer}>
@@ -79,12 +89,12 @@ export class DojoScreen extends React.Component {
                         <View style={styles.membersContainer}>
                             {members}
 
-                                <View style={styles.member}>
-                                  <TouchableHighlight onPress={() => navigate('DojoQRCode')}>
-                                    <Thumbnail large source={ normalButton }></Thumbnail>
-                                  </TouchableHighlight>
-                                  <Text>Add member</Text>
-                                </View>
+                            <View style={styles.member}>
+                              <TouchableHighlight onPress={() => navigate('DojoQRCode')}>
+                                <Thumbnail large source={ normalButton }></Thumbnail>
+                              </TouchableHighlight>
+                              <Text>Add member</Text>
+                            </View>
 
                         </View>
                     </View>

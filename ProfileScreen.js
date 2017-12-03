@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import {
   Container,
   Header,
@@ -9,9 +9,11 @@ import {
   Icon,
   Text,
   Item,
-  Input
+  Input,
+  Label
 } from 'native-base';
 import * as firebase from 'firebase';
+import { ViewProfile } from './component/Profile';
 
 export class ProfileScreen extends React.Component {
   constructor(props) {
@@ -20,11 +22,13 @@ export class ProfileScreen extends React.Component {
       editMode: false,
       displayName: this.props.screenProps.state.user.displayName,
       email: this.props.screenProps.state.user.email,
-      phoneNumber: this.props.screenProps.state.user.phoneNumber
+      phoneNumber: this.props.screenProps.state.user.phoneNumber,
+      aboutMe: ''
     };
 
     this.editMode = this.editMode.bind(this);
     this.updateChanges = this.updateChanges.bind(this);
+    this.cancelUpdate = this.cancelUpdate.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -44,109 +48,90 @@ export class ProfileScreen extends React.Component {
     });
   }
 
+  cancelUpdate() {
+    this.setState({
+      editMode: false
+    });
+  }
+
   updateChanges() {
-    let user = this.props.screenProps.state.user.uid;
+    // TODO: fix App.js 's user from overwriting data
+    // let user = this.props.screenProps.state.user.uid;
 
     this.setState({
       editMode: false
     });
 
-    firebase
-      .database()
-      .ref(`users/${user}`)
-      .update({
-        name: this.state.displayName,
-        email: this.state.email,
-        phoneNumber: this.state.phoneNumber
-      });
+    // firebase
+    //   .database()
+    //   .ref(`users/${user}`)
+    //   .update({
+    //     name: this.state.displayName,
+    //     phoneNumber: this.state.phoneNumber
+    //   });
   }
 
   componentWillUnmount() {
     this.editMode = undefined;
     this.updateChanges = undefined;
+    this.cancelUpdate = undefined;
+
+    if (this.state.editMode) {
+      this.setState({
+        editMode: false
+      });
+    }
+
   }
 
   render() {
-    console.log("Phone number: ", this.props.screenProps.state.user);
+    // console.log("Profile: ", this.state);
 
     let profContainer;
     if (this.state.editMode) {
-      profContainer  = (<EditProfile user={ this.props.screenProps.state.user }
-        updateChange={ this.updateChanges } state={ this } />);
+      profContainer  = (
+        <EditProfile user={ this.props.screenProps.state.user }
+        updateChange={ this.updateChanges } state={ this } cancel={ this.cancelUpdate } />
+      );
     }
     else {
-      profContainer = (<ViewProfile user={ this.props.screenProps.state.user }
-        editMode={ this.editMode } />);
+      profContainer = (
+          <ViewProfile user={ this.props.screenProps.state.user }
+            editMode={ this.editMode } />
+      );
     }
 
-    return profContainer;
+    return (profContainer);
   }
 }
 
-const ViewProfile = ({user, editMode}) => (
-  <Container style={ styles.container }>
-    <Button iconLeft transparent dark style={{ alignSelf: 'flex-end' }}
-      onPress={ editMode }>
-      <Icon name='ios-create-outline' />
-    </Button>
 
-    <Image style={ styles.profilePicture }
-      source={{ uri:user.photoURL }} />
-    <Text style={ styles.displayName }>{ user.displayName }</Text>
 
-    <Content scrollEnabled={false} keyboardShouldPersistTaps='always'
-      enableAutoAutomaticScroll={false} style={ styles.content }>
-      <Item>
-        <Icon active name='ios-mail' />
-        <Input disabled placeholder={ user.email }/>
-      </Item>
-      <Item>
-        <Icon active name='ios-call' />
-        <Input disabled placeholder={ user.phoneNumber }/>
-      </Item>
-    </Content>
-
-    <Footer style={ styles.footer }>
-      <Button iconLeft danger style={ styles.button }>
-        <Icon name='ios-trash' />
-        <Text>Delete Account</Text>
-      </Button>
-      <Button iconLeft light style={ styles.button }
-        onPress={() => firebase.auth().signOut()}>
-        <Icon name='ios-log-out' />
-        <Text>Log Out</Text>
-      </Button>
-    </Footer>
-  </Container>
-);
-
-const EditProfile = ({user, updateChange, state}) => (
-  <Container style={ styles.container }>
+const EditProfile = ({user, updateChange, state, cancel}) => (
+  <Container style={ styles.container } scrollEnabled={false}
+      enableAutoAutomaticScroll={false}>
     <Image style={ styles.profilePicture }
       source={{ uri:user.photoURL }} />
 
-    <Content scrollEnabled={false} keyboardShouldPersistTaps='always'
-      enableAutoAutomaticScroll={false} style={ styles.content }>
+    <Content style={ styles.content } scrollEnabled={false}>
       <Item>
         <Icon active name='ios-person' />
-        <Input placeholder={ user.displayName }
+        <Input placeholder={ user.displayName } 
           onChangeText={(displayName) => state.setState({ displayName: displayName })}/>
       </Item>
       <Item>
-        <Icon active name='ios-mail' />
-        <Input placeholder={ user.email }
-          onChangeText={(email) => state.setState({ email: email })}/>
-      </Item>
-      <Item>
         <Icon active name='ios-call' />
-        <Input placeholder={ user.phoneNumber }
+        <Input placeholder={ user.phoneNumber } keyboardType={'numeric'} 
           onChangeText={(phoneNumber) => state.setState({ phoneNumber: phoneNumber })} />
       </Item>
     </Content>
 
     <Footer style={ styles.footer }>
+      <Button light style={ styles.cancelButton } onPress={ cancel }>
+        <Text>Cancel</Text>
+      </Button>
       <Button success style={ styles.button } onPress={ updateChange }>
-        <Text>Submit</Text>
+        <Text>Save</Text>
       </Button>
     </Footer>
   </Container>
@@ -184,8 +169,13 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderBottomWidth: 2
   },
+  cancelButton: {
+    margin: 10,
+    backgroundColor: '#d3d3d3'
+  },
   button: {
-    margin: 10
+    margin: 10,
+    backgroundColor: '#c02b2b'
   },
   footer: {
     backgroundColor: 'white',
