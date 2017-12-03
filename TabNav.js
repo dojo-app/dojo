@@ -4,8 +4,16 @@ import { BillScreen } from './BillScreen';
 import { DojoScreen } from './DojoScreen';
 import { ProfileScreen } from './ProfileScreen';
 
+import { Platform } from 'react-native';
+
 const options = {
-  tabBarPosition: 'bottom'
+  tabBarPosition: 'bottom',
+  activeTintColor: '#c02b2b',
+  navigationOptions: {
+    headerStyle: {
+      marginTop: Platform.OS === 'ios' ? 0 : 24
+    }
+  }
 };
 
 export const TabNav = TabNavigator(
@@ -14,11 +22,6 @@ export const TabNav = TabNavigator(
     Bills: { screen: BillScreen },
     Dojo: { screen: DojoScreen },
     Profile: { screen: ProfileScreen }
-  },
-  {
-    tabBarOptions: {
-      activeTintColor: '#c02b2b',
-    },
   },
   options
 );
