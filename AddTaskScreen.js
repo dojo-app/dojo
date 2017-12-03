@@ -51,7 +51,7 @@ export class AddTaskScreen extends React.Component {
         date: this.state.date,
         source: this.props.screenProps.state.user.uid
       }).key;
-      
+
     firebase
       .database()
       .ref('dojos')
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor:'#c02b2b'
   },
-  
+
   text: {
     marginTop: 17,
     marginBottom: 17,

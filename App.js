@@ -131,6 +131,10 @@ export default class App extends React.Component {
         this.updateDojoName(snapshot);
     });
 
+    dojoRef.child('description').on('value', snapshot => { //TEMP TODO better system
+        this.updateDojoDescription(snapshot);
+    });
+
     dojoRef.child('users').on('value', snapshot => {
       this.updateUsers(snapshot);
     });
@@ -157,10 +161,14 @@ export default class App extends React.Component {
   }
 
   updateDojoName(snapshot) {    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
-    var taskObjects = [];
-
     if (snapshot.val()) {
       this.setState({ dojoName: snapshot.val() });
+    }
+  }
+
+  updateDojoDescription(snapshot) {    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
+    if (snapshot.val()) {
+      this.setState({ dojoDescription: snapshot.val() });
     }
   }
 

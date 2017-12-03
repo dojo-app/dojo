@@ -7,9 +7,10 @@ import {
   Form,
   Input,
   Label,
-  Item
+  Item,
+  Icon
 } from 'native-base';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, View } from 'react-native';
 
 import { secret } from './secret';
 import Expo from 'expo';
@@ -18,7 +19,7 @@ import * as firebase from 'firebase';
 export class CreateDojoScreen extends React.Component {
   constructor() {
     super();
-    this.state = { dojoName: '' };
+    this.state = { dojoName: '', dojoDescription: '' };
   }
   createDojo() {
     var new_dojo = firebase
@@ -26,6 +27,7 @@ export class CreateDojoScreen extends React.Component {
       .ref('dojos')
       .push({
         name: this.state.dojoName,
+        description: this.state.dojoDescription,
         users: { [this.props.screenProps.state.user.uid]: true }
       });
 
@@ -49,10 +51,17 @@ export class CreateDojoScreen extends React.Component {
               onChangeText={text => this.setState({ dojoName: text })}
             />
           </Item>
+          <Item fixedLabel>
+            <Label>Description</Label>
+            <Input
+              value={this.state.dojoDescription}
+              onChangeText={text => this.setState({ dojoDescription: text })}
+            />
+          </Item>
         </Form>
-        <Button
+        <Button style={styles.create}
           large
-          full
+          iconLeft
           success
           onPress={() => {
             if (this.state.dojoName === '') {
@@ -61,6 +70,7 @@ export class CreateDojoScreen extends React.Component {
               this.createDojo();
             }
           }}>
+          <Icon name='ios-create-outline' />
           <Text>Create Dojo</Text>
         </Button>
       </Container>
@@ -71,9 +81,15 @@ export class CreateDojoScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
+    flexDirection: "column",
+    justifyContent: 'center',
+    backgroundColor: 'white'
   },
   text: {
     margin: '10%'
+  },
+  create: {
+      marginTop: 20,
+      marginLeft: '25%'
   }
 });
