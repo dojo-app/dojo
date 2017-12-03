@@ -24,25 +24,6 @@ export class BillDetailsScreen extends React.Component {
     title: 'Bill Details'
   };
 
-  deleteBill() {
-    var key = this.props.navigation.state.params.bill.id;
-
-    firebase
-      .database()
-      .ref('dojos')
-      .child(this.props.screenProps.state.dojo)
-      .child('bills')
-      .child(key)
-      .remove();
-
-    firebase
-      .database()
-      .ref()
-      .child('bills')
-      .child(key)
-      .remove();
-  }
-
   constructor(props) {
       super(props);
       this.state = {

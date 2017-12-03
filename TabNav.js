@@ -4,8 +4,20 @@ import { BillScreen } from './BillScreen';
 import { DojoScreen } from './DojoScreen';
 import { ProfileScreen } from './ProfileScreen';
 
+//import * as theme from './styles/theme';
+
 const options = {
-  tabBarPosition: 'bottom'
+  tabBarPosition: 'bottom',
+  tabBarOptions: {
+    showIcon: true,
+    activeTintColor: '#e91e63',
+    labelStyle: {
+      fontSize: 12,
+    },
+    style: {
+      backgroundColor: 'blue',
+    }
+  }
 };
 
 export const TabNav = TabNavigator(

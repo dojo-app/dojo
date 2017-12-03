@@ -50,37 +50,6 @@ export class DojoQRCodeScreen extends React.Component {
                 </Body>
             </Content>
         </Container>
-
-      // <Container style={styles.container}>
-      //   <Content>
-      //
-      //       <Grid>
-      //             <Row>
-      //                 <Col style={{ backgroundColor: '#635DB7', height: 200 }}></Col>
-      //                 <Col style={{ backgroundColor: '#00CE9F', height: 200 }}></Col>
-      //             </Row>
-      //       </Grid>
-      //
-      //     // <Text>dojo id: {this.props.screenProps.state.dojo}</Text>
-      //     // <Body style={styles.qr}>
-      //     //   <QRCode
-      //     //     value={this.props.screenProps.state.dojo}
-      //     //     size={240}
-      //     //     bgColor="black"
-      //     //     fgColor="white"
-      //     //   />
-      //     // </Body>
-      //     // <List>
-      //     //   <ListItem itemDivider>
-      //     //     <Text>Users:</Text>
-      //     //   </ListItem>
-      //     //   {users}
-      //     // </List>
-      //     // <Button full danger large onPress={() => this.leaveDojo()}>
-      //     //   <Text>Leave Dojo</Text>
-      //     // </Button>
-      //   </Content>
-      // </Container>
     );
   }
 }

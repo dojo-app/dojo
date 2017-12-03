@@ -21,6 +21,7 @@ import {
 } from 'native-base';
 import * as firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
+import { FontAwesome } from '@expo/vector-icons';
 
 export class TaskScreen extends React.Component {
   constructor() {
