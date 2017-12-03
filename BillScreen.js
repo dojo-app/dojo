@@ -30,6 +30,7 @@ export class BillScreen extends React.Component {
 // end ss
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
+    headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon

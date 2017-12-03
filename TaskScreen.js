@@ -32,6 +32,7 @@ export class TaskScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Tasks',
+    headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon

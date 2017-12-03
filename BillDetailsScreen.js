@@ -13,14 +13,36 @@ import {
   Text,
   ListItem,
   CheckBox,
+  View,
+  Icon,
+  Alert,
   Body
 } from 'native-base';
 import * as firebase from 'firebase';
 
 export class BillDetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Bill Details'
+    title: 'Bill Details',
+    headerTintColor: '#c02b2b'        
   };
+
+  deleteBill() {
+    var key = this.props.screenProps.state.user.id;
+
+    firebase
+    .database()
+    .ref('bills')
+    .child('bill')
+    .child(key)
+    .remove()
+
+    firebase
+    .database()
+    .ref('dojos')
+    .child('todo')
+    .child(todo)
+    .remove()      
+  }
 
   render() {
     const bill = this.props.navigation.state.params.bill;
@@ -76,38 +98,50 @@ export class BillDetailsScreen extends React.Component {
             {users}
           </Form>
 
-          <Button
-            full
+          <View style={styles.container}>
+            <Button iconLeft style={ styles.editButton }
             onPress={() => {
                navigate('EditBill', { bill: bill })
             }}>
-            <Text>Edit</Text>
-          </Button>
+              <Icon name='ios-create-outline' />
+              <Text>Edit Bill</Text>
+            </Button>
 
-          <Button
-            full
-            onPress={() => {
+            <Button iconLeft style={styles.deleteButton} onPress={() =>
+              Alert.alert(
+                'Are you sure?',
+                'This bill will be permanently deleted',
+                [
+                  { text: 'Cancel' },
+                  {
+                    text: 'Delete',
+                    onPress: () => {
+                      this.deleteBill();
+                      this.props.navigation.goBack();
 
+                    //   firebase
+                    // .database()
+                    // .ref('bills')
+                    // .child('bill')
+                    // .child(key)
+                    // .remove()
 
-                firebase
-                .database()
-                .ref('bills')
-                .child('bill')
-                .child(key)
-                .remove()
-
-                firebase
-                .database()
-                .ref('dojos')
-                .child('todo')
-                .child(todo)
-                .remove()
-            }}>
-
-
- 
-            <Text>Delete</Text>
-          </Button>
+                    // firebase
+                    // .database()
+                    // .ref('dojos')
+                    // .child('todo')
+                    // .child(todo)
+                    // .remove()
+                  }
+                  }
+                ],
+                { cancelable: false }
+              )
+            }>
+              <Icon name='ios-trash' />
+              <Text>Delete Bill</Text>
+            </Button>
+          </View>
 
         </Content>
       </Container>
@@ -118,6 +152,22 @@ export class BillDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',   
+    flexDirection: 'row'
+  },
+
+  deleteButton: {
+    backgroundColor: '#c02b2b',
+    marginRight: 20,
+    marginTop: 30,
+    marginLeft: 30
+
+  },
+
+  editButton: {
+    backgroundColor: '#d3d3d3',
+    marginLeft: 20,
+    marginRight: 30,
+    marginTop: 30
   }
 });

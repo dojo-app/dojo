@@ -23,6 +23,8 @@ import * as firebase from 'firebase';
 export class ProfileScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Profile',
+    headerTintColor: '#c02b2b',    
+
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -43,7 +45,7 @@ export class ProfileScreen extends React.Component {
 
           <Text>{this.props.screenProps.state.user.displayName}</Text>
 
-          <Button full danger large onPress={() => firebase.auth().signOut()}>
+          <Button style={styles.button} full large onPress={() => firebase.auth().signOut()}>
             <Text>Log Out</Text>
           </Button>
         </Content>
@@ -56,5 +58,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+
+  button: {
+    backgroundColor: '#c02b2b'
   }
 });

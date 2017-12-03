@@ -20,7 +20,8 @@ import * as firebase from 'firebase';
 
 export class EditTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Task'
+    title: 'Edit Task',
+    headerTintColor: '#c02b2b'    
   };
 
   constructor(props) {
@@ -112,7 +113,7 @@ export class EditTaskScreen extends React.Component {
 
             {users}
           </Form>
-          <Button
+          <Button style={styles.button}
             full
             onPress={() => {
               console.log('usercount = ' + this.usersCount());
@@ -140,5 +141,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+
+  button: {
+    backgroundColor: '#c02b2b'
   }
 });

@@ -24,6 +24,8 @@ import QRCode from 'react-native-qrcode';
 export class DojoScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Dojo',
+    headerTintColor: '#c02b2b',
+
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
         name={focused ? 'ios-home' : 'ios-home-outline'}
@@ -57,7 +59,7 @@ export class DojoScreen extends React.Component {
             </ListItem>
             {users}
           </List>
-          <Button full danger large onPress={() => this.leaveDojo()}>
+          <Button style={styles.leaveButton} full large onPress={() => this.leaveDojo()}>
             <Text>Leave Dojo</Text>
           </Button>
         </Content>
@@ -92,5 +94,9 @@ const styles = StyleSheet.create({
     marginBottom: '5%',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+
+  leaveButton: {
+    backgroundColor: '#c02b2b'
   }
 });

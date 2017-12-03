@@ -20,7 +20,9 @@ import * as firebase from 'firebase';
 
 export class AddTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Task'
+    title: 'Add Task',
+    headerTintColor: '#c02b2b'
+
   };
 
   constructor(props) {
@@ -108,7 +110,7 @@ export class AddTaskScreen extends React.Component {
 
             {users}
           </Form>
-          <Button
+          <Button style={styles.button}
             full
             onPress={() => {
               if (this.state.title === '') {
@@ -135,5 +137,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+
+  button: {
+    backgroundColor:'#c02b2b'
   }
 });

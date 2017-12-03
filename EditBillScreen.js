@@ -21,7 +21,8 @@ import * as firebase from 'firebase';
 
 export class EditBillScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Bill'
+    title: 'Edit Bill',
+    headerTintColor: '#c02b2b'    
   };
 
   constructor(props) {
