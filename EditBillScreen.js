@@ -39,7 +39,7 @@ export class EditBillScreen extends React.Component {
       billAmount: billField.amount,
       billDescription: billField.description,
       billDueDate: billField.date,
-      billUsers: users
+      billUsers: billField.users
     };
   }
 
@@ -80,9 +80,9 @@ export class EditBillScreen extends React.Component {
   toggleCheck(bool, user) {
     console.log(bool);
     if (bool) {
-      return <Thumbnail medium source={require('./checkmark.png')} />;
+      return <Thumbnail small source={require('./checkmark.png')} />;
     } else {
-      return <Thumbnail medium source={{ uri: user.photoURL }} />;
+      return <Thumbnail small source={{ uri: user.photoURL }} />;
     }
   }
 
