@@ -34,7 +34,7 @@ export class BillScreen extends React.Component {
   }
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
-    headerTintColor: '#c02b2b',
+    //headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -290,7 +290,7 @@ export class BillScreen extends React.Component {
     return list.map((bill, index) => (
       <ListItem
         key={index}
-        onPress={() => navigate('TaskDetails', { task: task })}>
+        >
         {bill}
       </ListItem>
     ));
@@ -357,7 +357,7 @@ export class BillScreen extends React.Component {
               <Button
                 style={styles.checkOff}
                 onPress={() => this.checkOffBill()}>
-                <Text>Check Off Bill</Text>
+                <Text>Clear All</Text>
               </Button>
             </View>
           </Content>
