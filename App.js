@@ -68,12 +68,93 @@ export default class App extends React.Component {
   }
 
   handleLogIn(user) {
-    this.setState({ loggedIn: true, user: user });
-    this.updateUserInfo();
-    if (!this.state.inDojoListener) {
-      this.addInDojoListener();
-      this.setState({ inDojoListener: true });
-    }
+    let userRef = firebase.database().ref('users/');
+
+    userRef.child(user.uid)
+      .once('value').then(snapshot => {
+        console.log("new user call");
+        if (snapshot.val())
+          this.updateUserInfo(user, false);
+        else
+          this.updateUserInfo(user, true);
+    }, (error) => {
+      console.log("Error querying user in db.");
+    })
+    .then(() => {
+      console.log("I'm here")
+      this.loadUser(user);
+    }, (error) => {
+      console.log("Error loading user object.");
+    });
+
+    // this.setState({ loggedIn: true, user: user });
+    // this.updateUserInfo();
+
+    // if (!this.state.inDojoListener) {
+    //   console.log("This is called");
+    //   this.addInDojoListener();
+    //   this.setState({ inDojoListener: true });
+    // }
+  }
+
+  loadUser(user) {
+    firebase.database().ref('users')
+      .child(user.uid)
+      .once('value')
+      .then((snapshot) => {
+          // console.log(snapshot.val());
+          let userObj = snapshot.val();
+          userObj['uid'] = user.uid;
+
+          this.setState({ user: userObj });
+          console.log("Load user");
+      }, (error) => {
+        console.log("Error loading user object.");
+      })
+      .then(() => {
+        if (!this.state.inDojoListener) {
+          this.addInDojoListener();
+          this.setState({ inDojoListener: true });
+        }
+
+        this.setState({ loggedIn: true });
+      }, (error) => {
+        console.log("Error setting dojo listeners.");
+      });
+  }
+
+  verifyNewUser(user) {
+    // let userRef = firebase.database().ref('users/');
+    // userRef.child(user.uid)
+    //   .once('value').then(snapshot => {
+    //     console.log("new user call");
+    //     if (snapshot.val())
+    //       this.updateUserInfo(user);
+    //     else {
+    //       userRef.child(user.uid).update({
+    //         name: user.displayName,
+    //         photoURL: user.photoURL,
+    //         email: user.email
+    //       });
+    //     }
+
+    //     // this.setState({
+    //     //   loggedIn: true
+    //     // });
+    // }, (error) => {
+    //   console.log("Error querying user in db.");
+    // })
+    // .then(() => {
+    //   console.log("I'm here")
+    //   userRef.child(user.uid)
+    //     .once('value', (snapshot) => {
+    //       console.log(snapshot.val());
+    //     });
+    // }, (error) => {
+    //   console.log("Error after query");
+    // });
+
+
   }
 
   addInDojoListener() {
@@ -144,16 +225,31 @@ export default class App extends React.Component {
     });
   }
 
-  updateUserInfo() {
-    firebase
-      .database()
-      .ref('users')
-      .child(this.state.user.uid)
+  updateUserInfo(user, newUser) {
+    let userRef = firebase.database().ref('users');
+
+    if (newUser) {
+      userRef.child(user.uid)
+        .update({
+          name: user.displayName,
+          email: user.email
+        });
+    }
+
+    userRef.child(user.uid)
       .update({
-        name: this.state.user.displayName,
-        photoURL: this.state.user.photoURL,
-        email: this.state.user.email
+        photoURL: user.photoURL
       });
+
+    // firebase
+    //   .database()
+    //   .ref('users')
+    //   .child(user.uid)
+    //   .update({
+    //     // name: this.state.user.displayName,
+    //     photoURL: user.photoURL,
+    //     // email: this.state.user.email
+    //   });
   }
 
   updateDojoName(snapshot) {    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}

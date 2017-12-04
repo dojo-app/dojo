@@ -79,11 +79,11 @@ export class DojoScreen extends React.Component {
     return (
         <Container style={styles.container}>
             <Content>
+                <View style={styles.dojoHead}>
+                  <Thumbnail style={styles.dojoImage} source={ dojoImage }></Thumbnail>
+                  <Text>{this.props.screenProps.state.dojoName}</Text>
+                </View>
                 <View style={styles.dojoContainer}>
-                    <View style={styles.dojoHead}>
-                        <Thumbnail style={styles.dojoImage} source={ dojoImage }></Thumbnail>
-                        <Text>{this.props.screenProps.state.dojoName}</Text>
-                    </View>
                     <View>
                         <H1 style={styles.membersTitle}>Members</H1>
                         <View style={styles.membersContainer}>
