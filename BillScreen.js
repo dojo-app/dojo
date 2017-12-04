@@ -77,7 +77,7 @@ export class BillScreen extends React.Component {
   // end
 
   getPersonalTotal() {
-    if (this.getExcess(this.props.screenProps.state.user.uid) > 0) {
+    if (this.getExcess(this.props.screenProps.state.user.uid) < 0) {
       //const listofAmounts = this.getUserAmounts();
       //const transactionsArr = this.getTransactions(listofAmounts);
       //return this.printTransactions(transactionsArr);
@@ -156,8 +156,11 @@ export class BillScreen extends React.Component {
   // returns a 2D array that represents person {i} should pay person {j}
   // {arr[i][j]} dollars
   getTransactions(EXCESS_LIST) {
-    // clones it so we don't modify the original
+    if (!this.validateExcessList(EXCESS_LIST)) {
+      return;
+    }
 
+    // clones it so we don't modify the original
     let excessList = EXCESS_LIST.slice();
     let transactions = this.zeroFill2DArray(excessList.length);
 
@@ -172,6 +175,14 @@ export class BillScreen extends React.Component {
     }
 
     return transactions;
+  }
+
+  validateExcessList(excessList) {
+    let sum = 0;
+    for (let i = 0; i < excessList.length; i++) {
+      sum += excessList[i];
+    }
+    return sum === 0;
   }
 
   // returns a clone of a given 2D array
@@ -263,7 +274,7 @@ export class BillScreen extends React.Component {
   // end new --------------------------------------------------------------------------------------
   render() {
     const excessList = this.getUserAmounts();
-    this.printTransactions(this.getTransactions(excessList));
+    //this.printTransactions(this.getTransactions(excessList));
     const { navigate } = this.props.navigation;
     /*const bills = this.props.screenProps.state.bills.map(bill => (
       <ListItem
@@ -302,8 +313,11 @@ export class BillScreen extends React.Component {
           <Content>
             <Text>{this.getExcess(this.props.screenProps.state.user.uid)}</Text>
             <Text>{this.getPersonalTotal()}</Text>
-
-            {this.listTransactions(this.getTransactions(excessList))}
+            {this.validateExcessList(excessList) ? (
+              this.listTransactions(this.getTransactions(excessList))
+            ) : (
+              <Text>Loading</Text>
+            )}
           </Content>
         </Container>
       </Content>
