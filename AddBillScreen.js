@@ -86,9 +86,9 @@ export class AddBillScreen extends React.Component {
 
   toggleCheck(bool, user) {
     if (bool) {
-      return <Thumbnail medium source={require('./checkmark.png')} />;
+      return <Thumbnail small source={require('./checkmark.png')} />;
     } else {
-      return <Thumbnail medium source={{ uri: user.photoURL }} />;
+      return <Thumbnail small source={{ uri: user.photoURL }} />;
     }
   }
 

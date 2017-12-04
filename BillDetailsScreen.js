@@ -15,7 +15,8 @@ import {
   CheckBox,
   View,
   Icon,
-  Body
+  Body,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 import { Alert } from 'react-native';
@@ -23,7 +24,7 @@ import { Alert } from 'react-native';
 
 export class BillDetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Bill Details',
+    title: 'Bill Detail',
     headerTintColor: '#c02b2b'        
   };
 
@@ -59,9 +60,7 @@ export class BillDetailsScreen extends React.Component {
     const user = this.props.screenProps.state.user;
     const users = this.props.screenProps.state.users.filter(user => billUsers[user.id]).map(user => (
       <ListItem key={user.id}>
-        <CheckBox
-          checked={billUsers[user.id]}
-        />
+        <Thumbnail small source={{ uri: user.photoURL }} />
         <Body>
           <Text>{user.name}</Text>
         </Body>

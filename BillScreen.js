@@ -19,7 +19,8 @@ import {
   Right,
   Segment,
   List,
-  View
+  View,
+  Thumbnail
 } from 'native-base';
 import ActionButton from 'react-native-action-button';
 import * as firebase from 'firebase';
@@ -256,9 +257,41 @@ export class BillScreen extends React.Component {
 
   listTransactions(transactions) {
     let list = [];
+    var state = this.props.screenProps.state;
+    for (let i = 0; i < transactions.length; i++) {
+      for (let j = 0; j < transactions.length; j++) {
+        
+        console.log(state.users[i].id === this.props.screenProps.state.user.uid);
+        if (transactions[i][j] !== 0 
+          && state.users[j].id === this.props.screenProps.state.user.uid) {
+          console.log('inhere');
+            list.push(
+              <View>
+                <Thumbnail small source={{ uri: this.props.screenProps.state.users[i].photoURL }} />
+              </View>
+          );
+
+
+
+
+
+          list.push(
+           
+
+
+            `${this.props.screenProps.state.users[i].name} should pay ${
+              this.props.screenProps.state.users[j].name
+            } ${transactions[i][j]} dollars.`
+          );
+        }
+      }
+    }
+
     for (let i = 0; i < transactions.length; i++) {
       for (let j = 0; j < transactions.length; j++) {
         if (transactions[i][j] !== 0) {
+
+
           list.push(
             `${this.props.screenProps.state.users[i].name} should pay ${
               this.props.screenProps.state.users[j].name
