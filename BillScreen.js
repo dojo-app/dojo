@@ -75,20 +75,17 @@ export class BillScreen extends React.Component {
   }
 
   getPersonalTotal() {
-    if (this.getExcess(this.props.screenProps.state.user.uid) < 0) {
+    var num = this.getExcess(this.props.screenProps.state.user.uid);
+    var display = num < 0 ? '+$'+Math.abs(num) : '-$'+Math.abs(num);
+    if (this.getExcess(this.props.screenProps.state.user.uid) != 0) {
       return (
-        'Your housemates owe you $' +
-        Math.abs(this.getExcess(this.props.screenProps.state.user.uid)) +
-        ' total!'
+        'Your total is ' + display
+         +
+        '!'
       );
-    } else if (this.getExcess == 0) {
-      return 'You are in perfect balance!';
+      
     } else {
-      return (
-        'You owe your housemates $' +
-        this.getExcess(this.props.screenProps.state.user.uid) +
-        ' total!'
-      );
+      return 'You are in perfect balance!';
     }
     // if in excess then display the amount that other users in the dojo owe them.
     // if in deficit then display the amount that they owe other users in the dojo.
@@ -253,53 +250,48 @@ export class BillScreen extends React.Component {
   listTransactions(transactions) {
     let list = [];
     var state = this.props.screenProps.state;
+
+    for (let i = 0; i < transactions.length; i++) {
+      for (let j = 0; j < transactions.length; j++) {
+        if (transactions[i][j] !== 0
+          && state.users[i].id === this.props.screenProps.state.user.uid) {
+
+
+          list.push(
+            <View style={styles.row}>
+                <Thumbnail small source={{ uri: state.users[j].photoURL }} />
+                <Text> {state.users[j].name}</Text>
+                <Text style={styles.negative}>you owe ${transactions[i][j]}</Text>
+              </View>
+          );
+        }
+      }
+    }
+
     for (let i = 0; i < transactions.length; i++) {
       for (let j = 0; j < transactions.length; j++) {
         
-        console.log(state.users[i].id === this.props.screenProps.state.user.uid);
+        
         if (transactions[i][j] !== 0 
           && state.users[j].id === this.props.screenProps.state.user.uid) {
-          console.log('inhere');
             list.push(
-              <View>
-                <Thumbnail small source={{ uri: this.props.screenProps.state.users[i].photoURL }} />
+              <View style={styles.row}>
+                <Thumbnail small source={{ uri: state.users[i].photoURL }} />
+                <Text> {state.users[i].name}</Text>
+                <Text style={styles.positive}> you receive ${transactions[i][j]}</Text>
               </View>
           );
-
-
-
-
-
-          list.push(
-           
-
-
-            `${this.props.screenProps.state.users[i].name} should pay ${
-              this.props.screenProps.state.users[j].name
-            } ${transactions[i][j]} dollars.`
-          );
+          
         }
       }
     }
 
-    for (let i = 0; i < transactions.length; i++) {
-      for (let j = 0; j < transactions.length; j++) {
-        if (transactions[i][j] !== 0) {
-
-
-          list.push(
-            `${this.props.screenProps.state.users[i].name} should pay ${
-              this.props.screenProps.state.users[j].name
-            } $${transactions[i][j]}.`
-          );
-        }
-      }
-    }
-    return list.map((str, index) => (
+    
+    return list.map((bill, index) => (
       <ListItem
         key={index}
         onPress={() => navigate('TaskDetails', { task: task })}>
-        <Text>{str}</Text>
+        {bill}
       </ListItem>
     ));
   }
@@ -448,5 +440,18 @@ const styles = StyleSheet.create({
   checkOff: {
     alignSelf: 'center',
     backgroundColor: '#c02b2b'
+  },
+  positive:{
+    marginLeft: 'auto',
+    color:'#ACE075',
+  },
+  negative:{
+    marginLeft: 'auto',
+    color:'#E07581',
+  },
+  row:{
+    flex: 1,
+    flexDirection:'row',
+    alignItems:'center',
   }
 });

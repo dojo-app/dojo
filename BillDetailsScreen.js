@@ -26,7 +26,6 @@ export class BillDetailsScreen extends React.Component {
 
     title: 'Bill Details',
     headerTintColor: '#c02b2b'
-
   };
 
   constructor(props) {
@@ -75,10 +74,6 @@ export class BillDetailsScreen extends React.Component {
       <Container style={styles.container}>
         <Content>
           <Form>
-            <Item fixedLabel>
-              <Label>Title</Label>
-              <Input disabled value={this.state.bill.title} />
-            </Item>
 
             <Item fixedLabel>
               <Label>Description</Label>

@@ -130,14 +130,14 @@ export class AddBillScreen extends React.Component {
         <Content>
           <Form>
             <Item fixedLabel>
-              <Label>Bill Title</Label>
+              <Label>Title</Label>
               <Input
                 value={this.state.billTitle}
                 onChangeText={text => this.setState({ billTitle: text })}
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Amount </Label>
+              <Label>Amount </Label>
               <Input
                 style={styles.right}
                 onChangeText={text =>
@@ -147,14 +147,14 @@ export class AddBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Description</Label>
+              <Label>Description</Label>
               <Input
                 value={this.state.billDescription}
                 onChangeText={text => this.setState({ billDescription: text })}
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Due Date</Label>
+              <Label>Due Date</Label>
               <Text
                 style={styles.text}
                 //value={this.state.billDueDate}
