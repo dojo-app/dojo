@@ -13,7 +13,6 @@ import {
   ListItem,
   CheckBox,
   Body,
-  //new ss
   Icon,
   Title,
   Right,
@@ -60,7 +59,7 @@ export class BillScreen extends React.Component {
         bill =>
           (sumOwed +=
             parseInt(bill.amount.substring(1)) /
-            parseInt(Object.keys(bill.users).length)) // +1 includes the requester MOD THIS ACCORDING TO UDPATED TEST
+            parseInt(Object.keys(bill.users).length))
       );
     excess = sumOwed - sumPaid;
     // if negative then they're in deficit, people owe this person money.
@@ -75,14 +74,8 @@ export class BillScreen extends React.Component {
     );
   }
 
-  // end
-
   getPersonalTotal() {
     if (this.getExcess(this.props.screenProps.state.user.uid) < 0) {
-      //const listofAmounts = this.getUserAmounts();
-      //const transactionsArr = this.getTransactions(listofAmounts);
-      //return this.printTransactions(transactionsArr);
-      //BEST ONE
       return (
         'Your housemates owe you $' +
         Math.abs(this.getExcess(this.props.screenProps.state.user.uid)) +
@@ -97,7 +90,6 @@ export class BillScreen extends React.Component {
         ' total!'
       );
     }
-    // check to see if theyre in excess or deficit, display that number.
     // if in excess then display the amount that other users in the dojo owe them.
     // if in deficit then display the amount that they owe other users in the dojo.
   }
@@ -148,10 +140,13 @@ export class BillScreen extends React.Component {
         </View>
       );
     } else {
-      return <Text> No Bills to Display :( </Text>;
+      return (
+        <ListItem style={styles.center}>
+          <Text> No Bills to Display </Text>
+        </ListItem>
+      );
     }
   }
-  // new ------------------------------------------------------------------------------------------
 
   // returns a list of transactions that would settle a given excess list.
   // returns a 2D array that represents person {i} should pay person {j}
@@ -295,7 +290,7 @@ export class BillScreen extends React.Component {
           list.push(
             `${this.props.screenProps.state.users[i].name} should pay ${
               this.props.screenProps.state.users[j].name
-            } ${transactions[i][j]} dollars.`
+            } $${transactions[i][j]}.`
           );
         }
       }
@@ -309,18 +304,25 @@ export class BillScreen extends React.Component {
     ));
   }
 
-  // end new --------------------------------------------------------------------------------------
+  checkOffBill() {
+    this.props.screenProps.state.bills.forEach(bill => {
+      firebase
+        .database()
+        .ref('bills')
+        .child(bill.id)
+        .remove();
+    });
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('bills')
+      .remove();
+  }
+
   render() {
     const excessList = this.getUserAmounts();
-    //this.printTransactions(this.getTransactions(excessList));
     const { navigate } = this.props.navigation;
-    /*const bills = this.props.screenProps.state.bills.map(bill => (
-      <ListItem
-        key={bill.id}
-        onPress={() => navigate('BillDetails', { bill: bill })}>
-        <Text>{bill.title}</Text>
-      </ListItem>
-    ));*/
 
     // build array of bills assigned by me
     const assignedByMeArray = this.props.screenProps.state.bills.filter(
@@ -350,7 +352,7 @@ export class BillScreen extends React.Component {
         <Container style={styles.container}>
           <Content>
             <List>
-              <ListItem>
+              <ListItem style={styles.containerTotal}>
                 <Text>{this.getPersonalTotal()}</Text>
               </ListItem>
               {this.validateExcessList(excessList) ? (
@@ -360,7 +362,9 @@ export class BillScreen extends React.Component {
               )}
             </List>
             <View style={styles.center}>
-              <Button style={styles.checkOff}>
+              <Button
+                style={styles.checkOff}
+                onPress={() => this.checkOffBill()}>
                 <Text>Check Off Bill</Text>
               </Button>
             </View>
@@ -420,6 +424,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+  containerTotal: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderColor: 'red',
+    justifyContent: 'center'
   },
   segment: {
     backgroundColor: 'white'
