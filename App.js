@@ -72,7 +72,6 @@ export default class App extends React.Component {
 
     userRef.child(user.uid)
       .once('value').then(snapshot => {
-        console.log("new user call");
         if (snapshot.val())
           this.updateUserInfo(user, false);
         else
@@ -81,7 +80,6 @@ export default class App extends React.Component {
       console.log("Error querying user in db.");
     })
     .then(() => {
-      console.log("I'm here")
       this.loadUser(user);
     }, (error) => {
       console.log("Error loading user object.");
@@ -107,7 +105,7 @@ export default class App extends React.Component {
           userObj['uid'] = user.uid;
 
           this.setState({ user: userObj });
-          console.log("Load user");
+          // console.log(this.state.user);
       }, (error) => {
         console.log("Error loading user object.");
       })
@@ -121,40 +119,6 @@ export default class App extends React.Component {
       }, (error) => {
         console.log("Error setting dojo listeners.");
       });
-  }
-
-  verifyNewUser(user) {
-    // let userRef = firebase.database().ref('users/');
-    // userRef.child(user.uid)
-    //   .once('value').then(snapshot => {
-    //     console.log("new user call");
-    //     if (snapshot.val())
-    //       this.updateUserInfo(user);
-    //     else {
-    //       userRef.child(user.uid).update({
-    //         name: user.displayName,
-    //         photoURL: user.photoURL,
-    //         email: user.email
-    //       });
-    //     }
-
-    //     // this.setState({
-    //     //   loggedIn: true
-    //     // });
-    // }, (error) => {
-    //   console.log("Error querying user in db.");
-    // })
-    // .then(() => {
-    //   console.log("I'm here")
-    //   userRef.child(user.uid)
-    //     .once('value', (snapshot) => {
-    //       console.log(snapshot.val());
-    //     });
-    // }, (error) => {
-    //   console.log("Error after query");
-    // });
-
-
   }
 
   addInDojoListener() {
@@ -227,10 +191,29 @@ export default class App extends React.Component {
     dojoRef.child('bills').on('value', snapshot => {
       this.updateBills(snapshot);
     });
+
+    this.updateUserObj();
+  }
+
+  updateUserObj() {
+    var userRef = firebase
+      .database()
+      .ref('users');
+
+    userRef.child(this.state.user.uid)
+      .on('value', (snapshot) => {
+        let userObj = snapshot.val();
+        userObj['uid'] = this.state.user.uid;
+
+        this.setState({ user: userObj });
+        console.log(this.state.user);
+      });
   }
 
   updateUserInfo(user, newUser) {
-    let userRef = firebase.database().ref('users');
+    let userRef = firebase
+      .database()
+      .ref('users');
 
     if (newUser) {
       userRef.child(user.uid)

@@ -23,7 +23,7 @@ export const ViewProfile = ({user, editMode}) => (
 
     <Image style={ styles.profilePicture }
       source={{ uri:user.photoURL }} />
-    <Text style={ styles.displayName }>{ user.displayName }</Text>
+    <Text style={ styles.displayName }>{ user.name }</Text>
 
     <Content style={ styles.content } scrollEnabled={false}>
       <Item>
@@ -33,6 +33,10 @@ export const ViewProfile = ({user, editMode}) => (
       <Item>
         <Icon active name='ios-call' />
         <Input disabled value={ user.phoneNumber } />
+      </Item>
+      <Item>
+        <Icon active name='ios-calendar' />
+        <Input disabled value={ user.birthDate } />
       </Item>
       <Item>
         <Icon active name='ios-information-circle' />
@@ -63,6 +67,10 @@ export const ViewMember = ({user}) => (
       <Item>
         <Icon active name='ios-call' />
         <Input disabled value={ user.phoneNumber } />
+      </Item>
+      <Item>
+        <Icon active name='ios-calendar' />
+        <Input disabled value={ user.birthDate } />
       </Item>
       <Item>
         <Icon active name='ios-information-circle' />
@@ -102,7 +110,8 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderStyle: 'solid',
     borderTopWidth: 2,
-    borderBottomWidth: 2
+    borderBottomWidth: 2,
+    borderColor: '#c02b2b'
   },
   button: {
     margin: 10
