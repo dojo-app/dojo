@@ -207,6 +207,12 @@ export class BillScreen extends React.Component {
           <Content>
             <Text>{this.getExcess()}</Text>
             <Text>{this.getPersonalTotal()}</Text>
+            <View style={styles.center}>
+              <Button style={styles.checkOff}>
+                <Text>Check Off Bill</Text>
+              </Button>
+            </View>
+
           </Content>
         </Container>
       </Content>
@@ -271,5 +277,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: 22,
     color: 'white'
+  },
+  center:{
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+
+  },
+  checkOff:{
+    alignSelf:'center',
+    backgroundColor:'#c02b2b'
   }
 });
