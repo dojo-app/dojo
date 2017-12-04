@@ -44,16 +44,16 @@ export class BillScreen extends React.Component {
     )
   });
 
-  getExcess() {
+  getExcess(userID) {
     let sumPaid = 0.0;
     let sumOwed = 0.0;
     let excess = 0.0;
     const billCreated = this.props.screenProps.state.bills
-      .filter(bill => bill.requester === this.props.screenProps.state.user.uid)
+      .filter(bill => bill.requester === userID)
       .map(bill => (sumPaid += parseInt(bill.amount.substring(1))));
     const billInvolved = this.props.screenProps.state.bills
       .filter(bill => {
-        return this.props.screenProps.state.user.uid in bill.users;
+        return userID in bill.users;
       })
       .map(
         bill =>
@@ -61,62 +61,45 @@ export class BillScreen extends React.Component {
             parseInt(bill.amount.substring(1)) /
             parseInt(Object.keys(bill.users).length)) // +1 includes the requester MOD THIS ACCORDING TO UDPATED TEST
       );
-    excess = sumPaid - sumOwed;
-    // if positve then they're in deficit, people owe this person money.
-    // if negative then they're in excess, they owe money to people.
+    excess = sumOwed - sumPaid;
+    // if negative then they're in deficit, people owe this person money.
+    // if positive then they're in excess, they owe money to people.
     return excess;
   }
 
+  // start ss
+  getUserAmounts() {
+    return this.props.screenProps.state.users.map(user =>
+      this.getExcess(user.id)
+    );
+  }
+
+  // end
+
   getPersonalTotal() {
-    if (this.getExcess() > 0) {
-      return 'People owe you $' + this.getExcess() + ' total.';
+    if (this.getExcess(this.props.screenProps.state.user.uid) > 0) {
+      //const listofAmounts = this.getUserAmounts();
+      //const transactionsArr = this.getTransactions(listofAmounts);
+      //return this.printTransactions(transactionsArr);
+      //BEST ONE
+      return (
+        'Your housemates owe you $' +
+        this.getExcess(this.props.screenProps.state.user.uid) +
+        ' total!'
+      );
     } else if (this.getExcess == 0) {
       return 'You are in perfect balance!';
     } else {
-      return 'You owe people $' + Math.abs(this.getExcess()) + ' total.';
+      return (
+        'You owe your housemates $' +
+        Math.abs(this.getExcess(this.props.screenProps.state.user.uid)) +
+        ' total!'
+      );
     }
     // check to see if theyre in excess or deficit, display that number.
     // if in excess then display the amount that other users in the dojo owe them.
     // if in deficit then display the amount that they owe other users in the dojo.
   }
-
-  /*
-  getTransactions() {
-    if (this.getExcess() > -1) {
-
-      // people owe this person money.
-      // iterate through all the users who are in excess. So where users.id.getExcess()<0
-      const Payers = this.props.screenProps.state.user // iterates through all the users in the dojo.
-        .filter(user => {
-          // only considers the users who are in excess.
-          // if users.getExcess==this.getExcess) then return that user pays this user.
-          // else grab the largest user.getExcess thats still less than this users.getExcess and display that user pays this user all that user.getExcess has
-          // else have next largest user.getExcess pay this user the rest of their getExcess amount.
-          return this.props.screenProps.state.user.uid.getExcess() > 0;
-        })
-        .map(
-          user =>
-            (sumOwed +=
-              parseInt(user.amount) / parseInt(Object.keys(bill.users).length)) // +1 includes the requester MOD THIS ACCORDING TO UPDATED TEST
-        );
-    } else {
-      // this person owes someone else money.
-      // iterate through all the users who are in deficit. So where users.id.getExcess()>0
-      // opposite of above code.
-      const Payee = this.props.screenProps.state.bills
-        .filter(bill => {
-          return this.props.screenProps.state.user.uid in bill.users;
-        })
-        .map(
-          bill =>
-            (sumOwed +=
-              parseInt(bill.amount) / parseInt(Object.keys(bill.users).length)) // +1 includes the requester MOD THIS ACCORDING TO UDPATED TEST
-        );
-    }
-  }
-*/
-
-  // creates an object of list items from array
   createList(array) {
     const { navigate } = this.props.navigation;
     var list = array.map(bill => (
@@ -128,7 +111,7 @@ export class BillScreen extends React.Component {
     ));
 
     return list;
-  }
+  } // creates an object of list items from array //
 
   // decide which view to show
   showBills(involvingMe, assignedByMe) {
@@ -167,8 +150,120 @@ export class BillScreen extends React.Component {
       return <Text> No Bills to Display :( </Text>;
     }
   }
+  // new ------------------------------------------------------------------------------------------
 
+  // returns a list of transactions that would settle a given excess list.
+  // returns a 2D array that represents person {i} should pay person {j}
+  // {arr[i][j]} dollars
+  getTransactions(EXCESS_LIST) {
+    // clones it so we don't modify the original
+
+    let excessList = EXCESS_LIST.slice();
+    let transactions = this.zeroFill2DArray(excessList.length);
+
+    // while the excess list is not settled, have the person who owns the most
+    // money pay the person who is owed the most money and add it to transactions
+    while (!this.settled(excessList)) {
+      const receiver = this.mostOwed(excessList);
+      const sender = this.mostOwned(excessList);
+      excessList[receiver] += excessList[sender];
+      transactions[sender][receiver] += excessList[sender];
+      excessList[sender] = 0;
+    }
+
+    return transactions;
+  }
+
+  // returns a clone of a given 2D array
+  clone2DArray(arr) {
+    let clone = [];
+    for (let i = 0; i < arr.length; i++) {
+      clone[i] = [];
+      for (let j = 0; j < arr.length; j++) {
+        clone[i][j] = arr[i][j];
+      }
+    }
+    return clone;
+  }
+
+  // returns a 2D array of 0s of a given size
+  zeroFill2DArray(size) {
+    let arr = [];
+    for (let i = 0; i < size; i++) {
+      arr[i] = [];
+      for (let j = 0; j < size; j++) {
+        arr[i][j] = 0;
+      }
+    }
+    return arr;
+  }
+
+  // returns true if a given array is all 0s, false otherwise
+  settled(arr) {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] !== 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // returns the index of the minimum number in a given array
+  mostOwed(arr) {
+    let index = 0;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] < arr[index]) {
+        index = i;
+      }
+    }
+    return index;
+  }
+
+  // returns the index of the maximum number in a given array
+  mostOwned(arr) {
+    let index = 0;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] > arr[index]) {
+        index = i;
+      }
+    }
+    return index;
+  }
+
+  printTransactions(transactions) {
+    for (let i = 0; i < transactions.length; i++) {
+      for (let j = 0; j < transactions.length; j++) {
+        if (transactions[i][j] !== 0) {
+          console.log(
+            `${this.props.screenProps.state.users[i].name} should pay ${
+              this.props.screenProps.state.users[j].name
+            } ${transactions[i][j]} dollars.`
+          );
+        }
+      }
+    }
+  }
+
+  listTransactions(transactions) {
+    let list = [];
+    for (let i = 0; i < transactions.length; i++) {
+      for (let j = 0; j < transactions.length; j++) {
+        if (transactions[i][j] !== 0) {
+          list.push(
+            `${this.props.screenProps.state.users[i].name} should pay ${
+              this.props.screenProps.state.users[j].name
+            } ${transactions[i][j]} dollars.`
+          );
+        }
+      }
+    }
+    return list.map(str => <Text>{str}</Text>);
+  }
+
+  // end new --------------------------------------------------------------------------------------
   render() {
+    const excessList = this.getUserAmounts();
+    this.printTransactions(this.getTransactions(excessList));
     const { navigate } = this.props.navigation;
     /*const bills = this.props.screenProps.state.bills.map(bill => (
       <ListItem
@@ -205,8 +300,10 @@ export class BillScreen extends React.Component {
       <Content>
         <Container style={styles.container}>
           <Content>
-            <Text>{this.getExcess()}</Text>
+            <Text>{this.getExcess(this.props.screenProps.state.user.uid)}</Text>
             <Text>{this.getPersonalTotal()}</Text>
+
+            {this.listTransactions(this.getTransactions(excessList))}
           </Content>
         </Container>
       </Content>
