@@ -25,10 +25,11 @@ import {
 } from 'native-base';
 import * as firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
+import { FontAwesome } from '@expo/vector-icons';
 
 export class TaskScreen extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       loading: true
     };
@@ -36,6 +37,7 @@ export class TaskScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Tasks',
+    headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -49,14 +51,15 @@ export class TaskScreen extends React.Component {
   toggleCheck(bool, title) {
     if (bool) {
       return (
-        <View>
+        <View style={styles.view}>
           <Thumbnail source={require('./checkmark.png')} />
           <Text style={styles.strikethrough}>{title}</Text>
         </View>
       );
-    } else {
+    }
+    else {
       return (
-        <View>
+        <View style={styles.view}>
           <Thumbnail source={require('./checkmark_false.png')} />
           <Text>{title}</Text>
         </View>
@@ -64,6 +67,7 @@ export class TaskScreen extends React.Component {
     }
   }
   */
+
   toggleCheck(bool, title) {
     if (bool) {
       return (
@@ -82,10 +86,10 @@ export class TaskScreen extends React.Component {
     }
   }
 
-  render() {
+  // creates an object of list items from array
+  createList(array) {
     const { navigate } = this.props.navigation;
-
-    const tasks = this.props.screenProps.state.tasks.map(task => (
+    var list = array.map(task => (
       <ListItem
         key={task.id}
         onPress={() => navigate('TaskDetails', { task: task })}>
@@ -109,32 +113,37 @@ export class TaskScreen extends React.Component {
         </TouchableOpacity>
       </ListItem>
     ));
-    /*
-<CheckBox
-          onPress={() => {
-            var toggle = !task.checked;
-            firebase
-              .database()
-              .ref('tasks')
-              .child(task.id)
-              .update({ checked: toggle });
+    return list;
+  }
 
-            firebase
-              .database()
-              .ref('dojos')
-              .child(this.props.screenProps.state.dojo)
-              .child('tasks')
-              .update({ [task.id]: toggle });
-          }}
-          checked={task.checked}
-        />
-        */
+  render() {
+    const { navigate } = this.props.navigation;
+
+    // build array of tasks assigned by me
+    const assignedByMeArray = this.props.screenProps.state.tasks.filter(
+      task => {
+        return task.source === this.props.screenProps.state.user.uid;
+      }
+    );
+
+    // build array of tasks assigned to me
+    const assignedToMeArray = this.props.screenProps.state.tasks.filter(
+      task => {
+        var uid = this.props.screenProps.state.user.uid;
+        return task.users[uid];
+      }
+    );
+
+    // create list items from array
+    const assignedByMeList = this.createList(assignedByMeArray);
+
+    const assignedToMeList = this.createList(assignedToMeArray);
 
     const AssignedByMe = (
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{tasks}</List>
+            <List>{assignedByMeList}</List>
           </Content>
         </Container>
       </Content>
@@ -143,7 +152,9 @@ export class TaskScreen extends React.Component {
     const AssignedToMe = (
       <Content>
         <Container style={styles.container}>
-          <Content />
+          <Content>
+            <List>{assignedToMeList}</List>
+          </Content>
         </Container>
       </Content>
     );
@@ -153,6 +164,10 @@ export class TaskScreen extends React.Component {
         <Header hasTabs style={styles.segment}>
           <Segment style={styles.segment}>
             <Button
+              style={{
+                backgroundColor: this.state.onList ? '#c02b2b' : undefined,
+                borderColor: '#c02b2b'
+              }}
               first
               active={this.state.onList}
               onPress={() => {
@@ -160,17 +175,25 @@ export class TaskScreen extends React.Component {
                   this.setState({ onList: true });
                 }
               }}>
-              <Text>Assigned By Me</Text>
+              <Text style={{ color: this.state.onList ? '#FFF' : '#c02b2b' }}>
+                Assigned By Me
+              </Text>
             </Button>
             <Button
               last
+              style={{
+                backgroundColor: !this.state.onList ? '#c02b2b' : undefined,
+                borderColor: '#c02b2b'
+              }}
               active={!this.state.onList}
               onPress={() => {
                 if (this.state.onList) {
                   this.setState({ onList: false });
                 }
               }}>
-              <Text>Assigned To Me</Text>
+              <Text style={{ color: !this.state.onList ? '#FFF' : '#c02b2b' }}>
+                Assigned To Me
+              </Text>
             </Button>
           </Segment>
         </Header>
@@ -209,6 +232,9 @@ const styles = StyleSheet.create({
   },
   segment: {
     backgroundColor: 'white'
+  },
+  seg: {
+    backgroundColor: 'green'
   },
   actionButtonIcon: {
     fontSize: 20,

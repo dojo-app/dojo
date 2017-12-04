@@ -14,7 +14,7 @@ export default class App extends React.Component {
     this.state = {
       loaded: false, // whether android fonts are loaded
       loggedIn: false,
-      inDojo: false,
+      inDojo: true, // Assume user in dojo until firebase verifies if user is in a dojo; Allows firebase calls to finish loading and then render page
       user: null,
       dojo: '',
       tasks: [],
@@ -29,6 +29,7 @@ export default class App extends React.Component {
     firebase.auth().onAuthStateChanged(user => {
       if (user === null) {
         this.handleLogOut();
+        this.setState({ loaded: true });
       } else {
         this.handleLogIn(user);
       }
@@ -57,7 +58,7 @@ export default class App extends React.Component {
 
     this.setState({
       loggedIn: false,
-      inDojo: false,
+      // inDojo: true,
       user: null,
       dojo: '',
       tasks: [],
@@ -83,11 +84,10 @@ export default class App extends React.Component {
       .child('dojo')
       .on('value', snapshot => {
         if (snapshot.exists()) {
-          this.setState(
-            {
-              inDojo: true,
-              dojo: snapshot.val()
-            },
+          this.setState({
+            inDojo: true,
+            dojo: snapshot.val()
+          },
             () => {
               if (!this.state.dojoInfoListener) {
                 this.addDojoInfoListeners();
@@ -96,6 +96,7 @@ export default class App extends React.Component {
             }
           );
         } else {
+          // turn off dojo info listeners
           if (this.state.dojoInfoListener) {
             var dojoRef = firebase
               .database()
@@ -115,6 +116,8 @@ export default class App extends React.Component {
             dojo: ''
           });
         }
+
+        this.setState({ loaded: true });
       });
   }
 
@@ -126,6 +129,10 @@ export default class App extends React.Component {
 
     dojoRef.child('name').on('value', snapshot => { //TEMP TODO better system
         this.updateDojoName(snapshot);
+    });
+
+    dojoRef.child('description').on('value', snapshot => { //TEMP TODO better system
+        this.updateDojoDescription(snapshot);
     });
 
     dojoRef.child('users').on('value', snapshot => {
@@ -148,21 +155,24 @@ export default class App extends React.Component {
       .child(this.state.user.uid)
       .update({
         name: this.state.user.displayName,
-        photoURL: this.state.user.photoURL
+        photoURL: this.state.user.photoURL,
+        email: this.state.user.email
       });
   }
 
   updateDojoName(snapshot) {    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
-
-    var taskObjects = [];
-
     if (snapshot.val()) {
       this.setState({ dojoName: snapshot.val() });
     }
   }
 
-  updateTasks(snapshot) {
+  updateDojoDescription(snapshot) {    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
+    if (snapshot.val()) {
+      this.setState({ dojoDescription: snapshot.val() });
+    }
+  }
 
+  updateTasks(snapshot) {
     var taskObjects = [];
 
     if (snapshot.val()) {
@@ -264,6 +274,5 @@ export default class App extends React.Component {
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       Ionicons: require('@expo/vector-icons/fonts/Ionicons.ttf')
     });
-    this.setState({ loaded: true });
   }
 }
