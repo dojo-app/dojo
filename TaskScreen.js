@@ -47,39 +47,24 @@ export class TaskScreen extends React.Component {
     )
   });
 
-  /*
   toggleCheck(bool, title) {
     if (bool) {
       return (
         <View style={styles.view}>
-          <Thumbnail source={require('./checkmark.png')} />
-          <Text style={styles.strikethrough}>{title}</Text>
-        </View>
-      );
-    }
-    else {
-      return (
-        <View style={styles.view}>
-          <Thumbnail source={require('./checkmark_false.png')} />
-          <Text>{title}</Text>
-        </View>
-      );
-    }
-  }
-  */
-
-  toggleCheck(bool, title) {
-    if (bool) {
-      return (
-        <View style={styles.view}>
-          <Thumbnail source={require('./checkmark.png')} />
+          <Thumbnail
+            style={styles.thumbnail}
+            source={require('./checkmark.png')}
+          />
           <Text style={styles.strikethrough}>{title}</Text>
         </View>
       );
     } else {
       return (
         <View style={styles.view}>
-          <Thumbnail source={require('./checkmark_false.png')} />
+          <Thumbnail
+            style={styles.thumbnail}
+            source={require('./checkmark_false.png')}
+          />
           <Text>{title}</Text>
         </View>
       );
@@ -243,9 +228,16 @@ const styles = StyleSheet.create({
   },
   view: {
     //flexWrap: 'nowrap'
-    flexDirection: 'row'
+    flex: 10,
+    flexDirection: 'row',
+    //justifyContent: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   list: {
     flexWrap: 'nowrap'
+  },
+  thumbnail: {
+    marginRight: 12
   }
 });
