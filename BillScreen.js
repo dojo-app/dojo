@@ -13,13 +13,13 @@ import {
   ListItem,
   CheckBox,
   Body,
-  //new ss
   Icon,
   Title,
   Right,
   Segment,
   List,
-  View
+  View,
+  Thumbnail
 } from 'native-base';
 import ActionButton from 'react-native-action-button';
 import * as firebase from 'firebase';
@@ -34,7 +34,7 @@ export class BillScreen extends React.Component {
   }
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
-    headerTintColor: '#c02b2b',
+    //headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -59,7 +59,7 @@ export class BillScreen extends React.Component {
         bill =>
           (sumOwed +=
             parseInt(bill.amount.substring(1)) /
-            parseInt(Object.keys(bill.users).length)) // +1 includes the requester MOD THIS ACCORDING TO UDPATED TEST
+            parseInt(Object.keys(bill.users).length))
       );
     excess = sumOwed - sumPaid;
     // if negative then they're in deficit, people owe this person money.
@@ -74,29 +74,19 @@ export class BillScreen extends React.Component {
     );
   }
 
-  // end
-
   getPersonalTotal() {
-    if (this.getExcess(this.props.screenProps.state.user.uid) < 0) {
-      //const listofAmounts = this.getUserAmounts();
-      //const transactionsArr = this.getTransactions(listofAmounts);
-      //return this.printTransactions(transactionsArr);
-      //BEST ONE
+    var num = this.getExcess(this.props.screenProps.state.user.uid);
+    var display = num < 0 ? '+$'+Math.abs(num) : '-$'+Math.abs(num);
+    if (this.getExcess(this.props.screenProps.state.user.uid) != 0) {
       return (
-        'Your housemates owe you $' +
-        Math.abs(this.getExcess(this.props.screenProps.state.user.uid)) +
-        ' total!'
+        'Your total is ' + display
+         +
+        '!'
       );
-    } else if (this.getExcess == 0) {
-      return 'You are in perfect balance!';
+      
     } else {
-      return (
-        'You owe your housemates $' +
-        this.getExcess(this.props.screenProps.state.user.uid) +
-        ' total!'
-      );
+      return 'You are in perfect balance!';
     }
-    // check to see if theyre in excess or deficit, display that number.
     // if in excess then display the amount that other users in the dojo owe them.
     // if in deficit then display the amount that they owe other users in the dojo.
   }
@@ -147,10 +137,13 @@ export class BillScreen extends React.Component {
         </View>
       );
     } else {
-      return <Text> No Bills to Display :( </Text>;
+      return (
+        <ListItem style={styles.center}>
+          <Text> No Bills to Display </Text>
+        </ListItem>
+      );
     }
   }
-  // new ------------------------------------------------------------------------------------------
 
   // returns a list of transactions that would settle a given excess list.
   // returns a 2D array that represents person {i} should pay person {j}
@@ -256,38 +249,72 @@ export class BillScreen extends React.Component {
 
   listTransactions(transactions) {
     let list = [];
+    var state = this.props.screenProps.state;
+
     for (let i = 0; i < transactions.length; i++) {
       for (let j = 0; j < transactions.length; j++) {
-        if (transactions[i][j] !== 0) {
+        if (transactions[i][j] !== 0
+          && state.users[i].id === this.props.screenProps.state.user.uid) {
+
+
           list.push(
-            `${this.props.screenProps.state.users[i].name} should pay ${
-              this.props.screenProps.state.users[j].name
-            } ${transactions[i][j]} dollars.`
+            <View style={styles.row}>
+                <Thumbnail small source={{ uri: state.users[j].photoURL }} />
+                <Text> {state.users[j].name}</Text>
+                <Text style={styles.negative}>you owe ${transactions[i][j]}</Text>
+              </View>
           );
         }
       }
     }
-    return list.map((str, index) => (
+
+    for (let i = 0; i < transactions.length; i++) {
+      for (let j = 0; j < transactions.length; j++) {
+        
+        
+        if (transactions[i][j] !== 0 
+          && state.users[j].id === this.props.screenProps.state.user.uid) {
+            list.push(
+              <View style={styles.row}>
+                <Thumbnail small source={{ uri: state.users[i].photoURL }} />
+                <Text> {state.users[i].name}</Text>
+                <Text style={styles.positive}> you receive ${transactions[i][j]}</Text>
+              </View>
+          );
+          
+        }
+      }
+    }
+
+    
+    return list.map((bill, index) => (
       <ListItem
         key={index}
-        onPress={() => navigate('TaskDetails', { task: task })}>
-        <Text>{str}</Text>
+        >
+        {bill}
       </ListItem>
     ));
   }
 
-  // end new --------------------------------------------------------------------------------------
+  checkOffBill() {
+    this.props.screenProps.state.bills.forEach(bill => {
+      firebase
+        .database()
+        .ref('bills')
+        .child(bill.id)
+        .remove();
+    });
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('bills')
+      .remove();
+  }
+
   render() {
     const excessList = this.getUserAmounts();
-    //this.printTransactions(this.getTransactions(excessList));
     const { navigate } = this.props.navigation;
-    /*const bills = this.props.screenProps.state.bills.map(bill => (
-      <ListItem
-        key={bill.id}
-        onPress={() => navigate('BillDetails', { bill: bill })}>
-        <Text>{bill.title}</Text>
-      </ListItem>
-    ));*/
 
     // build array of bills assigned by me
     const assignedByMeArray = this.props.screenProps.state.bills.filter(
@@ -317,7 +344,7 @@ export class BillScreen extends React.Component {
         <Container style={styles.container}>
           <Content>
             <List>
-              <ListItem>
+              <ListItem style={styles.containerTotal}>
                 <Text>{this.getPersonalTotal()}</Text>
               </ListItem>
               {this.validateExcessList(excessList) ? (
@@ -327,8 +354,10 @@ export class BillScreen extends React.Component {
               )}
             </List>
             <View style={styles.center}>
-              <Button style={styles.checkOff}>
-                <Text>Check Off Bill</Text>
+              <Button
+                style={styles.checkOff}
+                onPress={() => this.checkOffBill()}>
+                <Text>Clear All</Text>
               </Button>
             </View>
           </Content>
@@ -388,6 +417,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white'
   },
+  containerTotal: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderColor: 'red',
+    justifyContent: 'center'
+  },
   segment: {
     backgroundColor: 'white'
   },
@@ -405,5 +440,18 @@ const styles = StyleSheet.create({
   checkOff: {
     alignSelf: 'center',
     backgroundColor: '#c02b2b'
+  },
+  positive:{
+    marginLeft: 'auto',
+    color:'#ACE075',
+  },
+  negative:{
+    marginLeft: 'auto',
+    color:'#E07581',
+  },
+  row:{
+    flex: 1,
+    flexDirection:'row',
+    alignItems:'center',
   }
 });

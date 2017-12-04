@@ -86,9 +86,9 @@ export class AddBillScreen extends React.Component {
 
   toggleCheck(bool, user) {
     if (bool) {
-      return <Thumbnail medium source={require('./checkmark.png')} />;
+      return <Thumbnail small source={require('./checkmark.png')} />;
     } else {
-      return <Thumbnail medium source={{ uri: user.photoURL }} />;
+      return <Thumbnail small source={{ uri: user.photoURL }} />;
     }
   }
 
@@ -126,18 +126,18 @@ export class AddBillScreen extends React.Component {
     ));
 
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
           <Form>
             <Item fixedLabel>
-              <Label>Bill Title</Label>
+              <Label>Title</Label>
               <Input
                 value={this.state.billTitle}
                 onChangeText={text => this.setState({ billTitle: text })}
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Amount </Label>
+              <Label>Amount </Label>
               <Input
                 style={styles.right}
                 onChangeText={text =>
@@ -147,14 +147,14 @@ export class AddBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Description</Label>
+              <Label>Description</Label>
               <Input
                 value={this.state.billDescription}
                 onChangeText={text => this.setState({ billDescription: text })}
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Due Date</Label>
+              <Label>Due Date</Label>
               <Text
                 style={styles.text}
                 //value={this.state.billDueDate}
@@ -184,7 +184,8 @@ export class AddBillScreen extends React.Component {
             </ListItem>
             {users}
           </Form>
-          <Button style={styles.button}
+          <Button
+            style={styles.button}
             full
             onPress={() => {
               console.log('usercount = ' + this.usersCount());
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor:'#c02b2b'
+    backgroundColor: '#c02b2b'
   },
 
   right: {
