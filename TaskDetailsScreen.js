@@ -11,8 +11,10 @@ import {
   Label,
   Left,
   Text,
+  Icon,
   ListItem,
   CheckBox,
+  View,
   Body
 } from 'native-base';
 import * as firebase from 'firebase';
@@ -20,7 +22,9 @@ import { Alert } from 'react-native';
 
 export class TaskDetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Task Details'
+    title: 'Task Details',
+    headerTintColor: '#c02b2b'    
+
   };
 
   constructor(props) {
@@ -98,22 +102,20 @@ export class TaskDetailsScreen extends React.Component {
 
             {users}
           </Form>
-          <Button
-            danger
-            onPress={() =>
-              this.props.navigation.navigate('EditTask', {
-                task: this.props.navigation.state.params.task
-              })
-            }>
-            <Text>Edit Task</Text>
-          </Button>
 
-          <Button
-            danger
+
+          <View style={styles.container}>
+            <Button iconLeft style={ styles.editButton }
             onPress={() =>
+              this.props.navigation.navigate('EditTask', {task: this.props.navigation.state.params.task})}>
+              <Icon name='ios-create-outline' />
+              <Text>Edit Task</Text>
+            </Button>
+
+            <Button iconLeft style={styles.deleteButton} onPress={() =>
               Alert.alert(
                 'Are you sure?',
-                'The task will be permanently deleted',
+                'This task will be permanently deleted',
                 [
                   { text: 'Cancel' },
                   {
@@ -127,8 +129,11 @@ export class TaskDetailsScreen extends React.Component {
                 { cancelable: false }
               )
             }>
-            <Text>Delete Task</Text>
-          </Button>
+              <Icon name='ios-trash' />
+              <Text>Delete Task</Text>
+            </Button>
+          </View>
+
         </Content>
       </Container>
     );
@@ -138,6 +143,23 @@ export class TaskDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',   
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+
+  deleteButton: {
+    backgroundColor: '#c02b2b',
+    marginRight: '10%',
+    marginTop: 30,
+    marginBottom: 10
+
+  },
+
+  editButton: {
+    backgroundColor: '#d3d3d3',
+    marginLeft: '10%',
+    marginTop: 30,
+    marginBottom: 10
   }
 });

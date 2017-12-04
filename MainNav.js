@@ -11,6 +11,7 @@ import { NotInDojoScreen } from './NotInDojoScreen';
 import { BillDetailsScreen } from './BillDetailsScreen';
 import { DojoQRCodeScreen } from './DojoQRCodeScreen';
 import { ViewMember } from './component/Profile';
+import { DojoSettingsScreen } from './DojoSettingsScreen';
 
 const options = {};
 
@@ -26,7 +27,8 @@ export const MainNav = StackNavigator(
     JoinDojo: { screen: JoinDojoScreen },
     BillDetails: { screen: BillDetailsScreen },
     DojoQRCode: { screen: DojoQRCodeScreen },
-    MemberProfile: { screen: (props) => <ViewMember user={props.navigation.state.params.member} />}
+    MemberProfile: { screen: (props) => <ViewMember user={props.navigation.state.params.member} />},
+    DojoSettings: { screen: DojoSettingsScreen }
   },
   options
 );

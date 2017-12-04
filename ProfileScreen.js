@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet, Image, View, Keyboard } from 'react-native';
 import {
   Container,
   Header,
@@ -9,8 +9,7 @@ import {
   Icon,
   Text,
   Item,
-  Input,
-  Label
+  Input
 } from 'native-base';
 import * as firebase from 'firebase';
 import { ViewProfile } from './component/Profile';
@@ -33,6 +32,7 @@ export class ProfileScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Profile',
+    headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -85,8 +85,6 @@ export class ProfileScreen extends React.Component {
   }
 
   render() {
-    // console.log("Profile: ", this.state);
-
     let profContainer;
     if (this.state.editMode) {
       profContainer  = (
@@ -104,7 +102,6 @@ export class ProfileScreen extends React.Component {
     return (profContainer);
   }
 }
-
 
 
 const EditProfile = ({user, updateChange, state, cancel}) => (

@@ -79,8 +79,8 @@ export class LoginScreen extends React.Component {
     if (this.state.signingIn) {
       return (
         <Container style={styles.container}>
-          <H1 style={styles.center}>Logging In...</H1>
-          <Spinner color="black" />
+          <H1 style={styles.loginText}>Logging In...</H1>
+          <Spinner color="#d3d3d3" />
         </Container>
       );
     }
@@ -116,13 +116,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white', 
     fontWeight: 'bold',
-    marginTop: '5%'
+    marginTop: '5%',
+    backgroundColor: 'transparent'
     // ,
     // fontFamily: 'San Francisco'
   },
 
   button: { 
     marginTop: '40%' 
+  },
+
+  loginText: {
+    textAlign: 'center',
+    color: '#d3d3d3'
   },
 
   backgroundImage: {

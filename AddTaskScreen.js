@@ -21,7 +21,9 @@ import * as firebase from 'firebase';
 
 export class AddTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Task'
+    title: 'Add Task',
+    headerTintColor: '#c02b2b'
+
   };
 
   constructor(props) {
@@ -46,8 +48,10 @@ export class AddTaskScreen extends React.Component {
         title: this.state.title,
         description: this.state.description,
         users: this.state.users,
-        date: this.state.date
+        date: this.state.date,
+        source: this.props.screenProps.state.user.uid
       }).key;
+
     firebase
       .database()
       .ref('dojos')
@@ -133,7 +137,7 @@ export class AddTaskScreen extends React.Component {
 
             {users}
           </Form>
-          <Button
+          <Button style={styles.button}
             full
             onPress={() => {
               if (this.state.title === '') {
@@ -160,6 +164,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
+  },
+
+  button: {
+    backgroundColor:'#c02b2b'
   },
 
   text: {
