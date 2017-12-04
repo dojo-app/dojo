@@ -84,7 +84,7 @@ export class BillScreen extends React.Component {
       //BEST ONE
       return (
         'Your housemates owe you $' +
-        this.getExcess(this.props.screenProps.state.user.uid) +
+        Math.abs(this.getExcess(this.props.screenProps.state.user.uid)) +
         ' total!'
       );
     } else if (this.getExcess == 0) {
@@ -92,7 +92,7 @@ export class BillScreen extends React.Component {
     } else {
       return (
         'You owe your housemates $' +
-        Math.abs(this.getExcess(this.props.screenProps.state.user.uid)) +
+        this.getExcess(this.props.screenProps.state.user.uid) +
         ' total!'
       );
     }
@@ -156,10 +156,6 @@ export class BillScreen extends React.Component {
   // returns a 2D array that represents person {i} should pay person {j}
   // {arr[i][j]} dollars
   getTransactions(EXCESS_LIST) {
-    if (!this.validateExcessList(EXCESS_LIST)) {
-      return;
-    }
-
     // clones it so we don't modify the original
     let excessList = EXCESS_LIST.slice();
     let transactions = this.zeroFill2DArray(excessList.length);
@@ -177,11 +173,14 @@ export class BillScreen extends React.Component {
     return transactions;
   }
 
+  // returns if a given array sums to 0
   validateExcessList(excessList) {
     let sum = 0;
+
     for (let i = 0; i < excessList.length; i++) {
       sum += excessList[i];
     }
+
     return sum === 0;
   }
 
@@ -268,7 +267,13 @@ export class BillScreen extends React.Component {
         }
       }
     }
-    return list.map((str, index) => <Text key={index}>{str}</Text>);
+    return list.map((str, index) => (
+      <ListItem
+        key={index}
+        onPress={() => navigate('TaskDetails', { task: task })}>
+        <Text>{str}</Text>
+      </ListItem>
+    ));
   }
 
   // end new --------------------------------------------------------------------------------------
@@ -311,13 +316,16 @@ export class BillScreen extends React.Component {
       <Content>
         <Container style={styles.container}>
           <Content>
-            <Text>{this.getExcess(this.props.screenProps.state.user.uid)}</Text>
-            <Text>{this.getPersonalTotal()}</Text>
-            {this.validateExcessList(excessList) ? (
-              this.listTransactions(this.getTransactions(excessList))
-            ) : (
-              <Text>Loading</Text>
-            )}
+            <List>
+              <ListItem>
+                <Text>{this.getPersonalTotal()}</Text>
+              </ListItem>
+              {this.validateExcessList(excessList) ? (
+                this.listTransactions(this.getTransactions(excessList))
+              ) : (
+                <Text>Loading</Text>
+              )}
+            </List>
             <View style={styles.center}>
               <Button style={styles.checkOff}>
                 <Text>Check Off Bill</Text>
