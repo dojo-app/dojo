@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Container,
   Header,
@@ -18,7 +18,10 @@ import {
   ListItem,
   Switch,
   Card,
-  CardItem
+  CardItem,
+  CheckBox,
+  View,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
@@ -42,6 +45,43 @@ export class TaskScreen extends React.Component {
     )
   });
 
+  /*
+  toggleCheck(bool, title) {
+    if (bool) {
+      return (
+        <View>
+          <Thumbnail source={require('./checkmark.png')} />
+          <Text style={styles.strikethrough}>{title}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <Thumbnail source={require('./checkmark_false.png')} />
+          <Text>{title}</Text>
+        </View>
+      );
+    }
+  }
+  */
+  toggleCheck(bool, title) {
+    if (bool) {
+      return (
+        <View style={styles.view}>
+          <Thumbnail source={require('./checkmark.png')} />
+          <Text style={styles.strikethrough}>{title}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.view}>
+          <Thumbnail source={require('./checkmark_false.png')} />
+          <Text>{title}</Text>
+        </View>
+      );
+    }
+  }
+
   render() {
     const { navigate } = this.props.navigation;
 
@@ -49,9 +89,46 @@ export class TaskScreen extends React.Component {
       <ListItem
         key={task.id}
         onPress={() => navigate('TaskDetails', { task: task })}>
-        <Text>{task.title}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            var toggle = !task.checked;
+            firebase
+              .database()
+              .ref('tasks')
+              .child(task.id)
+              .update({ checked: toggle });
+
+            firebase
+              .database()
+              .ref('dojos')
+              .child(this.props.screenProps.state.dojo)
+              .child('tasks')
+              .update({ [task.id]: toggle });
+          }}>
+          {this.toggleCheck(task.checked, task.title)}
+        </TouchableOpacity>
       </ListItem>
     ));
+    /*
+<CheckBox
+          onPress={() => {
+            var toggle = !task.checked;
+            firebase
+              .database()
+              .ref('tasks')
+              .child(task.id)
+              .update({ checked: toggle });
+
+            firebase
+              .database()
+              .ref('dojos')
+              .child(this.props.screenProps.state.dojo)
+              .child('tasks')
+              .update({ [task.id]: toggle });
+          }}
+          checked={task.checked}
+        />
+        */
 
     const AssignedByMe = (
       <Content>
@@ -66,9 +143,7 @@ export class TaskScreen extends React.Component {
     const AssignedToMe = (
       <Content>
         <Container style={styles.container}>
-          <Content>
-
-          </Content>
+          <Content />
         </Container>
       </Content>
     );
@@ -125,6 +200,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white'
   },
+  listItem: {
+    //display: 'flex',
+    //flexWrap: 'nowrap'
+  },
+  strikethrough: {
+    textDecorationLine: 'line-through'
+  },
   segment: {
     backgroundColor: 'white'
   },
@@ -132,5 +214,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: 22,
     color: 'white'
+  },
+  view: {
+    //flexWrap: 'nowrap'
+    flexDirection: 'row'
+  },
+  list: {
+    flexWrap: 'nowrap'
   }
 });

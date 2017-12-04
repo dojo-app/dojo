@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
-import DatePicker from 'react-native-datepicker'
+import DatePicker from 'react-native-datepicker';
 
 import {
   Container,
@@ -33,7 +33,7 @@ export class AddTaskScreen extends React.Component {
     this.state = {
       title: '',
       description: '',
-      date:"2017-12-02",
+      date: '2017-12-02',
       users: users
     };
   }
@@ -46,7 +46,8 @@ export class AddTaskScreen extends React.Component {
         title: this.state.title,
         description: this.state.description,
         users: this.state.users,
-        date: this.state.date
+        date: this.state.date,
+        checked: false
       }).key;
     firebase
       .database()
@@ -86,7 +87,6 @@ export class AddTaskScreen extends React.Component {
       <Container style={styles.container}>
         <Content keyboardShouldPersistTaps={'handled'}>
           <Form>
-
             <Item fixedLabel>
               <Label>Title</Label>
               <Input
@@ -106,23 +106,27 @@ export class AddTaskScreen extends React.Component {
 
             <Item fixedLabel>
               <Label>Due Date</Label>
-              <Text style={styles.text}
+              <Text
+                style={styles.text}
                 //value={this.state.billDueDate}
-                onPress={() => {this.refs.datepicker.onPressDate()}}
-              >
-               {this.state.date}
+                onPress={() => {
+                  this.refs.datepicker.onPressDate();
+                }}>
+                {this.state.date}
               </Text>
             </Item>
             <DatePicker
               date={this.state.date}
               mode="date"
-              style={{width: 0, height: 0}}
+              style={{ width: 0, height: 0 }}
               showIcon={false}
-              confirmBtnText='Submit'
-              cancelBtnText='Cancel'
+              confirmBtnText="Submit"
+              cancelBtnText="Cancel"
               //customStyles={customStyles}
               ref="datepicker"
-              onDateChange={(date) => {this.setState({date: date})}}
+              onDateChange={date => {
+                this.setState({ date: date });
+              }}
             />
 
             <ListItem itemDivider>
