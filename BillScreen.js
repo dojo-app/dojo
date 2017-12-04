@@ -257,7 +257,7 @@ export class BillScreen extends React.Component {
         }
       }
     }
-    return list.map(str => <Text>{str}</Text>);
+    return list.map((str, index) => <Text key={index}>{str}</Text>);
   }
 
   // end new --------------------------------------------------------------------------------------
