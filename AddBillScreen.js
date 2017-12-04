@@ -126,7 +126,7 @@ export class AddBillScreen extends React.Component {
     ));
 
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
           <Form>
             <Item fixedLabel>
@@ -184,7 +184,8 @@ export class AddBillScreen extends React.Component {
             </ListItem>
             {users}
           </Form>
-          <Button style={styles.button}
+          <Button
+            style={styles.button}
             full
             onPress={() => {
               console.log('usercount = ' + this.usersCount());
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor:'#c02b2b'
+    backgroundColor: '#c02b2b'
   },
 
   right: {
