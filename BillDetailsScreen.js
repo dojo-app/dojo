@@ -21,43 +21,44 @@ import {
 import * as firebase from 'firebase';
 import { Alert } from 'react-native';
 
-
 export class BillDetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Bill Detail',
-    headerTintColor: '#c02b2b'        
+
+    title: 'Bill Details',
+    headerTintColor: '#c02b2b'
+
   };
 
   constructor(props) {
-      super(props);
-      this.state = {
-          bill: this.props.navigation.state.params.bill
-      };
+    super(props);
+    this.state = {
+      bill: this.props.navigation.state.params.bill
+    };
   }
 
   deleteBill() {
-
-      //From Bills collection
-      firebase
+    //From Bills collection
+    firebase
       .database()
       .ref('bills')
       .child(this.state.bill.id)
-      .remove()
+      .remove();
 
-      //From Dojo Bills collection
-      firebase
+    //From Dojo Bills collection
+    firebase
       .database()
       .ref('dojos')
       .child(this.props.screenProps.state.dojo)
       .child('bills')
       .child(this.state.bill.id)
-      .remove()
+      .remove();
   }
 
   render() {
     //const bill = this.props.navigation.state.params.bill;
     const billUsers = this.state.bill.users;
     const user = this.props.screenProps.state.user;
+
     const users = this.props.screenProps.state.users.filter(user => billUsers[user.id]).map(user => (
       <ListItem key={user.id}>
         <Thumbnail small source={{ uri: user.photoURL }} />
@@ -67,6 +68,7 @@ export class BillDetailsScreen extends React.Component {
       </ListItem>
     ));
 
+
     const { navigate } = this.props.navigation;
 
     return (
@@ -75,28 +77,18 @@ export class BillDetailsScreen extends React.Component {
           <Form>
             <Item fixedLabel>
               <Label>Title</Label>
-              <Input
-                disabled
-                value={this.state.bill.title}
-              />
+              <Input disabled value={this.state.bill.title} />
             </Item>
 
             <Item fixedLabel>
               <Label>Description</Label>
-              <Input
-                disabled
-                value={this.state.bill.description}
-              />
+              <Input disabled value={this.state.bill.description} />
             </Item>
 
             <Item fixedLabel>
               <Label>Amount</Label>
-              <Input
-                disabled
-                value={this.state.bill.amount}
-              />
+              <Input disabled value={this.state.bill.amount} />
             </Item>
-
 
             <ListItem itemDivider>
               <Body>
@@ -107,37 +99,42 @@ export class BillDetailsScreen extends React.Component {
           </Form>
 
           <View style={styles.container}>
-            <Button iconLeft style={ styles.editButton }
-            onPress={() => {
-               navigate('EditBill', { bill: this.props.navigation.state.params.bill })
-            }}>
-              <Icon name='ios-create-outline' />
+            <Button
+              iconLeft
+              style={styles.editButton}
+              onPress={() => {
+                navigate('EditBill', {
+                  bill: this.props.navigation.state.params.bill
+                });
+              }}>
+              <Icon name="ios-create-outline" />
               <Text>Edit Bill</Text>
             </Button>
 
-            <Button iconLeft style={styles.deleteButton} onPress={() =>
-              Alert.alert(
-                'Are you sure?',
-                'This bill will be permanently deleted',
-                [
-                  { text: 'Cancel' },
-                  {
-                    text: 'Delete',
-                    onPress: () => {
-                      this.deleteBill();
-                      this.props.navigation.goBack();
+            <Button
+              iconLeft
+              style={styles.deleteButton}
+              onPress={() =>
+                Alert.alert(
+                  'Are you sure?',
+                  'This bill will be permanently deleted',
+                  [
+                    { text: 'Cancel' },
+                    {
+                      text: 'Delete',
+                      onPress: () => {
+                        this.deleteBill();
+                        this.props.navigation.goBack();
+                      }
                     }
-                  }
-                ],
-                { cancelable: false }
-              )
-            }>
-              <Icon name='ios-trash' />
+                  ],
+                  { cancelable: false }
+                )
+              }>
+              <Icon name="ios-trash" />
               <Text>Delete Bill</Text>
             </Button>
-
           </View>
-
         </Content>
       </Container>
     );
@@ -147,7 +144,7 @@ export class BillDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',   
+    backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between'
   },

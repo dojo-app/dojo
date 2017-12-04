@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Container,
   Header,
@@ -18,7 +18,10 @@ import {
   ListItem,
   Switch,
   Card,
-  CardItem
+  CardItem,
+  CheckBox,
+  View,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
@@ -44,6 +47,30 @@ export class TaskScreen extends React.Component {
     )
   });
 
+  toggleCheck(bool, title) {
+    if (bool) {
+      return (
+        <View style={styles.view}>
+          <Thumbnail
+            style={styles.thumbnail}
+            source={require('./checkmark.png')}
+          />
+          <Text style={styles.strikethrough}>{title}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.view}>
+          <Thumbnail
+            style={styles.thumbnail}
+            source={require('./checkmark_false.png')}
+          />
+          <Text>{title}</Text>
+        </View>
+      );
+    }
+  }
+
   // creates an object of list items from array
   createList(array) {
     const { navigate } = this.props.navigation;
@@ -51,10 +78,26 @@ export class TaskScreen extends React.Component {
       <ListItem
         key={task.id}
         onPress={() => navigate('TaskDetails', { task: task })}>
-        <Text>{task.title}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            var toggle = !task.checked;
+            firebase
+              .database()
+              .ref('tasks')
+              .child(task.id)
+              .update({ checked: toggle });
+
+            firebase
+              .database()
+              .ref('dojos')
+              .child(this.props.screenProps.state.dojo)
+              .child('tasks')
+              .update({ [task.id]: toggle });
+          }}>
+          {this.toggleCheck(task.checked, task.title)}
+        </TouchableOpacity>
       </ListItem>
     ));
-
     return list;
   }
 
@@ -106,9 +149,9 @@ export class TaskScreen extends React.Component {
         <Header hasTabs style={styles.segment}>
           <Segment style={styles.segment}>
             <Button
-            style={{
-                backgroundColor: this.state.onList ? "#c02b2b" : undefined,
-                borderColor: "#c02b2b",
+              style={{
+                backgroundColor: this.state.onList ? '#c02b2b' : undefined,
+                borderColor: '#c02b2b'
               }}
               first
               active={this.state.onList}
@@ -117,23 +160,25 @@ export class TaskScreen extends React.Component {
                   this.setState({ onList: true });
                 }
               }}>
-              <Text style={{ color: this.state.onList ? "#FFF" : "#c02b2b" }}>
-              Assigned By Me</Text>
+              <Text style={{ color: this.state.onList ? '#FFF' : '#c02b2b' }}>
+                Assigned By Me
+              </Text>
             </Button>
             <Button
               last
               style={{
-									backgroundColor: !this.state.onList ? "#c02b2b" : undefined,
-									borderColor: "#c02b2b",
-							}}
+                backgroundColor: !this.state.onList ? '#c02b2b' : undefined,
+                borderColor: '#c02b2b'
+              }}
               active={!this.state.onList}
               onPress={() => {
                 if (this.state.onList) {
                   this.setState({ onList: false });
                 }
               }}>
-              <Text style={{ color: !this.state.onList ? "#FFF" : "#c02b2b" }}>
-              Assigned To Me</Text>
+              <Text style={{ color: !this.state.onList ? '#FFF' : '#c02b2b' }}>
+                Assigned To Me
+              </Text>
             </Button>
           </Segment>
         </Header>
@@ -163,9 +208,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white'
   },
+  listItem: {
+    //display: 'flex',
+    //flexWrap: 'nowrap'
+  },
+  strikethrough: {
+    textDecorationLine: 'line-through'
+  },
   segment: {
     backgroundColor: 'white'
-
   },
   seg: {
     backgroundColor: 'green'
@@ -174,5 +225,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: 22,
     color: 'white'
+  },
+  view: {
+    //flexWrap: 'nowrap'
+    flex: 10,
+    flexDirection: 'row',
+    //justifyContent: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  list: {
+    flexWrap: 'nowrap'
+  },
+  thumbnail: {
+    marginRight: 12
   }
 });
