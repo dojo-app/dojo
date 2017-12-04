@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, View } from 'react-native';
+import { StyleSheet,
+  Image, 
+  View, 
+  Keyboard, 
+  TouchableWithoutFeedback, 
+  Alert } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import DatePicker from 'react-native-datepicker'
 import {
   Container,
   Header,
@@ -9,26 +16,33 @@ import {
   Icon,
   Text,
   Item,
-  Input
+  Input,
+  Form
 } from 'native-base';
 import * as firebase from 'firebase';
+import { ViewProfile } from './component/Profile';
 
 export class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       editMode: false,
-      displayName: this.props.screenProps.state.user.displayName,
+      displayName: this.props.screenProps.state.user.name,
       email: this.props.screenProps.state.user.email,
-      phoneNumber: this.props.screenProps.state.user.phoneNumber
+      phoneNumber: this.props.screenProps.state.user.phoneNumber,
+      aboutMe: this.props.screenProps.state.user.aboutMe,
+      date: this.props.screenProps.state.user.birthDate,
+      height: 40
     };
 
     this.editMode = this.editMode.bind(this);
     this.updateChanges = this.updateChanges.bind(this);
+    this.cancelUpdate = this.cancelUpdate.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Profile',
+    headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -44,117 +58,171 @@ export class ProfileScreen extends React.Component {
     });
   }
 
+  cancelUpdate() {
+    this.setState({
+      editMode: false
+    });
+  }
+
   updateChanges() {
-    let user = this.props.screenProps.state.user.uid;
+    firebase
+      .database()
+      .ref('users/')
+      .child(this.props.screenProps.state.user.uid)
+      .update({
+        name: this.state.displayName,
+        phoneNumber: this.state.phoneNumber,
+        birthDate: this.state.date,
+        aboutMe: this.state.aboutMe
+      });
 
     this.setState({
       editMode: false
     });
-
-    firebase
-      .database()
-      .ref(`users/${user}`)
-      .update({
-        name: this.state.displayName,
-        email: this.state.email,
-        phoneNumber: this.state.phoneNumber
-      });
   }
 
   componentWillUnmount() {
     this.editMode = undefined;
     this.updateChanges = undefined;
+    this.cancelUpdate = undefined;
+
+    if (this.state.editMode) {
+      this.setState({
+        editMode: false
+      });
+    }
+
   }
 
-  render() {
-    // console.log("Phone number: ", this.props.screenProps.state.user);
+  updateSize = (height) => {
+    this.setState({
+      height
+    });
+  }
 
-    let profContainer;
+  // TODO: make function that gets today's date and set minDate to DatePicker
+  // TODO: character count for about me
+
+  render() {
+    let desc = this.state.aboutMe;
+    const {height} = this.state;
+    let newStyle = {
+      height
+    }
+
+    let user = this.props.screenProps.state.user;
     if (this.state.editMode) {
-      profContainer  = (<EditProfile user={ this.props.screenProps.state.user }
-        updateChange={ this.updateChanges } state={ this } />);
+      return (
+        <TouchableWithoutFeedback
+          onPress={Keyboard.dismiss} 
+          accessible={false}>
+          <KeyboardAwareScrollView
+            style={{ backgroundColor: 'white' }}
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            contentContainerStyle={ styles.container }
+            >
+            <Image
+              style={ styles.profilePicture }
+              source={{ uri:user.photoURL }} />
+
+            <View
+              style={ styles.content }
+              >
+              <Item>
+                <Icon active name='ios-person' />
+                <Input
+                  placeholder={ user.name } 
+                  onChangeText={(displayName) => this.setState({ displayName: displayName })}/>
+              </Item>
+              <Item>
+                <Icon active name='ios-call' />
+                <Input
+                  placeholder={ user.phoneNumber } 
+                  keyboardType={'numeric'} 
+                  onChangeText={(phoneNumber) => this.setState({ phoneNumber: phoneNumber })} />
+              </Item>
+              <Item>
+                <Icon active name='ios-calendar' />
+                <DatePicker
+                  date={this.state.date}
+                  placeholder="Select Date"
+                  mode="date"
+                  format="MM-DD-YYYY"
+                  showIcon={false}
+                  confirmBtnText='Submit'
+                  cancelBtnText='Cancel'
+                  customStyles={{
+                    dateInput: {
+                      borderLeftWidth: 0,
+                      borderRightWidth: 0,
+                      borderTopWidth: 0,
+                      borderBottomWidth: 0,
+                      alignItems: 'flex-start',
+                      marginLeft: 5
+                    },
+                    dateText: {
+                      fontSize: 16
+                    },
+                    placeholderText: {
+                      fontSize: 16
+                    }
+                  }}
+                  onDateChange={(newDate) => this.setState({date: newDate})}
+                />
+              </Item>
+              <Item style={{ marginTop: 10 }}>
+                <Icon active name='ios-information-circle' />
+                <Input 
+                  value={ desc }
+                  multiline={true}
+                  style={[newStyle]}
+                  onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
+                  onChangeText={(desc) => this.setState({ aboutMe: desc })} />
+              </Item>
+              <Text style={{ fontSize: 10.5, alignSelf: 'flex-end' }}>
+                Max Char: 120
+              </Text>
+            </View>
+
+            <View style={ styles.footer }>
+              <Button light
+                style={ styles.cancelButton } 
+                onPress={ this.cancelUpdate }>
+                <Text>Cancel</Text>
+              </Button>
+              <Button 
+                style={ styles.button } 
+                onPress={ () => {
+                  let desc = this.state.aboutMe;
+                  let length = 0;
+                  if (desc)
+                    length = String(desc).length
+
+                  if (length > 121) {
+                    Alert.alert("Max character limit for your about me is 120. Please shorten your description.");
+                  }
+                  else {
+                    this.updateChanges();
+                  }
+                } }>
+                <Text style={{ color: 'white' }}>Save</Text>
+              </Button>
+            </View>
+          </KeyboardAwareScrollView>
+        </TouchableWithoutFeedback>
+      );
     }
     else {
-      profContainer = (<ViewProfile user={ this.props.screenProps.state.user }
-        editMode={ this.editMode } />);
+      return (
+        <ViewProfile user={ this.props.screenProps.state.user }
+            editMode={ this.editMode } />
+      );
     }
-
-    return profContainer;
   }
 }
 
-const ViewProfile = ({user, editMode}) => (
-  <Container style={ styles.container }>
-    <Button iconLeft transparent dark style={{ alignSelf: 'flex-end' }}
-      onPress={ editMode }>
-      <Icon name='ios-create-outline' />
-    </Button>
-
-    <Image style={ styles.profilePicture }
-      source={{ uri:user.photoURL }} />
-    <Text style={ styles.displayName }>{ user.displayName }</Text>
-
-    <Content scrollEnabled={false} keyboardShouldPersistTaps='always'
-      enableAutoAutomaticScroll={false} style={ styles.content }>
-      <Item>
-        <Icon active name='ios-mail' />
-        <Input disabled placeholder={ user.email }/>
-      </Item>
-      <Item>
-        <Icon active name='ios-call' />
-        <Input disabled placeholder={ user.phoneNumber }/>
-      </Item>
-    </Content>
-
-    <Footer style={ styles.footer }>
-      <Button iconLeft danger style={ styles.button }>
-        <Icon name='ios-trash' />
-        <Text>Delete Account</Text>
-      </Button>
-      <Button iconLeft light style={ styles.button }
-        onPress={() => firebase.auth().signOut()}>
-        <Icon name='ios-log-out' />
-        <Text>Log Out</Text>
-      </Button>
-    </Footer>
-  </Container>
-);
-
-const EditProfile = ({user, updateChange, state}) => (
-  <Container style={ styles.container }>
-    <Image style={ styles.profilePicture }
-      source={{ uri:user.photoURL }} />
-
-    <Content scrollEnabled={false} keyboardShouldPersistTaps='always'
-      enableAutoAutomaticScroll={false} style={ styles.content }>
-      <Item>
-        <Icon active name='ios-person' />
-        <Input placeholder={ user.displayName }
-          onChangeText={(displayName) => state.setState({ displayName: displayName })}/>
-      </Item>
-      <Item>
-        <Icon active name='ios-mail' />
-        <Input placeholder={ user.email }
-          onChangeText={(email) => state.setState({ email: email })}/>
-      </Item>
-      <Item>
-        <Icon active name='ios-call' />
-        <Input placeholder={ user.phoneNumber }
-          onChangeText={(phoneNumber) => state.setState({ phoneNumber: phoneNumber })} />
-      </Item>
-    </Content>
-
-    <Footer style={ styles.footer }>
-      <Button success style={ styles.button } onPress={ updateChange }>
-        <Text>Submit</Text>
-      </Button>
-    </Footer>
-  </Container>
-);
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 10,
     backgroundColor: 'white',
     alignItems: 'center',
@@ -175,20 +243,25 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   content: {
-    flex: 1,
+    flex: 4,
     margin: 25,
     padding: 10,
-    backgroundColor: 'white',
     alignSelf: 'stretch',
     borderStyle: 'solid',
     borderTopWidth: 2,
-    borderBottomWidth: 2
+    borderBottomWidth: 2,
+    borderColor: '#c02b2b'
+  },
+  cancelButton: {
+    margin: 10,
+    backgroundColor: '#d3d3d3'
   },
   button: {
-    margin: 10
+    margin: 10,
+    backgroundColor: '#c02b2b'
   },
   footer: {
-    backgroundColor: 'white',
-    borderTopWidth: 0
+    flex: 1,
+    flexDirection: 'row'
   }
 });
