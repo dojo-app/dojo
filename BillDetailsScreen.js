@@ -23,7 +23,6 @@ import { Alert } from 'react-native';
 
 export class BillDetailsScreen extends React.Component {
   static navigationOptions = {
-
     title: 'Bill Details',
     headerTintColor: '#c02b2b'
   };
@@ -58,15 +57,16 @@ export class BillDetailsScreen extends React.Component {
     const billUsers = this.state.bill.users;
     const user = this.props.screenProps.state.user;
 
-    const users = this.props.screenProps.state.users.filter(user => billUsers[user.id]).map(user => (
-      <ListItem key={user.id}>
-        <Thumbnail small source={{ uri: user.photoURL }} />
-        <Body>
-          <Text>{user.name}</Text>
-        </Body>
-      </ListItem>
-    ));
-
+    const users = this.props.screenProps.state.users
+      .filter(user => billUsers[user.id])
+      .map(user => (
+        <ListItem key={user.id}>
+          <Thumbnail small source={{ uri: user.photoURL }} />
+          <Body>
+            <Text>{user.name}</Text>
+          </Body>
+        </ListItem>
+      ));
 
     const { navigate } = this.props.navigation;
 
@@ -74,6 +74,10 @@ export class BillDetailsScreen extends React.Component {
       <Container style={styles.container}>
         <Content>
           <Form>
+            <Item fixedLabel>
+              <Label>Title</Label>
+              <Input disabled value={this.state.bill.title} />
+            </Item>
 
             <Item fixedLabel>
               <Label>Description</Label>

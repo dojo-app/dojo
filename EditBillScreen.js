@@ -59,14 +59,20 @@ export class EditBillScreen extends React.Component {
         title: this.state.billTitle
       });
 
-    /* do not need to update this, key is true either way
-      firebase
+    firebase
       .database()
       .ref('dojos')
       .child(this.props.screenProps.state.dojo)
       .child('bills')
-<<<<<<< Updated upstream
-      .update({ [key]: true });*/
+      .child(key)
+      .remove();
+
+    firebase
+      .database()
+      .ref('dojos')
+      .child(this.props.screenProps.state.dojo)
+      .child('bills')
+      .update({ [key]: true });
   }
 
   usersCount() {

@@ -57,7 +57,7 @@ export class AddTaskScreen extends React.Component {
       .ref('dojos')
       .child(this.props.screenProps.state.dojo)
       .child('tasks')
-      .update({ [key]: true });
+      .update({ [key]: false });
   }
 
   usersCount() {
