@@ -68,12 +68,57 @@ export default class App extends React.Component {
   }
 
   handleLogIn(user) {
-    this.setState({ loggedIn: true, user: user });
-    this.updateUserInfo();
-    if (!this.state.inDojoListener) {
-      this.addInDojoListener();
-      this.setState({ inDojoListener: true });
-    }
+    let userRef = firebase.database().ref('users/');
+
+    userRef.child(user.uid)
+      .once('value').then(snapshot => {
+        if (snapshot.val())
+          this.updateUserInfo(user, false);
+        else
+          this.updateUserInfo(user, true);
+    }, (error) => {
+      console.log("Error querying user in db.");
+    })
+    .then(() => {
+      this.loadUser(user);
+    }, (error) => {
+      console.log("Error loading user object.");
+    });
+
+    // this.setState({ loggedIn: true, user: user });
+    // this.updateUserInfo();
+
+    // if (!this.state.inDojoListener) {
+    //   console.log("This is called");
+    //   this.addInDojoListener();
+    //   this.setState({ inDojoListener: true });
+    // }
+  }
+
+  loadUser(user) {
+    firebase.database().ref('users')
+      .child(user.uid)
+      .once('value')
+      .then((snapshot) => {
+          // console.log(snapshot.val());
+          let userObj = snapshot.val();
+          userObj['uid'] = user.uid;
+
+          this.setState({ user: userObj });
+          // console.log(this.state.user);
+      }, (error) => {
+        console.log("Error loading user object.");
+      })
+      .then(() => {
+        if (!this.state.inDojoListener) {
+          this.addInDojoListener();
+          this.setState({ inDojoListener: true });
+        }
+
+        this.setState({ loggedIn: true });
+      }, (error) => {
+        console.log("Error setting dojo listeners.");
+      });
   }
 
   addInDojoListener() {
@@ -146,18 +191,52 @@ export default class App extends React.Component {
     dojoRef.child('bills').on('value', snapshot => {
       this.updateBills(snapshot);
     });
+
+    this.updateUserObj();
   }
 
-  updateUserInfo() {
-    firebase
+  updateUserObj() {
+    var userRef = firebase
       .database()
-      .ref('users')
-      .child(this.state.user.uid)
-      .update({
-        name: this.state.user.displayName,
-        photoURL: this.state.user.photoURL,
-        email: this.state.user.email
+      .ref('users');
+
+    userRef.child(this.state.user.uid)
+      .on('value', (snapshot) => {
+        let userObj = snapshot.val();
+        userObj['uid'] = this.state.user.uid;
+
+        this.setState({ user: userObj });
+        console.log(this.state.user);
       });
+  }
+
+  updateUserInfo(user, newUser) {
+    let userRef = firebase
+      .database()
+      .ref('users');
+
+    if (newUser) {
+      userRef.child(user.uid)
+        .update({
+          name: user.displayName,
+          email: user.email
+        });
+    }
+
+    userRef.child(user.uid)
+      .update({
+        photoURL: user.photoURL
+      });
+
+    // firebase
+    //   .database()
+    //   .ref('users')
+    //   .child(user.uid)
+    //   .update({
+    //     // name: this.state.user.displayName,
+    //     photoURL: user.photoURL,
+    //     // email: this.state.user.email
+    //   });
   }
 
   updateDojoName(snapshot) {    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}

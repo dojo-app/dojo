@@ -22,10 +22,10 @@ import * as firebase from 'firebase';
 import { Alert } from 'react-native';
 
 export class BillDetailsScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Bill Details',
+  static navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params.bill.title}`,
     headerTintColor: '#c02b2b'
-  };
+  });
 
   constructor(props) {
     super(props);

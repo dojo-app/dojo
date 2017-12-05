@@ -18,7 +18,8 @@ import {
   CheckBox,
   ListItem,
   View,
-  Body
+  Body,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 
@@ -77,6 +78,15 @@ export class EditTaskScreen extends React.Component {
     return count;
   }
 
+  toggleCheck(bool, user) {
+    console.log(bool);
+    if (bool) {
+      return <Thumbnail small source={require('./checkmark.png')} />;
+    } else {
+      return <Thumbnail small source={{ uri: user.photoURL }} />;
+    }
+  }
+
   render() {
     const users = this.props.screenProps.state.users.map(user => (
       <ListItem
@@ -88,7 +98,7 @@ export class EditTaskScreen extends React.Component {
             users: prevUsers
           });
         }}>
-        <CheckBox checked={this.state.users[user.id]} />
+        {this.toggleCheck(this.state.users[user.id], user)}
         <Body>
           <Text>{user.name}</Text>
         </Body>

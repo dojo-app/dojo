@@ -19,9 +19,10 @@ import {
   Segment,
   List,
   View,
-  Thumbnail
+  Thumbnail,
 } from 'native-base';
 import ActionButton from 'react-native-action-button';
+import { Alert } from 'react-native';
 import * as firebase from 'firebase';
 
 export class BillScreen extends React.Component {
@@ -34,7 +35,7 @@ export class BillScreen extends React.Component {
   }
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
-    headerTintColor: '#c02b2b',
+    //headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -259,7 +260,7 @@ export class BillScreen extends React.Component {
 
           list.push(
             <View style={styles.row}>
-                <Thumbnail small source={{ uri: state.users[j].photoURL }} />
+                <Thumbnail medium source={{ uri: state.users[j].photoURL }} />
                 <Text> {state.users[j].name}</Text>
                 <Text style={styles.negative}>you owe ${transactions[i][j]}</Text>
               </View>
@@ -276,7 +277,7 @@ export class BillScreen extends React.Component {
           && state.users[j].id === this.props.screenProps.state.user.uid) {
             list.push(
               <View style={styles.row}>
-                <Thumbnail small source={{ uri: state.users[i].photoURL }} />
+                <Thumbnail medium source={{ uri: state.users[i].photoURL }} />
                 <Text> {state.users[i].name}</Text>
                 <Text style={styles.positive}> you receive ${transactions[i][j]}</Text>
               </View>
@@ -290,7 +291,7 @@ export class BillScreen extends React.Component {
     return list.map((bill, index) => (
       <ListItem
         key={index}
-        onPress={() => navigate('TaskDetails', { task: task })}>
+        >
         {bill}
       </ListItem>
     ));
@@ -340,10 +341,10 @@ export class BillScreen extends React.Component {
     );
 
     const personalTotal = (
-      <Content>
+      <Content style={styles.flex}>
         <Container style={styles.container}>
           <Content>
-            <List>
+            <List >
               <ListItem style={styles.containerTotal}>
                 <Text>{this.getPersonalTotal()}</Text>
               </ListItem>
@@ -356,8 +357,29 @@ export class BillScreen extends React.Component {
             <View style={styles.center}>
               <Button
                 style={styles.checkOff}
-                onPress={() => this.checkOffBill()}>
-                <Text>Check Off Bill</Text>
+                onPress={() => 
+                  Alert.alert(
+                  'Are you sure?',
+                  'Bills for all users will be deleted',
+                  [
+                    { text: 'Cancel' },
+                    {
+                      text: 'Delete',
+                      onPress: () => {
+                        this.checkOffBill()
+                      }
+                    }
+                  ],
+                  { cancelable: false }
+                )
+               }>
+
+
+
+
+
+                  
+                <Text>Clear All</Text>
               </Button>
             </View>
           </Content>
@@ -438,7 +460,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   checkOff: {
+    justifyContent:'flex-end',
     alignSelf: 'center',
+    marginTop: 'auto',
     backgroundColor: '#c02b2b'
   },
   positive:{
@@ -453,5 +477,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection:'row',
     alignItems:'center',
+  },
+  flex:{
+    flex:1,
+    backgroundColor:'red'
   }
 });

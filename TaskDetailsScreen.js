@@ -68,6 +68,8 @@ export class TaskDetailsScreen extends React.Component {
       </ListItem>
     ));
 
+    
+
     return (
       <Container style={styles.container}>
         <Content>
