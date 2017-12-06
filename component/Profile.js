@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet, Image, Keyboard, TextInput, View } from 'react-native';
 import {
   Container,
   Header,
@@ -15,75 +15,95 @@ import {
 import * as firebase from 'firebase';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
-export const ViewProfile = ({user, editMode}) => (
-  <Container style={ styles.container }>
-    <Button iconLeft transparent dark style={{ alignSelf: 'flex-end' }}
-      onPress={ editMode }>
-      <FontAwesome name="gear" size={28} color="black" />
-    </Button>
+export const ViewProfile = ({user, editMode}) => {
+  if (user.aboutMe)
+    desc = (<Text>{user.aboutMe}</Text>);
+  else
+    desc = (<Text style={{ color: '#d3d3d3' }}>Describe yourself!</Text>);
 
-    <Image style={ styles.profilePicture }
-      source={{ uri:user.photoURL }} />
-    <Text style={ styles.displayName }>{ user.name }</Text>
+  return (
+    <Container style={ styles.container }>
+      <Button iconLeft transparent dark style={{ alignSelf: 'flex-end' }}
+        onPress={ editMode }>
+        <FontAwesome name="gear" size={28} color="black" />
+      </Button>
 
-    <Content style={ styles.content } scrollEnabled={false}>
-      <Item>
-        <Icon active name='ios-mail' />
-        <Input disabled value={ user.email } />
-      </Item>
-      <Item>
-        <Icon active name='ios-call' />
-        <Input disabled value={ user.phoneNumber } />
-      </Item>
-      <Item>
-        <FontAwesome name="birthday-cake" size={16}  color="black"
-          style={{ marginRight: 8 }} />
-        <Input disabled value={ user.birthDate } />
-      </Item>
-      <Item style={{ paddingTop: 10, paddingBottom: 10 }}>
-        <Icon active name='ios-information-circle'
-          style={{ marginRight: 5 }} />
-        <Text>{ user.aboutMe }</Text>
-      </Item>
-    </Content>
+      <Image style={ styles.profilePicture }
+        source={{ uri:user.photoURL }} />
+      <Text style={ styles.displayName }>{ user.name }</Text>
 
-    <Button iconLeft block style={ styles.logoutButton }
-      onPress={() => firebase.auth().signOut()}>
-      <Icon name='ios-log-out' />
-      <Text>Log Out</Text>
-    </Button>
-  </Container>
-);
+      <Content style={ styles.content } scrollEnabled={false}>
+        <Item>
+          <Icon active name='ios-mail' />
+          <Input disabled value={ user.email }
+            placeholder="E-Mail" placeholderTextColor='#d3d3d3' />
+        </Item>
+        <Item>
+          <Icon active name='ios-call' />
+          <Input disabled value={ user.phoneNumber }
+            placeholder="Phone Number" placeholderTextColor='#d3d3d3' />
+        </Item>
+        <Item>
+          <FontAwesome name="birthday-cake" size={16}  color="black"
+            style={{ marginRight: 8 }} />
+          <Input disabled value={ user.birthDate }
+            placeholder="Birthday" placeholderTextColor='#d3d3d3' />
+        </Item>
+        <Item style={{ paddingTop: 10, paddingBottom: 10 }}>
+          <Icon active name='ios-information-circle'
+            style={{ marginRight: 3 }} />
+          {desc}
+        </Item>
+      </Content>
+
+      <Button iconLeft block style={ styles.logoutButton }
+        onPress={() => firebase.auth().signOut()}>
+        <Icon name='ios-log-out' />
+        <Text>Log Out</Text>
+      </Button>
+    </Container>
+  );
+}
 
 
-export const ViewMember = ({user}) => (
-  <Container style={ styles.container }>
-    <Image style={ styles.profilePicture }
-      source={{ uri:user.photoURL }} />
-    <Text style={ styles.displayName }>{ user.name }</Text>
+export const ViewMember = ({user}) => {
+  if (user.aboutMe)
+    desc = (<Text>{user.aboutMe}</Text>);
+  else
+    desc = (<Text style={{ color: '#d3d3d3' }}>Describe yourself!</Text>);
 
-    <Content style={ styles.content } scrollEnabled={false}>
-      <Item>
-        <Icon active name='ios-mail' />
-        <Input disabled value={ user.email } />
-      </Item>
-      <Item>
-        <Icon active name='ios-call' />
-        <Input disabled value={ user.phoneNumber } />
-      </Item>
-      <Item>
-        <FontAwesome name="birthday-cake" size={16}  color="black"
-          style={{ marginRight: 8 }} />
-        <Input disabled value={ user.birthDate } />
-      </Item>
-      <Item style={{ paddingTop: 10, paddingBottom: 10 }}>
-        <Icon active name='ios-information-circle'
-          style={{ marginRight: 5 }} />
-        <Text>{ user.aboutMe }</Text>
-      </Item>
-    </Content>
-  </Container>
-);
+  return (
+    <Container style={styles.container }>
+      <Image style={styles.profilePicture}
+        source={{ uri:user.photoURL }} />
+      <Text style={styles.displayName}>{ user.name }</Text>
+
+      <Content style={styles.content} scrollEnabled={false}>
+        <Item>
+          <Icon active name='ios-mail' />
+          <Input disabled value={user.email}
+            placeholder="E-Mail" placeholderTextColor='#d3d3d3' />
+        </Item>
+        <Item>
+          <Icon active name='ios-call' />
+          <Input disabled value={user.phoneNumber}
+            placeholder="Phone Number" placeholderTextColor='#d3d3d3' />
+        </Item>
+        <Item>
+          <FontAwesome name="birthday-cake" size={16}  color="black"
+            style={{ marginRight: 8 }} />
+          <Input disabled value={user.birthDate}
+            placeholder="Birthday" placeholderTextColor='#d3d3d3' />
+        </Item>
+        <Item style={{ paddingTop: 10, paddingBottom: 10 }}>
+          <Icon active name='ios-information-circle'
+              style={{ marginRight: 3 }} />
+          {desc}
+        </Item>
+      </Content>
+    </Container>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -20,6 +20,7 @@ import {
 } from 'native-base';
 import * as firebase from 'firebase';
 import { ViewProfile } from './component/Profile';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 export class ProfileScreen extends React.Component {
   constructor(props) {
@@ -42,8 +43,7 @@ export class ProfileScreen extends React.Component {
     }
 
     this.editMode = this.editMode.bind(this);
-    this.updateChanges = this.updateChanges.bind(this);
-    this.cancelUpdate = this.cancelUpdate.bind(this);
+    this.resetMode = this.resetMode.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -63,13 +63,32 @@ export class ProfileScreen extends React.Component {
     });
   }
 
-  cancelUpdate() {
+  resetMode() {
     this.setState({
       editMode: false
     });
   }
 
-  updateChanges() {
+  validateFields = () => {
+    let desc = this.state.aboutMe;
+    let length = 0;
+    if (desc)
+      length = String(desc).length
+
+    if (length > 121) {
+      Alert.alert("Max character limit for your about me is 120. Please shorten your description.");
+      return false;
+    }
+
+    if (!this.state.displayName) {
+      Alert.alert("Your name cannot be blank! Please enter a name.");
+      return false;
+    }
+
+    return true;
+  }
+
+  updateChanges = () => {
     let key = this.props.screenProps.state.user.uid;
     let dojoRef = 
       firebase
@@ -96,22 +115,7 @@ export class ProfileScreen extends React.Component {
       .child('users')
       .update({ [key]: true });
 
-    this.setState({
-      editMode: false
-    });
-  }
-
-  componentWillUnmount() {
-    this.editMode = undefined;
-    this.updateChanges = undefined;
-    this.cancelUpdate = undefined;
-
-    if (this.state.editMode) {
-      this.setState({
-        editMode: false
-      });
-    }
-
+    this.resetMode();
   }
 
   updateSize = (height) => {
@@ -120,17 +124,46 @@ export class ProfileScreen extends React.Component {
     });
   }
 
-  // TODO: make function that gets today's date and set minDate to DatePicker
+  getTodaysDate = () => {
+    let date = new Date();
+    let day = date.getDate();
+    let month = (date.getMonth()+1);
+    let year = date.getFullYear();
+
+    if (day < 10)
+      day = "0" + day;
+
+    if (month < 10)
+      month = "0" + month;
+
+    let today = month + '-' + day + '-' + year;
+    return today;
+  }
+
+  componentWillUnmount() {
+    this.editMode = undefined;
+    this.resetMode = undefined;
+
+    if (this.state.editMode) {
+      this.setState({
+        editMode: false
+      });
+    }
+  }
+
   // TODO: character count for about me
 
   render() {
+    let today = this.getTodaysDate();
+    let user = this.props.screenProps.state.user;
     let desc = this.state.aboutMe;
+    let name = this.state.displayName;
+    let phoneNumber = this.state.phoneNumber;
     const {height} = this.state;
     let newStyle = {
       height
     }
 
-    let user = this.props.screenProps.state.user;
     if (this.state.editMode) {
       return (
         <Content keyboardShouldPersistTaps={'handled'}
@@ -149,23 +182,27 @@ export class ProfileScreen extends React.Component {
               <Item>
                 <Icon active name='ios-person' />
                 <Input
-                  placeholder={ user.name } 
-                  onChangeText={(displayName) => this.setState({ displayName: displayName })}/>
+                  value={name}
+                  placeholder="Name"
+                  onChangeText={(displayName) => this.setState({ displayName: displayName })} />
               </Item>
               <Item>
                 <Icon active name='ios-call' />
                 <Input
-                  placeholder={ user.phoneNumber } 
+                  value={phoneNumber}
+                  placeholder="Phone Number"
                   keyboardType={'numeric'} 
                   onChangeText={(phoneNumber) => this.setState({ phoneNumber: phoneNumber })} />
               </Item>
               <Item>
-                <Icon active name='ios-calendar' />
+                <FontAwesome name="birthday-cake" size={16}  color="black"
+                  style={{ marginRight: 8 }} />
                 <DatePicker
+                  format="MM-DD-YYYY"
+                  maxDate={today}
                   date={this.state.date}
                   placeholder="Select Date"
                   mode="date"
-                  format="MM-DD-YYYY"
                   showIcon={false}
                   confirmBtnText='Submit'
                   cancelBtnText='Cancel'
@@ -191,7 +228,8 @@ export class ProfileScreen extends React.Component {
               <Item style={{ marginTop: 10 }}>
                 <Icon active name='ios-information-circle' />
                 <Input 
-                  value={ desc }
+                  placeholder="Describe yourself!"
+                  value={desc}
                   multiline={true}
                   style={[newStyle]}
                   onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
@@ -208,24 +246,15 @@ export class ProfileScreen extends React.Component {
             <View style={ styles.footer }>
               <Button light
                 style={ styles.cancelButton } 
-                onPress={ this.cancelUpdate }>
+                onPress={ this.resetMode }>
                 <Text>Cancel</Text>
               </Button>
               <Button 
                 style={ styles.button } 
                 onPress={ () => {
-                  let desc = this.state.aboutMe;
-                  let length = 0;
-                  if (desc)
-                    length = String(desc).length
-
-                  if (length > 121) {
-                    Alert.alert("Max character limit for your about me is 120. Please shorten your description.");
-                  }
-                  else {
+                  if (this.validateFields())
                     this.updateChanges();
-                  }
-                } }>
+                }}>
                 <Text style={{ color: 'white' }}>Save</Text>
               </Button>
             </View>
