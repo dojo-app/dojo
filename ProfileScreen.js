@@ -41,9 +41,6 @@ export class ProfileScreen extends React.Component {
       count = String(this.state.aboutMe).length;
       this.state.currChar = count;
     }
-
-    this.editMode = this.editMode.bind(this);
-    this.resetMode = this.resetMode.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -57,15 +54,22 @@ export class ProfileScreen extends React.Component {
     )
   });
 
-  editMode() {
+  editState = () => {
     this.setState({
       editMode: true
     });
   }
 
-  resetMode() {
+  resetMode = () => {
+    let descLength = this.props.screenProps.state.user.aboutMe.length;
+
     this.setState({
-      editMode: false
+      editMode: false,
+      displayName: this.props.screenProps.state.user.name,
+      email: this.props.screenProps.state.user.email,
+      phoneNumber: this.props.screenProps.state.user.phoneNumber,
+      aboutMe: this.props.screenProps.state.user.aboutMe,
+      currChar: descLength
     });
   }
 
@@ -83,6 +87,14 @@ export class ProfileScreen extends React.Component {
     if (!this.state.displayName) {
       Alert.alert("Your name cannot be blank! Please enter a name.");
       return false;
+    }
+
+    if (this.state.phoneNumber) {
+      let unformattedPhone = this.state.phoneNumber.replace(/-/g, '');
+      if (unformattedPhone.length > 10) {
+        Alert.alert("Invalid phone number. Please check your number.")
+        return false;
+      }
     }
 
     return true;
@@ -115,7 +127,9 @@ export class ProfileScreen extends React.Component {
       .child('users')
       .update({ [key]: true });
 
-    this.resetMode();
+    this.setState({ 
+      editMode: false 
+    });
   }
 
   updateSize = (height) => {
@@ -140,18 +154,32 @@ export class ProfileScreen extends React.Component {
     return today;
   }
 
-  componentWillUnmount() {
-    this.editMode = undefined;
-    this.resetMode = undefined;
+  formatPhoneNumber = (phoneNumber) => {
+    if (this.state.phoneNumber.length <= phoneNumber.length) {
+      if (phoneNumber.length == 3 || phoneNumber.length == 7)
+        phoneNumber += '-';
+      else if (phoneNumber.length == 4 || phoneNumber.length == 8) {
+        phoneNumber = phoneNumber.substring(0, phoneNumber.length-1) + '-' 
+          + phoneNumber.substring(phoneNumber.length-1, phoneNumber.length);
+      }
+    }
+    else {
+      if (phoneNumber.length == 4 || phoneNumber.length == 8)
+        phoneNumber = phoneNumber.substring(0, phoneNumber.length-1);
+    }
 
+    this.setState({ 
+      phoneNumber: phoneNumber
+    });
+  }
+
+  componentWillUnmount() {
     if (this.state.editMode) {
       this.setState({
         editMode: false
       });
     }
   }
-
-  // TODO: character count for about me
 
   render() {
     let today = this.getTodaysDate();
@@ -177,22 +205,21 @@ export class ProfileScreen extends React.Component {
               source={{ uri:user.photoURL }} />
 
             <View
-              style={ styles.content }
-              >
+              style={ styles.content }>
               <Item>
                 <Icon active name='ios-person' />
                 <Input
                   value={name}
                   placeholder="Name"
-                  onChangeText={(displayName) => this.setState({ displayName: displayName })} />
+                  onChangeText={(displayName) => {this.setState({ displayName: displayName })}} />
               </Item>
               <Item>
                 <Icon active name='ios-call' />
                 <Input
                   value={phoneNumber}
-                  placeholder="Phone Number"
+                  placeholder="123-456-7890"
                   keyboardType={'numeric'} 
-                  onChangeText={(phoneNumber) => this.setState({ phoneNumber: phoneNumber })} />
+                  onChangeText={(phoneNumber) => {this.formatPhoneNumber(phoneNumber)}} />
               </Item>
               <Item>
                 <FontAwesome name="birthday-cake" size={16}  color="black"
@@ -222,8 +249,7 @@ export class ProfileScreen extends React.Component {
                       fontSize: 16
                     }
                   }}
-                  onDateChange={(newDate) => this.setState({date: newDate})}
-                />
+                  onDateChange={(newDate) => {this.setState({date: newDate})}} />
               </Item>
               <Item style={{ marginTop: 10 }}>
                 <Icon active name='ios-information-circle' />
@@ -232,7 +258,7 @@ export class ProfileScreen extends React.Component {
                   value={desc}
                   multiline={true}
                   style={[newStyle]}
-                  onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
+                  onContentSizeChange={(e) => {this.updateSize(e.nativeEvent.contentSize.height)}}
                   onChangeText={(desc) => {
                     currChar = String(desc).length
                     this.setState({ aboutMe: desc, currChar: currChar });
@@ -246,7 +272,7 @@ export class ProfileScreen extends React.Component {
             <View style={ styles.footer }>
               <Button light
                 style={ styles.cancelButton } 
-                onPress={ this.resetMode }>
+                onPress={ () => {this.resetMode()} }>
                 <Text>Cancel</Text>
               </Button>
               <Button 
@@ -265,7 +291,7 @@ export class ProfileScreen extends React.Component {
     else {
       return (
         <ViewProfile user={ this.props.screenProps.state.user }
-            editMode={ this.editMode } />
+            editMode={ this.editState } />
       );
     }
   }
@@ -282,7 +308,8 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
     borderRadius: 75,
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: 20
   },
   displayName: {
     fontSize: 20,

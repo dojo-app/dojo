@@ -41,7 +41,7 @@ export const ViewProfile = ({user, editMode}) => {
         <Item>
           <Icon active name='ios-call' />
           <Input disabled value={ user.phoneNumber }
-            placeholder="Phone Number" placeholderTextColor='#d3d3d3' />
+            placeholder="123-456-7890" placeholderTextColor='#d3d3d3' />
         </Item>
         <Item>
           <FontAwesome name="birthday-cake" size={16}  color="black"
@@ -87,7 +87,7 @@ export const ViewMember = ({user}) => {
         <Item>
           <Icon active name='ios-call' />
           <Input disabled value={user.phoneNumber}
-            placeholder="Phone Number" placeholderTextColor='#d3d3d3' />
+            placeholder="123-456-7890" placeholderTextColor='#d3d3d3' />
         </Item>
         <Item>
           <FontAwesome name="birthday-cake" size={16}  color="black"

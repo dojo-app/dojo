@@ -220,7 +220,6 @@ export default class App extends React.Component {
       userObj['uid'] = this.state.user.uid;
 
         this.setState({ user: userObj });
-        console.log("Update in user listeners.");
       });
   }
 
