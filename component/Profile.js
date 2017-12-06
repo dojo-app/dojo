@@ -38,9 +38,9 @@ export const ViewProfile = ({user, editMode}) => (
         <Icon active name='ios-calendar' />
         <Input disabled value={ user.birthDate } />
       </Item>
-      <Item>
+      <Item style={{ paddingTop: 10, paddingBottom: 10 }}>
         <Icon active name='ios-information-circle' />
-        <Input disabled value={ user.aboutMe } />
+        <Text>{ user.aboutMe }</Text>
       </Item>
     </Content>
 
@@ -72,9 +72,9 @@ export const ViewMember = ({user}) => (
         <Icon active name='ios-calendar' />
         <Input disabled value={ user.birthDate } />
       </Item>
-      <Item>
+      <Item style={{ paddingTop: 10, paddingBottom: 10 }}>
         <Icon active name='ios-information-circle' />
-        <Input disabled value={ user.aboutMe } />
+        <Text>{ user.aboutMe }</Text>
       </Item>
     </Content>
   </Container>
