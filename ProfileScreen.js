@@ -60,6 +60,7 @@ export class ProfileScreen extends React.Component {
     });
   }
 
+  // User canceled updated, reset all fields to their values prior to modifications
   resetMode = () => {
     let descLength = this.props.screenProps.state.user.aboutMe.length;
 
@@ -91,7 +92,11 @@ export class ProfileScreen extends React.Component {
 
     if (this.state.phoneNumber) {
       let unformattedPhone = this.state.phoneNumber.replace(/-/g, '');
-      if (unformattedPhone.length > 10) {
+
+      // User is allowed to leave phone number field blank
+      if (unformattedPhone.length == 0)
+        return true;
+      if (unformattedPhone.length > 10 || unformattedPhone.length < 10) {
         Alert.alert("Invalid phone number. Please check your number.")
         return false;
       }
@@ -138,6 +143,10 @@ export class ProfileScreen extends React.Component {
     });
   }
 
+  /*
+    Helper method for DatePicker to set maxDate to today's date.
+    Users are not allowed to set birthday into the future.
+  */
   getTodaysDate = () => {
     let date = new Date();
     let day = date.getDate();
@@ -154,16 +163,22 @@ export class ProfileScreen extends React.Component {
     return today;
   }
 
+  // Helper method for formatting phone number as user types
   formatPhoneNumber = (phoneNumber) => {
+    // Check if user is typing or deleting
     if (this.state.phoneNumber.length <= phoneNumber.length) {
+      // If user is typing, append the hyphens
       if (phoneNumber.length == 3 || phoneNumber.length == 7)
         phoneNumber += '-';
+
+      // If user deleted and decides to type again, fill in the hyphens again
       else if (phoneNumber.length == 4 || phoneNumber.length == 8) {
         phoneNumber = phoneNumber.substring(0, phoneNumber.length-1) + '-' 
           + phoneNumber.substring(phoneNumber.length-1, phoneNumber.length);
       }
     }
     else {
+      // User is deleting from input, remove hyphens
       if (phoneNumber.length == 4 || phoneNumber.length == 8)
         phoneNumber = phoneNumber.substring(0, phoneNumber.length-1);
     }
@@ -305,9 +320,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   profilePicture: {
-    height: 150,
-    width: 150,
-    borderRadius: 75,
+    height: 120,
+    width: 120,
+    borderRadius: 60,
     marginBottom: 10,
     marginTop: 20
   },

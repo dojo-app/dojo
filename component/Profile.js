@@ -73,7 +73,7 @@ export const ViewMember = ({user}) => {
     desc = (<Text style={{ color: '#d3d3d3' }}>Describe yourself!</Text>);
 
   return (
-    <Container style={styles.container }>
+    <Container style={styles.memberContainer }>
       <Image style={styles.profilePicture}
         source={{ uri:user.photoURL }} />
       <Text style={styles.displayName}>{ user.name }</Text>
@@ -113,10 +113,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  memberContainer: {
+    flex: 1,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 30,
+    paddingTop: 30,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   profilePicture: {
-    height: 150,
-    width: 150,
-    borderRadius: 75,
+    height: 120,
+    width: 120,
+    borderRadius: 60,
     marginBottom: 10
   },
   displayName: {
