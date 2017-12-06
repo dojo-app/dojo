@@ -18,6 +18,7 @@ import {
   Body,
   Thumbnail
 } from 'native-base';
+
 import * as firebase from 'firebase';
 
 function removeFalseEntries(obj) {
@@ -40,22 +41,40 @@ export class AddBillScreen extends React.Component {
 
   constructor(props) {
     super(props);
+
     var users = {};
+
     for (const user of this.props.screenProps.state.users) {
       users[user.id] = true;
     }
 
     this.state = {
-      date: '2016-05-15',
       billTitle: '',
       billAmount: '$0.00',
       billDescription: '',
       billDueDate: '',
       billUsers: users,
-      showToast: false,
-      date: '2016-05-15'
+      date: this.getDateString()
     };
   }
+
+  getDateString() {
+    const date = new Date();
+
+    const year = date.getFullYear();
+    const month = this.prependZero(date.getMonth() + 1);
+    const day = this.prependZero(date.getDate());
+
+    return `${year}-${month}-${day}`;
+  }
+
+  prependZero(n) {
+    if (n < 10) {
+      return '0' + n;
+    }
+    return n;
+  }
+
   addBill() {
     var key = firebase
       .database()

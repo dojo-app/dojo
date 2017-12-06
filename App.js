@@ -70,20 +70,26 @@ export default class App extends React.Component {
   handleLogIn(user) {
     let userRef = firebase.database().ref('users/');
 
-    userRef.child(user.uid)
-      .once('value').then(snapshot => {
-        if (snapshot.val())
-          this.updateUserInfo(user, false);
-        else
-          this.updateUserInfo(user, true);
-    }, (error) => {
-      console.log("Error querying user in db.");
-    })
-    .then(() => {
-      this.loadUser(user);
-    }, (error) => {
-      console.log("Error loading user object.");
-    });
+    userRef
+      .child(user.uid)
+      .once('value')
+      .then(
+        snapshot => {
+          if (snapshot.val()) this.updateUserInfo(user, false);
+          else this.updateUserInfo(user, true);
+        },
+        error => {
+          console.log('Error querying user in db.');
+        }
+      )
+      .then(
+        () => {
+          this.loadUser(user);
+        },
+        error => {
+          console.log('Error loading user object.');
+        }
+      );
 
     // this.setState({ loggedIn: true, user: user });
     // this.updateUserInfo();
@@ -96,29 +102,37 @@ export default class App extends React.Component {
   }
 
   loadUser(user) {
-    firebase.database().ref('users')
+    firebase
+      .database()
+      .ref('users')
       .child(user.uid)
       .once('value')
-      .then((snapshot) => {
+      .then(
+        snapshot => {
           // console.log(snapshot.val());
           let userObj = snapshot.val();
           userObj['uid'] = user.uid;
 
           this.setState({ user: userObj });
           // console.log(this.state.user);
-      }, (error) => {
-        console.log("Error loading user object.");
-      })
-      .then(() => {
-        if (!this.state.inDojoListener) {
-          this.addInDojoListener();
-          this.setState({ inDojoListener: true });
+        },
+        error => {
+          console.log('Error loading user object.');
         }
+      )
+      .then(
+        () => {
+          if (!this.state.inDojoListener) {
+            this.addInDojoListener();
+            this.setState({ inDojoListener: true });
+          }
 
-        this.setState({ loggedIn: true });
-      }, (error) => {
-        console.log("Error setting dojo listeners.");
-      });
+          this.setState({ loggedIn: true });
+        },
+        error => {
+          console.log('Error setting dojo listeners.');
+        }
+      );
   }
 
   addInDojoListener() {
@@ -129,10 +143,11 @@ export default class App extends React.Component {
       .child('dojo')
       .on('value', snapshot => {
         if (snapshot.exists()) {
-          this.setState({
-            inDojo: true,
-            dojo: snapshot.val()
-          },
+          this.setState(
+            {
+              inDojo: true,
+              dojo: snapshot.val()
+            },
             () => {
               if (!this.state.dojoInfoListener) {
                 this.addDojoInfoListeners();
@@ -172,12 +187,14 @@ export default class App extends React.Component {
       .ref('dojos')
       .child(this.state.dojo);
 
-    dojoRef.child('name').on('value', snapshot => { //TEMP TODO better system
-        this.updateDojoName(snapshot);
+    dojoRef.child('name').on('value', snapshot => {
+      //TEMP TODO better system
+      this.updateDojoName(snapshot);
     });
 
-    dojoRef.child('description').on('value', snapshot => { //TEMP TODO better system
-        this.updateDojoDescription(snapshot);
+    dojoRef.child('description').on('value', snapshot => {
+      //TEMP TODO better system
+      this.updateDojoDescription(snapshot);
     });
 
     dojoRef.child('users').on('value', snapshot => {
@@ -196,37 +213,30 @@ export default class App extends React.Component {
   }
 
   updateUserObj() {
-    var userRef = firebase
-      .database()
-      .ref('users');
+    var userRef = firebase.database().ref('users');
 
-    userRef.child(this.state.user.uid)
-      .on('value', (snapshot) => {
-        let userObj = snapshot.val();
-        userObj['uid'] = this.state.user.uid;
+    userRef.child(this.state.user.uid).on('value', snapshot => {
+      let userObj = snapshot.val();
+      userObj['uid'] = this.state.user.uid;
 
-        this.setState({ user: userObj });
-        console.log(this.state.user);
-      });
+      this.setState({ user: userObj });
+      console.log(this.state.user);
+    });
   }
 
   updateUserInfo(user, newUser) {
-    let userRef = firebase
-      .database()
-      .ref('users');
+    let userRef = firebase.database().ref('users');
 
     if (newUser) {
-      userRef.child(user.uid)
-        .update({
-          name: user.displayName,
-          email: user.email
-        });
+      userRef.child(user.uid).update({
+        name: user.displayName,
+        email: user.email
+      });
     }
 
-    userRef.child(user.uid)
-      .update({
-        photoURL: user.photoURL
-      });
+    userRef.child(user.uid).update({
+      photoURL: user.photoURL
+    });
 
     // firebase
     //   .database()
@@ -239,13 +249,15 @@ export default class App extends React.Component {
     //   });
   }
 
-  updateDojoName(snapshot) {    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
+  updateDojoName(snapshot) {
+    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
     if (snapshot.val()) {
       this.setState({ dojoName: snapshot.val() });
     }
   }
 
-  updateDojoDescription(snapshot) {    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
+  updateDojoDescription(snapshot) {
+    //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
     if (snapshot.val()) {
       this.setState({ dojoDescription: snapshot.val() });
     }
@@ -280,7 +292,7 @@ export default class App extends React.Component {
     }
   }
 
- updateBills(snapshot) {
+  updateBills(snapshot) {
     var billObjects = [];
 
     if (snapshot.val()) {
