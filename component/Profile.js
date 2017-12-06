@@ -25,7 +25,7 @@ export const ViewProfile = ({user, editMode}) => (
       source={{ uri:user.photoURL }} />
     <Text style={ styles.displayName }>{ user.name }</Text>
 
-    <Content style={ styles.content } scrollEnabled={false}>
+    <Content style={ styles.content }>
       <Item>
         <Icon active name='ios-mail' />
         <Input disabled value={ user.email } />
