@@ -60,11 +60,6 @@ export class DojoSettingsScreen extends React.Component {
   }
 
   render() {
-    const users = this.props.screenProps.state.users.map(user => (
-      <ListItem key={user.id}>
-        <Text>{user.name}</Text>
-      </ListItem>
-    ));
 
     const members = this.props.screenProps.state.users.map(user => (
         <View style={styles.member} key={user.id}>
@@ -76,8 +71,6 @@ export class DojoSettingsScreen extends React.Component {
     const { navigate } = this.props.navigation;
 
     return (
-
-
 
         <Container style={styles.container}>
             <Form>
@@ -97,14 +90,23 @@ export class DojoSettingsScreen extends React.Component {
                 </Item>
             </Form>
 
+            <View style={ styles.editContainer }>
+                <Button iconLeft block light
+                  onPress={() => navigate('DojoSettingsEdit') }>
+                  <Icon name='ios-create-outline' />
+                  <Text>Edit Dojo</Text>
+                </Button>
+            </View>
+
             <View style={ styles.leaveContainer }>
-                <Button iconLeft block 
-                  style={ styles.button } 
+                <Button iconLeft block danger
+                  style={ styles.button }
                   onPress={() => this.leaveDojo()}>
                   <Icon name='ios-exit-outline' />
                   <Text>Leave Dojo</Text>
                 </Button>
             </View>
+
         </Container>
     );
   }
@@ -123,6 +125,10 @@ const styles = StyleSheet.create({
   },
 
   leaveContainer: {
+    marginTop: 20
+  },
+
+  editContainer: {
     marginTop: 20
   },
 
@@ -150,10 +156,10 @@ const styles = StyleSheet.create({
     //       />
     //     </Item>
     // </Form>
-    <View style={ styles.leaveContainer }>
-        <Button iconLeft danger style={ styles.button } onPress={() => this.leaveDojo()}>
-          <Icon name='ios-exit-outline' />
-          <Text>Leave Dojo</Text>
-        </Button>
-    </View>
+    // <View style={ styles.leaveContainer }>
+    //     <Button iconLeft danger style={ styles.button } onPress={() => this.leaveDojo()}>
+    //       <Icon name='ios-exit-outline' />
+    //       <Text>Leave Dojo</Text>
+    //     </Button>
+    // </View>
 // </Container>
