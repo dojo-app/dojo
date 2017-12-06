@@ -48,7 +48,6 @@ export class ProfileScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Profile',
-    headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon

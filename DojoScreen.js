@@ -49,7 +49,6 @@ export class DojoScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Dojo',
-    headerTintColor: '#c02b2b',
     
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -178,6 +177,8 @@ const styles = StyleSheet.create({
 
   dojoName: {
       paddingLeft: 10,
-      paddingRight: 10
+      paddingRight: 10,
+      fontSize: 20,
+      fontWeight: 'bold'
   }
 });

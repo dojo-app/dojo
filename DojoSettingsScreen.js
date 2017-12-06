@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
 
   button: {
     backgroundColor: '#c02b2b'
-  }
+  },
 
 });
 

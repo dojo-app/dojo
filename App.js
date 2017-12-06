@@ -234,8 +234,13 @@ export default class App extends React.Component {
       });
     }
 
+    // For Google accounts: higher res image
+    let photo = String(user.photoURL);
+    let index = photo.indexOf("s96-c");
+    photo = photo.substring(0, index) + "s400-c/photo.jpg";
+
     userRef.child(user.uid).update({
-      photoURL: user.photoURL
+      photoURL: photo
     });
 
     // firebase

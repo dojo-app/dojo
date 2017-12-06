@@ -13,12 +13,13 @@ import {
   Label
 } from 'native-base';
 import * as firebase from 'firebase';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 export const ViewProfile = ({user, editMode}) => (
   <Container style={ styles.container }>
     <Button iconLeft transparent dark style={{ alignSelf: 'flex-end' }}
       onPress={ editMode }>
-      <Icon name='ios-create-outline' />
+      <FontAwesome name="gear" size={28} color="black" />
     </Button>
 
     <Image style={ styles.profilePicture }
@@ -35,11 +36,13 @@ export const ViewProfile = ({user, editMode}) => (
         <Input disabled value={ user.phoneNumber } />
       </Item>
       <Item>
-        <Icon active name='ios-calendar' />
+        <FontAwesome name="birthday-cake" size={16}  color="black"
+          style={{ marginRight: 8 }} />
         <Input disabled value={ user.birthDate } />
       </Item>
       <Item style={{ paddingTop: 10, paddingBottom: 10 }}>
-        <Icon active name='ios-information-circle' />
+        <Icon active name='ios-information-circle'
+          style={{ marginRight: 5 }} />
         <Text>{ user.aboutMe }</Text>
       </Item>
     </Content>
@@ -69,11 +72,13 @@ export const ViewMember = ({user}) => (
         <Input disabled value={ user.phoneNumber } />
       </Item>
       <Item>
-        <Icon active name='ios-calendar' />
+        <FontAwesome name="birthday-cake" size={16}  color="black"
+          style={{ marginRight: 8 }} />
         <Input disabled value={ user.birthDate } />
       </Item>
       <Item style={{ paddingTop: 10, paddingBottom: 10 }}>
-        <Icon active name='ios-information-circle' />
+        <Icon active name='ios-information-circle'
+          style={{ marginRight: 5 }} />
         <Text>{ user.aboutMe }</Text>
       </Item>
     </Content>
