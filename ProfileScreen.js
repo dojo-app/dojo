@@ -3,10 +3,9 @@ import { StyleSheet,
   Image, 
   View, 
   Keyboard, 
-  TouchableWithoutFeedback, 
   Alert } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import DatePicker from 'react-native-datepicker'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import DatePicker from 'react-native-datepicker';
 import {
   Container,
   Header,
@@ -32,8 +31,15 @@ export class ProfileScreen extends React.Component {
       phoneNumber: this.props.screenProps.state.user.phoneNumber,
       aboutMe: this.props.screenProps.state.user.aboutMe,
       date: this.props.screenProps.state.user.birthDate,
-      height: 40
+      height: 40,
+      currChar: 0
     };
+
+    if (this.state.aboutMe)
+    {
+      count = String(this.state.aboutMe).length;
+      this.state.currChar = count;
+    }
 
     this.editMode = this.editMode.bind(this);
     this.updateChanges = this.updateChanges.bind(this);
@@ -65,16 +71,31 @@ export class ProfileScreen extends React.Component {
   }
 
   updateChanges() {
+    let key = this.props.screenProps.state.user.uid;
+    let dojoRef = 
+      firebase
+        .database()
+        .ref('dojos')
+        .child(this.props.screenProps.state.dojo);
+
     firebase
       .database()
       .ref('users/')
-      .child(this.props.screenProps.state.user.uid)
+      .child(key)
       .update({
         name: this.state.displayName,
         phoneNumber: this.state.phoneNumber,
         birthDate: this.state.date,
         aboutMe: this.state.aboutMe
       });
+
+    dojoRef
+      .child('users')
+      .update({ [key]: false });
+
+    dojoRef
+      .child('users')
+      .update({ [key]: true });
 
     this.setState({
       editMode: false
@@ -113,14 +134,12 @@ export class ProfileScreen extends React.Component {
     let user = this.props.screenProps.state.user;
     if (this.state.editMode) {
       return (
-        <TouchableWithoutFeedback
-          onPress={Keyboard.dismiss} 
-          accessible={false}>
+        <Content keyboardShouldPersistTaps={'handled'}
+          style={{ backgroundColor: 'white' }}>
           <KeyboardAwareScrollView
             style={{ backgroundColor: 'white' }}
             resetScrollToCoords={{ x: 0, y: 0 }}
-            contentContainerStyle={ styles.container }
-            >
+            contentContainerStyle={ styles.container }>
             <Image
               style={ styles.profilePicture }
               source={{ uri:user.photoURL }} />
@@ -177,10 +196,13 @@ export class ProfileScreen extends React.Component {
                   multiline={true}
                   style={[newStyle]}
                   onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
-                  onChangeText={(desc) => this.setState({ aboutMe: desc })} />
+                  onChangeText={(desc) => {
+                    currChar = String(desc).length
+                    this.setState({ aboutMe: desc, currChar: currChar });
+                  }} />
               </Item>
               <Text style={{ fontSize: 10.5, alignSelf: 'flex-end' }}>
-                Max Char: 120
+                {this.state.currChar} / 120
               </Text>
             </View>
 
@@ -209,7 +231,7 @@ export class ProfileScreen extends React.Component {
               </Button>
             </View>
           </KeyboardAwareScrollView>
-        </TouchableWithoutFeedback>
+          </Content>
       );
     }
     else {

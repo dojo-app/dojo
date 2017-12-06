@@ -96,8 +96,11 @@ export class DojoSettingsScreen extends React.Component {
                   />
                 </Item>
             </Form>
+
             <View style={ styles.leaveContainer }>
-                <Button iconLeft danger large style={ styles.button } onPress={() => this.leaveDojo()}>
+                <Button iconLeft block 
+                  style={ styles.button } 
+                  onPress={() => this.leaveDojo()}>
                   <Icon name='ios-exit-outline' />
                   <Text>Leave Dojo</Text>
                 </Button>
@@ -115,12 +118,16 @@ const styles = StyleSheet.create({
       flex: 1,
       flexDirection: "column",
       justifyContent: "center",
-      backgroundColor: 'white'
+      backgroundColor: 'white',
+      padding: 10,
   },
 
   leaveContainer: {
-    marginLeft: '25%',
     marginTop: 20
+  },
+
+  button: {
+    backgroundColor: '#c02b2b'
   }
 
 });
