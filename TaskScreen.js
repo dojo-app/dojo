@@ -55,6 +55,7 @@ export class TaskScreen extends React.Component {
             style={styles.thumbnail}
             source={require('./checkmark.png')}
           />
+          <Text style={styles.strikethrough}>{title}</Text>
         </View>
       );
     } else {
@@ -64,21 +65,6 @@ export class TaskScreen extends React.Component {
             style={styles.thumbnail}
             source={require('./checkmark_false.png')}
           />
-        </View>
-      );
-    }
-  }
-
-  toggleStrikethrough(bool, title) {
-    if (bool) {
-      return (
-        <View style={styles.view}>
-          <Text style={styles.strikethrough}>{title}</Text>
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.view}>
           <Text>{title}</Text>
         </View>
       );
@@ -110,7 +96,6 @@ export class TaskScreen extends React.Component {
           }}>
           {this.toggleCheck(task.checked, task.title)}
         </TouchableOpacity>
-        {this.toggleStrikethrough(task.checked, task.title)}
       </ListItem>
     ));
     return list;
@@ -139,11 +124,19 @@ export class TaskScreen extends React.Component {
 
     const assignedToMeList = this.createList(assignedToMeArray);
 
+    const noTasks = (
+      <View>
+        <ListItem style={styles.center}>
+          <Text> No Tasks to Display </Text>
+        </ListItem>
+      </View>
+      )
+
     const AssignedByMe = (
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{assignedByMeList}</List>
+            <List>{assignedByMeArray.length != 0 ? assignedByMeList : noTasks }</List>
           </Content>
         </Container>
       </Content>
@@ -153,7 +146,7 @@ export class TaskScreen extends React.Component {
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{assignedToMeList}</List>
+            <List>{assignedToMeArray.length != 0 ? assignedToMeList : noTasks }</List>
           </Content>
         </Container>
       </Content>
