@@ -25,7 +25,7 @@ import {
   Button
 } from 'native-base';
 
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import * as firebase from 'firebase';
 //import * as theme from './styles/theme';
@@ -33,16 +33,15 @@ import * as firebase from 'firebase';
 // Assets
 
 function formatFirstName(name) {
-    let words = name.split(' ');
+  let words = name.split(' ');
 
-    return words[0];
+  return words[0];
 }
 
 export class DojoSettingsScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: 'Dojo Settings',
+    title: 'Dojo Settings'
     // headerTintColor: '#c02b2b'
-
   });
 
   leaveDojo() {
@@ -62,72 +61,81 @@ export class DojoSettingsScreen extends React.Component {
   }
 
   render() {
-
     const members = this.props.screenProps.state.users.map(user => (
-        <View style={styles.member} key={user.id}>
-          <Thumbnail large source={{ uri: user.photoURL }}></Thumbnail>
-          <Text>{formatFirstName(user.name)}</Text>
-        </View>
+      <View style={styles.member} key={user.id}>
+        <Thumbnail large source={{ uri: user.photoURL }} />
+        <Text>{formatFirstName(user.name)}</Text>
+      </View>
     ));
 
     const { navigate } = this.props.navigation;
 
     return (
+      <Container style={styles.container}>
+        <Form>
+          <Item fixedLabel>
+            <Label>Name</Label>
+            <Input disabled value={this.props.screenProps.state.dojoName} />
+          </Item>
+          <Item fixedLabel>
+            <Label>Description</Label>
+            <Input
+              disabled
+              value={this.props.screenProps.state.dojoDescription}
+            />
+          </Item>
+        </Form>
 
-        <Container style={styles.container}>
-            <Form>
-                <Item fixedLabel>
-                  <Label>Name</Label>
-                  <Input
-                    disabled
-                    value={this.props.screenProps.state.dojoName}
-                  />
-                </Item>
-                <Item fixedLabel>
-                  <Label>Description</Label>
-                  <Input
-                    disabled
-                    value={this.props.screenProps.state.dojoDescription}
-                  />
-                </Item>
-            </Form>
-
-            <View style={ styles.leaveContainer }>
-                <Button iconLeft
-                  style={ styles.secondaryButton }
-                  onPress={() => navigate('DojoSettingsEdit') }>
-                  <Icon name='ios-create-outline' />
-                  <Text>Edit Dojo</Text>
-                </Button>
-                <Button iconLeft danger
-                  style={ styles.primaryButton }
-                  onPress={() => this.leaveDojo()}>
-                  <Icon name='ios-exit-outline' />
-                  <Text>Leave Dojo</Text>
-                </Button>
-            </View>
-
-        </Container>
+        <View style={styles.leaveContainer}>
+          <Button
+            iconLeft
+            style={styles.secondaryButton}
+            onPress={() => navigate('DojoSettingsEdit')}>
+            <Icon name="ios-create-outline" />
+            <Text>Edit Dojo</Text>
+          </Button>
+          <Button
+            iconLeft
+            danger
+            style={styles.primaryButton}
+            onPress={() =>
+              Alert.alert(
+                'Are you sure?',
+                'You are about to leave the dojo.',
+                [
+                  { text: 'Cancel' },
+                  {
+                    text: 'Leave',
+                    onPress: () => {
+                      this.leaveDojo();
+                    }
+                  }
+                ],
+                { cancelable: false }
+              )
+            }>
+            <Icon name="ios-exit-outline" />
+            <Text>Leave Dojo</Text>
+          </Button>
+        </View>
+      </Container>
     );
   }
-
 }
 
-
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
+    flexDirection: 'column',
+    justifyContent: 'center',
     backgroundColor: 'white',
-    padding: 10,
+    padding: 10
   },
 
   leaveContainer: {
     marginTop: 20,
     flexDirection: 'row',
-    justifyContent: "center",
+    justifyContent: 'center'
   },
 
   editContainer: {
@@ -145,28 +153,27 @@ const styles = StyleSheet.create({
   }
 });
 
-
 // <Container style={styles.container}>
-    // <Form>
-    //     <Item fixedLabel>
-    //       <Label>Name</Label>
-    //       <Input
-    //         disabled
-    //         value={this.props.screenProps.state.dojoName}
-    //       />
-    //     </Item>
-    //     <Item fixedLabel>
-    //       <Label>Description</Label>
-    //       <Input
-    //         disabled
-    //         value={this.props.screenProps.state.dojoDescription}
-    //       />
-    //     </Item>
-    // </Form>
-    // <View style={ styles.leaveContainer }>
-    //     <Button iconLeft danger style={ styles.button } onPress={() => this.leaveDojo()}>
-    //       <Icon name='ios-exit-outline' />
-    //       <Text>Leave Dojo</Text>
-    //     </Button>
-    // </View>
+// <Form>
+//     <Item fixedLabel>
+//       <Label>Name</Label>
+//       <Input
+//         disabled
+//         value={this.props.screenProps.state.dojoName}
+//       />
+//     </Item>
+//     <Item fixedLabel>
+//       <Label>Description</Label>
+//       <Input
+//         disabled
+//         value={this.props.screenProps.state.dojoDescription}
+//       />
+//     </Item>
+// </Form>
+// <View style={ styles.leaveContainer }>
+//     <Button iconLeft danger style={ styles.button } onPress={() => this.leaveDojo()}>
+//       <Icon name='ios-exit-outline' />
+//       <Text>Leave Dojo</Text>
+//     </Button>
+// </View>
 // </Container>

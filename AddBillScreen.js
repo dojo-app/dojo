@@ -36,7 +36,7 @@ function removeFalseEntries(obj) {
 
 export class AddBillScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Bill',
+    title: 'Add Bill'
   };
 
   constructor(props) {
@@ -159,7 +159,7 @@ export class AddBillScreen extends React.Component {
             <Item fixedLabel style={styles.category}>
               <Label>Amount </Label>
               <Input
-                style={[styles.border,styles.right]}
+                style={[styles.border, styles.right]}
                 onChangeText={text =>
                   this.setState({ billAmount: this.formatAmount(text) })
                 }
@@ -167,11 +167,10 @@ export class AddBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel style={styles.category}>
-              <Label
-                >Description</Label>
+              <Label>Description</Label>
               <Input
                 multiline={true}
-                style={[styles.border,styles.description]}
+                style={[styles.border, styles.description]}
                 value={this.state.billDescription}
                 onChangeText={text => this.setState({ billDescription: text })}
               />
@@ -191,6 +190,7 @@ export class AddBillScreen extends React.Component {
               date={this.state.date}
               mode="date"
               style={{ width: 0, height: 0 }}
+              hideText
               showIcon={false}
               confirmBtnText="Submit"
               cancelBtnText="Cancel"
@@ -201,12 +201,10 @@ export class AddBillScreen extends React.Component {
               }}
             />
             <View style={styles.category}>
-
-            <Item fixedLabel style={styles.user}>
-              <Label>Users Involved </Label>
-
+              <Item fixedLabel style={styles.user}>
+                <Label>Users Involved </Label>
               </Item>
-            {users}
+              {users}
             </View>
           </Form>
           <Button
@@ -245,22 +243,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
 
-  category:{
+  category: {
     flex: 0,
     marginRight: 10,
     marginTop: 10,
     paddingBottom: 10,
-    borderBottomWidth:1,
+    borderBottomWidth: 1,
     borderColor: '#c02b2b'
-
   },
-  user:{
+  user: {
     flex: 0,
     marginRight: 10,
     marginLeft: 10,
     marginTop: 20,
-    paddingBottom: 20,
-  
+    paddingBottom: 20
   },
 
   button: {
@@ -276,14 +272,14 @@ const styles = StyleSheet.create({
     marginBottom: 17,
     marginRight: 25
   },
-  border:{
-    paddingBottom:0,
-    paddingTop:0,
-    flex:2.5,
-    borderWidth: .5,
-    borderColor: '#CCCCCC',
+  border: {
+    paddingBottom: 0,
+    paddingTop: 0,
+    flex: 2.5,
+    borderWidth: 0.5,
+    borderColor: '#CCCCCC'
   },
-  description:{
+  description: {
     textAlignVertical: 'top',
 
     height: 100
