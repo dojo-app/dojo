@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { StyleSheet } from "react-native";
+import React, { Component } from 'react';
+import { StyleSheet } from 'react-native';
 import {
   Container,
   Header,
@@ -20,10 +20,10 @@ import {
   List,
   View,
   Thumbnail
-} from "native-base";
-import ActionButton from "react-native-action-button";
-import { Alert } from "react-native";
-import * as firebase from "firebase";
+} from 'native-base';
+import ActionButton from 'react-native-action-button';
+import { Alert } from 'react-native';
+import * as firebase from 'firebase';
 
 export class BillScreen extends React.Component {
   constructor() {
@@ -38,7 +38,7 @@ export class BillScreen extends React.Component {
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
-        name={focused ? "ios-cash" : "ios-cash-outline"}
+        name={focused ? 'ios-cash' : 'ios-cash-outline'}
         style={{ color: tintColor }}
       />
     )
@@ -76,11 +76,11 @@ export class BillScreen extends React.Component {
 
   getPersonalTotal() {
     var num = this.getExcess(this.props.screenProps.state.user.uid);
-    var display = num < 0 ? "+$" + Math.abs(num) : "-$" + Math.abs(num);
+    var display = num < 0 ? '+$' + Math.abs(num) : '-$' + Math.abs(num);
     if (this.getExcess(this.props.screenProps.state.user.uid) != 0) {
-      return "Your total is " + display + "!";
+      return 'Your total is ' + display + '!';
     } else {
-      return "You are in perfect balance!";
+      return 'You are in perfect balance!';
     }
     // if in excess then display the amount that other users in the dojo owe them.
     // if in deficit then display the amount that they owe other users in the dojo.
@@ -91,8 +91,7 @@ export class BillScreen extends React.Component {
       <ListItem
         style={{ marginLeft: 0 }}
         key={bill.id}
-        onPress={() => navigate("BillDetails", { bill: bill })}
-      >
+        onPress={() => navigate('BillDetails', { bill: bill })}>
         <Text style={{ marginLeft: 12 }}>{bill.title}</Text>
       </ListItem>
     ));
@@ -276,7 +275,7 @@ export class BillScreen extends React.Component {
               <Thumbnail medium source={{ uri: state.users[i].photoURL }} />
               <Text> {state.users[i].name}</Text>
               <Text style={styles.positive}>
-                {" "}
+                {' '}
                 you receive ${transactions[i][j]}
               </Text>
             </View>
@@ -292,15 +291,15 @@ export class BillScreen extends React.Component {
     this.props.screenProps.state.bills.forEach(bill => {
       firebase
         .database()
-        .ref("bills")
+        .ref('bills')
         .child(bill.id)
         .remove();
     });
     firebase
       .database()
-      .ref("dojos")
+      .ref('dojos')
       .child(this.props.screenProps.state.dojo)
-      .child("bills")
+      .child('bills')
       .remove();
   }
 
@@ -350,12 +349,12 @@ export class BillScreen extends React.Component {
                 style={styles.checkOff}
                 onPress={() =>
                   Alert.alert(
-                    "Are you sure?",
-                    "Bills for all users will be deleted",
+                    'Are you sure?',
+                    'Bills for all users will be deleted',
                     [
-                      { text: "Cancel" },
+                      { text: 'Cancel' },
                       {
-                        text: "Delete",
+                        text: 'Delete',
                         onPress: () => {
                           this.checkOffBill();
                         }
@@ -363,8 +362,7 @@ export class BillScreen extends React.Component {
                     ],
                     { cancelable: false }
                   )
-                }
-              >
+                }>
                 <Text>Clear All</Text>
               </Button>
             </View>
@@ -378,8 +376,8 @@ export class BillScreen extends React.Component {
           <Segment style={styles.segment}>
             <Button
               style={{
-                backgroundColor: this.state.onList ? "#c02b2b" : undefined,
-                borderColor: "#c02b2b"
+                backgroundColor: this.state.onList ? '#c02b2b' : undefined,
+                borderColor: '#c02b2b'
               }}
               first
               active={this.state.onList}
@@ -387,26 +385,24 @@ export class BillScreen extends React.Component {
                 if (!this.state.onList) {
                   this.setState({ onList: true });
                 }
-              }}
-            >
-              <Text style={{ color: this.state.onList ? "#FFF" : "#c02b2b" }}>
+              }}>
+              <Text style={{ color: this.state.onList ? '#FFF' : '#c02b2b' }}>
                 List of Bills
               </Text>
             </Button>
             <Button
               last
               style={{
-                backgroundColor: !this.state.onList ? "#c02b2b" : undefined,
-                borderColor: "#c02b2b"
+                backgroundColor: !this.state.onList ? '#c02b2b' : undefined,
+                borderColor: '#c02b2b'
               }}
               active={!this.state.onList}
               onPress={() => {
                 if (this.state.onList) {
                   this.setState({ onList: false });
                 }
-              }}
-            >
-              <Text style={{ color: !this.state.onList ? "#FFF" : "#c02b2b" }}>
+              }}>
+              <Text style={{ color: !this.state.onList ? '#FFF' : '#c02b2b' }}>
                 Personal Totals
               </Text>
             </Button>
@@ -415,7 +411,7 @@ export class BillScreen extends React.Component {
         {this.state.onList ? listBill : personalTotal}
         <ActionButton
           buttonColor="#c02b2b"
-          onPress={() => navigate("AddBill")}
+          onPress={() => navigate('AddBill')}
         />
       </Container>
     );
@@ -425,7 +421,7 @@ export class BillScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   containerTotal: {
     flex: 1,
@@ -434,38 +430,38 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   segment: {
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   actionButtonIcon: {
     fontSize: 20,
     height: 22,
-    color: "white"
+    color: 'white'
   },
   center: {
     flex: 1,
-    flexDirection: "column",
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
-    marginTop:10
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    marginTop: 10
   },
   checkOff: {
-    justifyContent: "flex-end",
-    alignSelf: "center",
-    marginTop: "auto",
-    backgroundColor: "#c02b2b"
+    justifyContent: 'flex-end',
+    alignSelf: 'center',
+    marginTop: 'auto',
+    backgroundColor: '#c02b2b'
   },
   positive: {
-    marginLeft: "auto",
-    color: "#ACE075"
+    marginLeft: 'auto',
+    color: '#ACE075'
   },
   negative: {
-    marginLeft: "auto",
-    color: "#E07581"
+    marginLeft: 'auto',
+    color: '#E07581'
   },
   row: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center"
+    flexDirection: 'row',
+    alignItems: 'center'
   },
 
   flex: {
@@ -474,5 +470,5 @@ const styles = StyleSheet.create({
 
   heading: {
     fontWeight: 'bold'
-  },
+  }
 });

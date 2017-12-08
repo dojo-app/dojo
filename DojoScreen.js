@@ -34,23 +34,22 @@ import * as theme from './public/styles/theme';
 import { ViewMember } from './component/Profile.js';
 
 function formatFirstName(name) {
-    let words = name.split(' ');
+  let words = name.split(' ');
 
-    return words[0];
+  return words[0];
 }
 
 export class DojoScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = ({
+    this.state = {
       loadMember: false
-    });
+    };
   }
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Dojo',
 
-    
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
         name={focused ? 'ios-home' : 'ios-home-outline'}
@@ -67,56 +66,62 @@ export class DojoScreen extends React.Component {
     // ));
 
     let members = this.props.screenProps.state.users.map(user => (
-        <View style={styles.member} key={user.id}>
-          <TouchableHighlight underlayColor='transparent'
-            onPress={() => navigate('MemberProfile', {member: user})}>
-            <Thumbnail large source={{ uri: user.photoURL }}></Thumbnail>
-          </TouchableHighlight>
-          <Text>{formatFirstName(user.name)}</Text>
-        </View>
+      <View style={styles.member} key={user.id}>
+        <TouchableHighlight
+          underlayColor="transparent"
+          onPress={() => navigate('MemberProfile', { member: user })}>
+          <Thumbnail large source={{ uri: user.photoURL }} />
+        </TouchableHighlight>
+        <Text>{formatFirstName(user.name)}</Text>
+      </View>
     ));
 
     const { navigate } = this.props.navigation;
 
     return (
-        <Container style={styles.container}>
-            <Button iconLeft transparent dark style={{ alignSelf: 'flex-end', marginRight: 10 }}
-                onPress={ () => navigate('DojoSettings') }>
-                <FontAwesome name="gear" size={28} color="black" />
-            </Button>
-            <Content>
-                <View style={styles.dojoContainer}>
-                    <View style={styles.dojoHeadContainer}>
-                        <View style={styles.dojoHead}>
-                            <Thumbnail style={styles.dojoImage} source={ dojoImage }></Thumbnail>
-                            <View style={styles.dojoNameContainer}>
-                                <Text style={styles.dojoName}>{this.props.screenProps.state.dojoName}</Text>
-                            </View>
-                        </View>
-                    </View>
+      <Container style={styles.container}>
+        <Button
+          iconLeft
+          transparent
+          dark
+          style={{ alignSelf: 'flex-end', marginRight: 10 }}
+          onPress={() => navigate('DojoSettings')}>
+          <FontAwesome name="gear" size={28} color="black" />
+        </Button>
+        <Content>
+          <View style={styles.dojoContainer}>
+            <View style={styles.dojoHeadContainer}>
+              <View style={styles.dojoHead}>
+                <Thumbnail style={styles.dojoImage} source={dojoImage} />
+                <View style={styles.dojoNameContainer}>
+                  <Text style={styles.dojoName}>
+                    {this.props.screenProps.state.dojoName}
+                  </Text>
                 </View>
+              </View>
+            </View>
+          </View>
 
-                <View style={styles.content}>
-                    <H1 style={styles.membersTitle}>Members</H1>
-                    <View style={styles.listMembersContainer}>
-                        {members}
+          <View style={styles.content}>
+            <H1 style={styles.membersTitle}>Members</H1>
+            <View style={styles.listMembersContainer}>
+              {members}
 
-                        <View style={styles.member}>
-                            <TouchableHighlight onPress={() => navigate('DojoQRCode')}>
-                                <Thumbnail large source={ normalButton }></Thumbnail>
-                            </TouchableHighlight>
-                            <Text>Add Member</Text>
-                        </View>
-
-                    </View>
-                </View>
-            </Content>
-        </Container>
-    )};
+              <View style={styles.member}>
+                <TouchableHighlight onPress={() => navigate('DojoQRCode')}>
+                  <Thumbnail large source={normalButton} />
+                </TouchableHighlight>
+                <Text>Add Member</Text>
+              </View>
+            </View>
+          </View>
+        </Content>
+      </Container>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-
   container: {
     backgroundColor: 'white',
     padding: 10
@@ -145,57 +150,56 @@ const styles = StyleSheet.create({
   },
 
   membersTitle: {
-      // marginLeft: 30,
-      fontWeight: 'bold',
-      fontSize: 20,
-      textAlign: 'center'
+    // marginLeft: 30,
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'center'
   },
 
   member: {
-      margin: 20,
-      justifyContent: 'center',
-      alignItems: 'center'
+    margin: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   listMembersContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      flexWrap: "wrap",
-      justifyContent: "space-around"
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around'
   },
 
   dojoContainer: {
-      flex: 1,
-      flexDirection: 'column'
+    flex: 1,
+    flexDirection: 'column'
   },
 
   dojoHeadContainer: {
-      marginBottom: 30
+    marginBottom: 30
   },
 
   dojoHead: {
-      justifyContent: 'center',
-      alignItems: 'center'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   dojoImage: {
-      width: 150,
-      height: 150
+    width: 150,
+    height: 150
   },
 
   dojoNameContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      flexWrap: "wrap",
-      justifyContent: "center",
-      alignItems: "center"
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   dojoName: {
-      paddingLeft: 10,
-      paddingRight: 10,
-      fontWeight: 'bold',
-      fontSize: 30
-
+    paddingLeft: 10,
+    paddingRight: 10,
+    fontWeight: 'bold',
+    fontSize: 30
   }
 });
