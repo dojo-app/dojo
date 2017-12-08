@@ -445,7 +445,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "flex-end",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    marginTop:10
   },
   checkOff: {
     justifyContent: "flex-end",
@@ -473,5 +474,5 @@ const styles = StyleSheet.create({
 
   heading: {
     fontWeight: 'bold'
-  }
+  },
 });

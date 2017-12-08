@@ -185,7 +185,6 @@ export class EditTaskScreen extends React.Component {
               }}>
               <Text>Save</Text>
             </Button>
->>>>>>> f8ac88ecb750f40357695170dff21f94e2a5f742
           </View>
         </Content>
       </Container>
