@@ -7,11 +7,12 @@ import Expo from 'expo';
 import * as firebase from 'firebase';
 
 export class NotInDojoScreen extends React.Component {
+
   render() {
     return (
       <Container style={styles.container}>
         <Text style={styles.text}>
-          Hello! You are not part of a Dojo yet. 
+          Hello! You are not part of a Dojo yet.
           You can either join a Dojo or create one to get started.
         </Text>
 
@@ -19,7 +20,7 @@ export class NotInDojoScreen extends React.Component {
         <Button iconLeft style={styles.create}
           large
           onPress={() => this.props.navigation.navigate('CreateDojo')}>
-          <Icon name='ios-create-outline' />          
+          <Icon name='ios-create-outline' />
           <Text>Create Dojo</Text>
         </Button>
         </View>
@@ -36,7 +37,7 @@ export class NotInDojoScreen extends React.Component {
         <View>
         <Button iconLeft style={styles.signOut}
            large onPress={() => firebase.auth().signOut()}>
-          <Icon name='ios-log-out' />           
+          <Icon name='ios-log-out' />
           <Text>Sign Out</Text>
         </Button>
         </View>
