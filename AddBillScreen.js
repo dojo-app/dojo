@@ -157,8 +157,9 @@ export class AddBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel style={styles.category}>
-              <Label>Amount </Label>
+              <Label>Amount</Label>
               <Input
+                keyboardType={'numeric'}
                 style={[styles.border, styles.right]}
                 onChangeText={text =>
                   this.setState({ billAmount: this.formatAmount(text) })
