@@ -90,17 +90,15 @@ export class DojoSettingsScreen extends React.Component {
                 </Item>
             </Form>
 
-            <View style={ styles.editContainer }>
-                <Button iconLeft block light
+            <View style={ styles.leaveContainer }>
+                <Button iconLeft
+                  style={ styles.secondaryButton }
                   onPress={() => navigate('DojoSettingsEdit') }>
                   <Icon name='ios-create-outline' />
                   <Text>Edit Dojo</Text>
                 </Button>
-            </View>
-
-            <View style={ styles.leaveContainer }>
-                <Button iconLeft block danger
-                  style={ styles.button }
+                <Button iconLeft danger
+                  style={ styles.primaryButton }
                   onPress={() => this.leaveDojo()}>
                   <Icon name='ios-exit-outline' />
                   <Text>Leave Dojo</Text>
@@ -117,25 +115,32 @@ export class DojoSettingsScreen extends React.Component {
 const styles = StyleSheet.create({
 
   container: {
-      flex: 1,
-      flexDirection: "column",
-      justifyContent: "center",
-      backgroundColor: 'white',
-      padding: 10,
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    backgroundColor: 'white',
+    padding: 10,
   },
 
   leaveContainer: {
-    marginTop: 20
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: "center",
   },
 
   editContainer: {
     marginTop: 20
   },
 
-  button: {
+  primaryButton: {
+    margin: 10,
     backgroundColor: '#c02b2b'
   },
 
+  secondaryButton: {
+    margin: 10,
+    backgroundColor: '#bebebe'
+  }
 });
 
 

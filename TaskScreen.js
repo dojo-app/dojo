@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import React, { Component } from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import {
   Container,
   Header,
@@ -22,10 +22,10 @@ import {
   CheckBox,
   View,
   Thumbnail
-} from 'native-base';
-import * as firebase from 'firebase';
-import ActionButton from 'react-native-action-button';
-import { FontAwesome } from '@expo/vector-icons';
+} from "native-base";
+import * as firebase from "firebase";
+import ActionButton from "react-native-action-button";
+import { FontAwesome } from "@expo/vector-icons";
 
 export class TaskScreen extends React.Component {
   constructor(props) {
@@ -36,12 +36,12 @@ export class TaskScreen extends React.Component {
   }
 
   static navigationOptions = ({ navigation }) => ({
-    title: 'Tasks',
+    title: "Tasks",
     //headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
-        name={focused ? 'ios-list-box' : 'ios-list-box-outline'}
+        name={focused ? "ios-list-box" : "ios-list-box-outline"}
         style={{ color: tintColor }}
       />
     )
@@ -53,7 +53,7 @@ export class TaskScreen extends React.Component {
         <View style={styles.view}>
           <Thumbnail
             style={styles.thumbnail}
-            source={require('./checkmark.png')}
+            source={require("./checkmark.png")}
           />
           <Text style={styles.strikethrough}>{title}</Text>
         </View>
@@ -63,7 +63,7 @@ export class TaskScreen extends React.Component {
         <View style={styles.view}>
           <Thumbnail
             style={styles.thumbnail}
-            source={require('./checkmark_false.png')}
+            source={require("./checkmark_false.png")}
           />
           <Text>{title}</Text>
         </View>
@@ -76,24 +76,27 @@ export class TaskScreen extends React.Component {
     const { navigate } = this.props.navigation;
     var list = array.map(task => (
       <ListItem
+        style={{ marginLeft: 0 }}
         key={task.id}
-        onPress={() => navigate('TaskDetails', { task: task })}>
+        onPress={() => navigate("TaskDetails", { task: task })}
+      >
         <TouchableOpacity
           onPress={() => {
             var toggle = !task.checked;
             firebase
               .database()
-              .ref('tasks')
+              .ref("tasks")
               .child(task.id)
               .update({ checked: toggle });
 
             firebase
               .database()
-              .ref('dojos')
+              .ref("dojos")
               .child(this.props.screenProps.state.dojo)
-              .child('tasks')
+              .child("tasks")
               .update({ [task.id]: toggle });
-          }}>
+          }}
+        >
           {this.toggleCheck(task.checked, task.title)}
         </TouchableOpacity>
       </ListItem>
@@ -150,8 +153,8 @@ export class TaskScreen extends React.Component {
           <Segment style={styles.segment}>
             <Button
               style={{
-                backgroundColor: this.state.onList ? '#c02b2b' : undefined,
-                borderColor: '#c02b2b'
+                backgroundColor: this.state.onList ? "#c02b2b" : undefined,
+                borderColor: "#c02b2b"
               }}
               first
               active={this.state.onList}
@@ -159,24 +162,26 @@ export class TaskScreen extends React.Component {
                 if (!this.state.onList) {
                   this.setState({ onList: true });
                 }
-              }}>
-              <Text style={{ color: this.state.onList ? '#FFF' : '#c02b2b' }}>
+              }}
+            >
+              <Text style={{ color: this.state.onList ? "#FFF" : "#c02b2b" }}>
                 Assigned By Me
               </Text>
             </Button>
             <Button
               last
               style={{
-                backgroundColor: !this.state.onList ? '#c02b2b' : undefined,
-                borderColor: '#c02b2b'
+                backgroundColor: !this.state.onList ? "#c02b2b" : undefined,
+                borderColor: "#c02b2b"
               }}
               active={!this.state.onList}
               onPress={() => {
                 if (this.state.onList) {
                   this.setState({ onList: false });
                 }
-              }}>
-              <Text style={{ color: !this.state.onList ? '#FFF' : '#c02b2b' }}>
+              }}
+            >
+              <Text style={{ color: !this.state.onList ? "#FFF" : "#c02b2b" }}>
                 Assigned To Me
               </Text>
             </Button>
@@ -185,7 +190,7 @@ export class TaskScreen extends React.Component {
         {this.state.onList ? AssignedByMe : AssignedToMe}
         <ActionButton
           buttonColor="#c02b2b"
-          onPress={() => navigate('AddTask')}
+          onPress={() => navigate("AddTask")}
         />
       </Container>
       /*
@@ -206,38 +211,39 @@ export class TaskScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: "white"
   },
   listItem: {
     //display: 'flex',
     //flexWrap: 'nowrap'
   },
   strikethrough: {
-    textDecorationLine: 'line-through'
+    textDecorationLine: "line-through"
   },
   segment: {
-    backgroundColor: 'white'
+    backgroundColor: "white"
   },
   seg: {
-    backgroundColor: 'green'
+    backgroundColor: "green"
   },
   actionButtonIcon: {
     fontSize: 20,
     height: 22,
-    color: 'white'
+    color: "white"
   },
   view: {
     //flexWrap: 'nowrap'
     flex: 10,
-    flexDirection: 'row',
+    flexDirection: "row",
     //justifyContent: 'center',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   list: {
-    flexWrap: 'nowrap'
+    flexWrap: "nowrap"
   },
   thumbnail: {
-    marginRight: 12
+    marginRight: 12,
+    marginLeft: 12
   }
 });

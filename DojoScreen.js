@@ -79,18 +79,19 @@ export class DojoScreen extends React.Component {
 
     return (
         <Container style={styles.container}>
+            <Button iconLeft transparent dark style={{ alignSelf: 'flex-end', marginRight: 10 }}
+                onPress={ () => navigate('DojoSettings') }>
+                <FontAwesome name="gear" size={28} color="black" />
+            </Button>
             <Content>
                 <View style={styles.dojoContainer}>
                     <View style={styles.dojoHeadContainer}>
-                        <TouchableHighlight onPress={() => navigate('DojoSettings')}>
                         <View style={styles.dojoHead}>
                             <Thumbnail style={styles.dojoImage} source={ dojoImage }></Thumbnail>
                             <View style={styles.dojoNameContainer}>
                                 <Text style={styles.dojoName}>{this.props.screenProps.state.dojoName}</Text>
-                                <FontAwesome name="gear" size={16} color="black" />
                             </View>
                         </View>
-                        </TouchableHighlight>
                     </View>
                 </View>
 
@@ -116,7 +117,8 @@ export class DojoScreen extends React.Component {
 const styles = StyleSheet.create({
 
   container: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    padding: 10
   },
 
   qr: {
@@ -153,7 +155,6 @@ const styles = StyleSheet.create({
   },
 
   dojoHeadContainer: {
-      marginTop: 10,
       marginBottom: 30
   },
 

@@ -23,7 +23,7 @@ export const ViewProfile = ({user, editMode}) => {
 
   return (
     <Container style={ styles.container }>
-      <Button iconLeft transparent dark style={{ alignSelf: 'flex-end' }}
+      <Button iconLeft transparent dark style={{ alignSelf: 'flex-end', marginRight: 10 }}
         onPress={ editMode }>
         <FontAwesome name="gear" size={28} color="black" />
       </Button>

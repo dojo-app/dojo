@@ -77,7 +77,8 @@ export class DojoSettingsEditScreen extends React.Component {
             </Form>
 
             <View style={ styles.saveContainer }>
-                <Button iconLeft block success
+                <Button iconLeft block
+                  style={{backgroundColor: '#c02b2b'}}
                   onPress={() => {
                       this.save();
                       this.props.navigation.goBack();
