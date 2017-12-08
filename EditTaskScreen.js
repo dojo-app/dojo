@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation';
-import DatePicker from 'react-native-datepicker'
-
+import DatePicker from 'react-native-datepicker';
 
 import {
   Container,
@@ -21,12 +20,12 @@ import {
   Body,
   Thumbnail
 } from 'native-base';
+
 import * as firebase from 'firebase';
 
 export class EditTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Task',
-    // headerTintColor: '#c02b2b'    
+    title: 'Edit Task'
   };
 
   constructor(props) {
@@ -128,23 +127,27 @@ export class EditTaskScreen extends React.Component {
 
             <Item fixedLabel>
               <Label>Due Date</Label>
-              <Text style={styles.text}
+              <Text
+                style={styles.text}
                 //value={this.state.billDueDate}
-                onPress={() => {this.refs.datepicker.onPressDate()}}
-              >
-               {this.state.date}
+                onPress={() => {
+                  this.refs.datepicker.onPressDate();
+                }}>
+                {this.state.date}
               </Text>
             </Item>
             <DatePicker
               date={this.state.date}
               mode="date"
-              style={{width: 0, height: 0}}
+              style={{ width: 0, height: 0 }}
               showIcon={false}
-              confirmBtnText='Submit'
-              cancelBtnText='Cancel'
+              confirmBtnText="Submit"
+              cancelBtnText="Cancel"
               //customStyles={customStyles}
               ref="datepicker"
-              onDateChange={(date) => {this.setState({date: date})}}
+              onDateChange={date => {
+                this.setState({ date: date });
+              }}
             />
 
             <ListItem itemDivider>
@@ -157,28 +160,32 @@ export class EditTaskScreen extends React.Component {
           </Form>
 
           <View style={styles.view}>
-          <Button full style={styles.button}
-            onPress={() => {
-              console.log('usercount = ' + this.usersCount());
-              if (this.state.title === '') {
-                Alert.alert('Submission Failed', 'Title cannot be empty.');
-              } else if (this.usersCount() === 0) {
-                Alert.alert(
-                  'Submission Failed',
-                  'At least one user must be involved.'
-                );
-              } else {
-                this.editTask();
-                this.props.navigation.dispatch(
-                  NavigationActions.reset({
-                    index: 0,
-                    actions: [NavigationActions.navigate({ routeName: 'Home' })]
-                  })
-                );
-              }
-            }}>
-            <Text>Save</Text>
-          </Button>
+            <Button
+              style={styles.button}
+              onPress={() => {
+                console.log('usercount = ' + this.usersCount());
+                if (this.state.title === '') {
+                  Alert.alert('Submission Failed', 'Title cannot be empty.');
+                } else if (this.usersCount() === 0) {
+                  Alert.alert(
+                    'Submission Failed',
+                    'At least one user must be involved.'
+                  );
+                } else {
+                  this.editTask();
+                  this.props.navigation.dispatch(
+                    NavigationActions.reset({
+                      index: 0,
+                      actions: [
+                        NavigationActions.navigate({ routeName: 'Home' })
+                      ]
+                    })
+                  );
+                }
+              }}>
+              <Text>Save</Text>
+            </Button>
+>>>>>>> f8ac88ecb750f40357695170dff21f94e2a5f742
           </View>
         </Content>
       </Container>

@@ -3,10 +3,9 @@ import { StyleSheet,
   Image, 
   View, 
   Keyboard, 
-  TouchableWithoutFeedback, 
   Alert } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import DatePicker from 'react-native-datepicker'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import DatePicker from 'react-native-datepicker';
 import {
   Container,
   Header,
@@ -21,6 +20,7 @@ import {
 } from 'native-base';
 import * as firebase from 'firebase';
 import { ViewProfile } from './component/Profile';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 export class ProfileScreen extends React.Component {
   constructor(props) {
@@ -32,17 +32,19 @@ export class ProfileScreen extends React.Component {
       phoneNumber: this.props.screenProps.state.user.phoneNumber,
       aboutMe: this.props.screenProps.state.user.aboutMe,
       date: this.props.screenProps.state.user.birthDate,
-      height: 40
+      height: 40,
+      currChar: 0
     };
 
-    this.editMode = this.editMode.bind(this);
-    this.updateChanges = this.updateChanges.bind(this);
-    this.cancelUpdate = this.cancelUpdate.bind(this);
+    if (this.state.aboutMe)
+    {
+      count = String(this.state.aboutMe).length;
+      this.state.currChar = count;
+    }
   }
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Profile',
-    // headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -52,23 +54,69 @@ export class ProfileScreen extends React.Component {
     )
   });
 
-  editMode() {
+  editState = () => {
     this.setState({
       editMode: true
     });
   }
 
-  cancelUpdate() {
+  // User canceled updated, reset all fields to their values prior to modifications
+  resetMode = () => {
+    let descLength = this.props.screenProps.state.user.aboutMe.length;
+
     this.setState({
-      editMode: false
+      editMode: false,
+      displayName: this.props.screenProps.state.user.name,
+      email: this.props.screenProps.state.user.email,
+      phoneNumber: this.props.screenProps.state.user.phoneNumber,
+      aboutMe: this.props.screenProps.state.user.aboutMe,
+      currChar: descLength
     });
   }
 
-  updateChanges() {
+  validateFields = () => {
+    let desc = this.state.aboutMe;
+    let length = 0;
+    if (desc)
+      length = String(desc).length
+
+    if (length > 121) {
+      Alert.alert("Max character limit for your about me is 120. Please shorten your description.");
+      return false;
+    }
+
+    if (!this.state.displayName) {
+      Alert.alert("Your name cannot be blank! Please enter a name.");
+      return false;
+    }
+
+    if (this.state.phoneNumber) {
+      let unformattedPhone = this.state.phoneNumber.replace(/-/g, '');
+
+      // User is allowed to leave phone number field blank
+      if (unformattedPhone.length == 0)
+        return true;
+      if (unformattedPhone.length > 10 || unformattedPhone.length < 10) {
+        Alert.alert("Invalid phone number. Please check your number.")
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  updateChanges = () => {
+    let key = this.props.screenProps.state.user.uid;
+    let dojoRef = 
+      firebase
+        .database()
+        .ref('dojos')
+        .child(this.props.screenProps.state.dojo);
+
     firebase
       .database()
       .ref('users/')
-      .child(this.props.screenProps.state.user.uid)
+      .child(key)
       .update({
         name: this.state.displayName,
         phoneNumber: this.state.phoneNumber,
@@ -76,22 +124,17 @@ export class ProfileScreen extends React.Component {
         aboutMe: this.state.aboutMe
       });
 
-    this.setState({
-      editMode: false
+    dojoRef
+      .child('users')
+      .update({ [key]: false });
+
+    dojoRef
+      .child('users')
+      .update({ [key]: true });
+
+    this.setState({ 
+      editMode: false 
     });
-  }
-
-  componentWillUnmount() {
-    this.editMode = undefined;
-    this.updateChanges = undefined;
-    this.cancelUpdate = undefined;
-
-    if (this.state.editMode) {
-      this.setState({
-        editMode: false
-      });
-    }
-
   }
 
   updateSize = (height) => {
@@ -100,54 +143,108 @@ export class ProfileScreen extends React.Component {
     });
   }
 
-  // TODO: make function that gets today's date and set minDate to DatePicker
-  // TODO: character count for about me
+  /*
+    Helper method for DatePicker to set maxDate to today's date.
+    Users are not allowed to set birthday into the future.
+  */
+  getTodaysDate = () => {
+    let date = new Date();
+    let day = date.getDate();
+    let month = (date.getMonth()+1);
+    let year = date.getFullYear();
+
+    if (day < 10)
+      day = "0" + day;
+
+    if (month < 10)
+      month = "0" + month;
+
+    let today = month + '-' + day + '-' + year;
+    return today;
+  }
+
+  // Helper method for formatting phone number as user types
+  formatPhoneNumber = (phoneNumber) => {
+    // Check if user is typing or deleting
+    if (this.state.phoneNumber.length <= phoneNumber.length) {
+      // If user is typing, append the hyphens
+      if (phoneNumber.length == 3 || phoneNumber.length == 7)
+        phoneNumber += '-';
+
+      // If user deleted and decides to type again, fill in the hyphens again
+      else if (phoneNumber.length == 4 || phoneNumber.length == 8) {
+        phoneNumber = phoneNumber.substring(0, phoneNumber.length-1) + '-' 
+          + phoneNumber.substring(phoneNumber.length-1, phoneNumber.length);
+      }
+    }
+    else {
+      // User is deleting from input, remove hyphens
+      if (phoneNumber.length == 4 || phoneNumber.length == 8)
+        phoneNumber = phoneNumber.substring(0, phoneNumber.length-1);
+    }
+
+    this.setState({ 
+      phoneNumber: phoneNumber
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.state.editMode) {
+      this.setState({
+        editMode: false
+      });
+    }
+  }
 
   render() {
+    let today = this.getTodaysDate();
+    let user = this.props.screenProps.state.user;
     let desc = this.state.aboutMe;
+    let name = this.state.displayName;
+    let phoneNumber = this.state.phoneNumber;
     const {height} = this.state;
     let newStyle = {
       height
     }
 
-    let user = this.props.screenProps.state.user;
     if (this.state.editMode) {
       return (
-        <TouchableWithoutFeedback
-          onPress={Keyboard.dismiss} 
-          accessible={false}>
+        <Content keyboardShouldPersistTaps={'handled'}
+          style={{ backgroundColor: 'white' }}>
           <KeyboardAwareScrollView
             style={{ backgroundColor: 'white' }}
             resetScrollToCoords={{ x: 0, y: 0 }}
-            contentContainerStyle={ styles.container }
-            >
+            contentContainerStyle={ styles.container }>
             <Image
               style={ styles.profilePicture }
               source={{ uri:user.photoURL }} />
 
             <View
-              style={ styles.content }
-              >
+              style={ styles.content }>
               <Item>
                 <Icon active name='ios-person' />
                 <Input
-                  placeholder={ user.name } 
-                  onChangeText={(displayName) => this.setState({ displayName: displayName })}/>
+                  value={name}
+                  placeholder="Name"
+                  onChangeText={(displayName) => {this.setState({ displayName: displayName })}} />
               </Item>
               <Item>
                 <Icon active name='ios-call' />
                 <Input
-                  placeholder={ user.phoneNumber } 
+                  value={phoneNumber}
+                  placeholder="123-456-7890"
                   keyboardType={'numeric'} 
-                  onChangeText={(phoneNumber) => this.setState({ phoneNumber: phoneNumber })} />
+                  onChangeText={(phoneNumber) => {this.formatPhoneNumber(phoneNumber)}} />
               </Item>
               <Item>
-                <Icon active name='ios-calendar' />
+                <FontAwesome name="birthday-cake" size={16}  color="black"
+                  style={{ marginRight: 8 }} />
                 <DatePicker
+                  format="MM-DD-YYYY"
+                  maxDate={today}
                   date={this.state.date}
                   placeholder="Select Date"
                   mode="date"
-                  format="MM-DD-YYYY"
                   showIcon={false}
                   confirmBtnText='Submit'
                   cancelBtnText='Cancel'
@@ -167,55 +264,49 @@ export class ProfileScreen extends React.Component {
                       fontSize: 16
                     }
                   }}
-                  onDateChange={(newDate) => this.setState({date: newDate})}
-                />
+                  onDateChange={(newDate) => {this.setState({date: newDate})}} />
               </Item>
               <Item style={{ marginTop: 10 }}>
                 <Icon active name='ios-information-circle' />
                 <Input 
-                  value={ desc }
+                  placeholder="Describe yourself!"
+                  value={desc}
                   multiline={true}
                   style={[newStyle]}
-                  onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
-                  onChangeText={(desc) => this.setState({ aboutMe: desc })} />
+                  onContentSizeChange={(e) => {this.updateSize(e.nativeEvent.contentSize.height)}}
+                  onChangeText={(desc) => {
+                    currChar = String(desc).length
+                    this.setState({ aboutMe: desc, currChar: currChar });
+                  }} />
               </Item>
               <Text style={{ fontSize: 10.5, alignSelf: 'flex-end' }}>
-                Max Char: 120
+                {this.state.currChar} / 120
               </Text>
             </View>
 
             <View style={ styles.footer }>
               <Button light
                 style={ styles.cancelButton } 
-                onPress={ this.cancelUpdate }>            
+                onPress={ () => {this.resetMode()} }>
                 <Text>Cancel</Text>
               </Button>
               <Button large
                 style={ styles.button } 
                 onPress={ () => {
-                  let desc = this.state.aboutMe;
-                  let length = 0;
-                  if (desc)
-                    length = String(desc).length
-
-                  if (length > 121) {
-                    Alert.alert("Max character limit for your about me is 120. Please shorten your description.");
-                  }
-                  else {
+                  if (this.validateFields())
                     this.updateChanges();
-                  }
-                } }>
+                }}>
                 <Text style={{ color: 'white' }}>Save</Text>
               </Button>
             </View>
           </KeyboardAwareScrollView>
-        </TouchableWithoutFeedback>
+          </Content>
       );
     }
     else {
       return (
         <ViewProfile user={ this.props.screenProps.state.user }
-            editMode={ this.editMode } />
+            editMode={ this.editState } />
       );
     }
   }
@@ -229,10 +320,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   profilePicture: {
-    height: 150,
-    width: 150,
-    borderRadius: 75,
-    marginBottom: 10
+    height: 120,
+    width: 120,
+    borderRadius: 60,
+    marginBottom: 10,
+    marginTop: 20
   },
   displayName: {
     fontSize: 20,
@@ -254,7 +346,7 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     margin: 10,
-    backgroundColor: '#d3d3d3'
+    backgroundColor: '#bebebe'
   },
   button: {
     margin: 10,

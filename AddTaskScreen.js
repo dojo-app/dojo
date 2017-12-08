@@ -20,7 +20,6 @@ import {
 } from 'native-base';
 import * as firebase from 'firebase';
 
-
 function removeFalseEntries(obj) {
   let result = {};
   for (const key in obj) {
@@ -36,21 +35,40 @@ function removeFalseEntries(obj) {
 export class AddTaskScreen extends React.Component {
   static navigationOptions = {
     title: 'Add Task',
-    // headerTintColor: '#c02b2b'
   };
 
   constructor(props) {
     super(props);
+
     var users = {};
+
     for (const user of this.props.screenProps.state.users) {
       users[user.id] = true;
     }
+
     this.state = {
       title: '',
       description: '',
-      date: '2017-12-02',
+      date: this.getDateString(),
       users: users
     };
+  }
+
+  getDateString() {
+    const date = new Date();
+
+    const year = date.getFullYear();
+    const month = this.prependZero(date.getMonth() + 1);
+    const day = this.prependZero(date.getDate());
+
+    return `${year}-${month}-${day}`;
+  }
+
+  prependZero(n) {
+    if (n < 10) {
+      return '0' + n;
+    }
+    return n;
   }
 
   addTask() {

@@ -3,7 +3,7 @@ import { JoinDojoScreen } from './JoinDojoScreen';
 import { NotInDojoScreen } from './NotInDojoScreen';
 import { CreateDojoScreen } from './CreateDojoScreen';
 
-const options = { headerMode: 'none' };
+const options = {  };
 
 export const DojoNav = StackNavigator(
   {

@@ -37,7 +37,6 @@ export class TaskScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Tasks',
-    // headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -128,11 +127,19 @@ export class TaskScreen extends React.Component {
 
     const assignedToMeList = this.createList(assignedToMeArray);
 
+    const noTasks = (
+      <View>
+        <ListItem style={styles.center}>
+          <Text style={styles.center}> No Tasks to Display </Text>
+        </ListItem>
+      </View>
+      )
+
     const AssignedByMe = (
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{assignedByMeList}</List>
+            <List>{assignedByMeArray.length != 0 ? assignedByMeList : noTasks }</List>
           </Content>
         </Container>
       </Content>
@@ -142,7 +149,7 @@ export class TaskScreen extends React.Component {
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{assignedToMeList}</List>
+            <List>{assignedToMeArray.length != 0 ? assignedToMeList : noTasks }</List>
           </Content>
         </Container>
       </Content>
@@ -192,31 +199,20 @@ export class TaskScreen extends React.Component {
           onPress={() => navigate('AddTask')}
         />
       </Container>
-      /*
-      <Container style={styles.container}>
-        <Content>
-          <List>{tasks}</List>
-        </Content>
-        <ActionButton
-          buttonColor="#c02b2b"
-          onPress={() => this.props.navigation.navigate('AddTask')}
-        />
-      </Container>
-      */
     );
   }
 }
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end'
+  },
   container: {
     flex: 1,
     backgroundColor: 'white'
-  },
-
-  container1: {
-    // borderWidth: 1,
-    // borderWidth: 1,
-    // borderColor: '#c02b2b'    
   },
 
   listItem: {
@@ -224,11 +220,6 @@ const styles = StyleSheet.create({
     borderColor: '#c02b2b',
     padding: 0,
     margin: 0     
-    // borderTopWidth: 1,
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#c02b2b'
-    //display: 'flex',
-    //flexWrap: 'nowrap'
 
   },
   strikethrough: {

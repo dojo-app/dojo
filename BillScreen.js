@@ -35,7 +35,6 @@ export class BillScreen extends React.Component {
   }
   static navigationOptions = ({ navigation }) => ({
     title: 'Bills',
-    // headerTintColor: '#c02b2b',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -114,7 +113,7 @@ export class BillScreen extends React.Component {
           </ListItem>
           {this.createList(involvingMe)}
           <ListItem itemDivider>
-            <Text>Assigned By Me </Text>
+            <Text>Assigned By Me</Text>
           </ListItem>
           {this.createList(assignedByMe)}
         </View>
@@ -373,11 +372,6 @@ export class BillScreen extends React.Component {
                   { cancelable: false }
                 )
                }>
-
-
-
-
-
                   
                 <Text>Clear All</Text>
               </Button>
@@ -442,7 +436,7 @@ const styles = StyleSheet.create({
   containerTotal: {
     flex: 1,
     backgroundColor: 'white',
-    borderColor: 'red',
+    // borderColor: 'red',
     justifyContent: 'center'
   },
   segment: {

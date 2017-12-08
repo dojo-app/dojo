@@ -49,7 +49,7 @@ export class DojoScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Dojo',
-    // headerTintColor: '#c02b2b',
+
     
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -60,13 +60,13 @@ export class DojoScreen extends React.Component {
   });
 
   render() {
-    const users = this.props.screenProps.state.users.map(user => (
-      <ListItem key={user.id}>
-        <Text>{user.name}</Text>
-      </ListItem>
-    ));
+    // const users = this.props.screenProps.state.users.map(user => (
+    //   <ListItem key={user.id}>
+    //     <Text>{user.name}</Text>
+    //   </ListItem>
+    // ));
 
-    const members = this.props.screenProps.state.users.map(user => (
+    let members = this.props.screenProps.state.users.map(user => (
         <View style={styles.member} key={user.id}>
           <TouchableHighlight underlayColor='transparent'
             onPress={() => navigate('MemberProfile', {member: user})}>
@@ -195,5 +195,6 @@ const styles = StyleSheet.create({
       paddingRight: 10,
       fontWeight: 'bold',
       fontSize: 30
+
   }
 });

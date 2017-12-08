@@ -31,6 +31,10 @@ import * as firebase from 'firebase';
 
 
 export class NotInDojoScreen extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   render() {
     return (
       <Image style={styles.backgroundImage} source={require('./login.png')}>
