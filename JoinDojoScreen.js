@@ -5,7 +5,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   View,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native';
 import { Container, Content, Button, Text, Spinner } from 'native-base';
 import { BarCodeScanner, Permissions } from 'expo';
@@ -48,29 +48,10 @@ export class JoinDojoScreen extends React.Component {
     } else {
       return (
         <View style={{ flex: 1 }}>
-          <Text>Test test test</Text>
           <BarCodeScanner
             onBarCodeRead={this._handleBarCodeRead}
-            style={StyleSheet.absoluteFill}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                flexDirection: 'row'
-              }}>
-              <TouchableOpacity
-                style={{
-                  flex: 0.1,
-                  alignSelf: 'flex-end',
-                  alignItems: 'center'
-                }}
-                onPress={() => {
-                  this.props.navigation.goBack();
-                }}>
-                <Text style={{ color: 'white' }}>Back</Text>
-              </TouchableOpacity>
-            </View>
-          </BarCodeScanner>
+            style={StyleSheet.absoluteFill}
+          />
         </View>
       );
     }
