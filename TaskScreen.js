@@ -54,8 +54,7 @@ export class TaskScreen extends React.Component {
             style={styles.thumbnail}
             source={require('./checkmark.png')}
           />
-{/*          <CheckBox uncheckedIcon='circle-o' checkedIcon='dot-circle-o' color='#c02b2b' checked={this.state.checked} />
-*/}          <Text style={styles.strikethrough}>{title}</Text>
+          <Text style={styles.strikethrough}>{title}</Text>
         </View>
       );
     } else {
@@ -65,8 +64,7 @@ export class TaskScreen extends React.Component {
             style={styles.thumbnail}
             source={require('./checkmark_false.png')}
           />
-{/*          <CheckBox color='#c02b2b' checked={this.state.checked} />
-*/}          <Text>{title}</Text>
+         <Text>{title}</Text>
         </View>
       );
     }
@@ -217,7 +215,6 @@ const styles = StyleSheet.create({
 
   listItem: {
     borderBottomWidth: 1,
-    borderColor: '#c02b2b',
     padding: 0,
     margin: 0     
 
