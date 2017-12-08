@@ -314,8 +314,7 @@ export class ProfileScreen extends React.Component {
                 style={styles.button}
                 onPress={() => {
                   if (this.validateFields()) this.updateChanges();
-                }}
-              >
+                }}>
                 <Text style={{ color: "white" }}>Save</Text>
               </Button>
             </View>

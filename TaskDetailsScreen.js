@@ -15,7 +15,8 @@ import {
   ListItem,
   CheckBox,
   View,
-  Body
+  Body,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 import { Alert } from 'react-native';
@@ -23,7 +24,7 @@ import { Alert } from 'react-native';
 export class TaskDetailsScreen extends React.Component {
   static navigationOptions = {
     title: 'Task Details',
-    headerTintColor: '#c02b2b'
+    // headerTintColor: '#c02b2b'
   };
 
   constructor(props) {
@@ -57,17 +58,38 @@ export class TaskDetailsScreen extends React.Component {
 
   render() {
     const users = this.props.screenProps.state.users.map(user => (
-      <ListItem key={user.id}>
-        <CheckBox
-          color="#c02b2b"
-          checked={this.state.taskTarget.users[user.id]}
-        />
-        <Body>
-          <Text>{user.name}</Text>
-        </Body>
-      </ListItem>
+        <ListItem key={user.id}>
+          <Thumbnail small source={{ uri: user.photoURL }} />
+          <Body>
+            <Text>{user.name}</Text>
+          </Body>
+        </ListItem>
     ));
 
+    // const users = this.props.screenProps.state.users.map(user => (
+    //   <ListItem key={user.id}>
+    //     <CheckBox
+    //       color="#c02b2b"
+    //       checked={this.state.taskTarget.users[user.id]}
+    //     />
+    //     <Body>
+    //       <Text>{user.name}</Text>
+    //     </Body>
+    //   </ListItem>
+    // ));
+    // const billUsers = this.state.bill.users;
+    // const user = this.props.screenProps.state.user;
+
+    // const users = this.props.screenProps.state.users
+    //   .filter(user => billUsers[user.id])
+    //   .map(user => (
+    //     <ListItem key={user.id}>
+    //       <Thumbnail small source={{ uri: user.photoURL }} />
+    //       <Body>
+    //         <Text>{user.name}</Text>
+    //       </Body>
+    //     </ListItem>
+    //   ));
     
 
     return (
@@ -94,7 +116,6 @@ export class TaskDetailsScreen extends React.Component {
                 <Text>Users</Text>
               </Body>
             </ListItem>
-
             {users}
           </Form>
 
@@ -157,7 +178,7 @@ const styles = StyleSheet.create({
   },
 
   editButton: {
-    backgroundColor: '#d3d3d3',
+    backgroundColor: '#bebebe',
     marginLeft: '10%',
     marginTop: 30,
     marginBottom: 10

@@ -49,6 +49,7 @@ export class DojoScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Dojo',
+
     
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -95,7 +96,7 @@ export class DojoScreen extends React.Component {
                     </View>
                 </View>
 
-                <View>
+                <View style={styles.content}>
                     <H1 style={styles.membersTitle}>Members</H1>
                     <View style={styles.listMembersContainer}>
                         {members}
@@ -104,7 +105,7 @@ export class DojoScreen extends React.Component {
                             <TouchableHighlight onPress={() => navigate('DojoQRCode')}>
                                 <Thumbnail large source={ normalButton }></Thumbnail>
                             </TouchableHighlight>
-                            <Text>Add member</Text>
+                            <Text>Add Member</Text>
                         </View>
 
                     </View>
@@ -121,6 +122,17 @@ const styles = StyleSheet.create({
     padding: 10
   },
 
+  content: {
+    flex: 4,
+    margin: 25,
+    padding: 10,
+    alignSelf: 'stretch',
+    borderStyle: 'solid',
+    borderTopWidth: 2,
+    // borderBottomWidth: 2,
+    borderColor: '#c02b2b'
+  },
+
   qr: {
     marginTop: '5%',
     marginBottom: '5%',
@@ -133,7 +145,10 @@ const styles = StyleSheet.create({
   },
 
   membersTitle: {
-      marginLeft: 10
+      // marginLeft: 30,
+      fontWeight: 'bold',
+      fontSize: 20,
+      textAlign: 'center'
   },
 
   member: {
@@ -179,7 +194,8 @@ const styles = StyleSheet.create({
   dojoName: {
       paddingLeft: 10,
       paddingRight: 10,
-      fontSize: 20,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      fontSize: 30
+
   }
 });

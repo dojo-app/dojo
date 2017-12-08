@@ -23,8 +23,9 @@ import { Alert } from 'react-native';
 
 export class BillDetailsScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: `${navigation.state.params.bill.title}`,
-    headerTintColor: '#c02b2b'
+    title: 'Bill Details'
+    // title: `${navigation.state.params.bill.title}`,
+    // headerTintColor: '#c02b2b'
   });
 
   constructor(props) {
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
   },
 
   editButton: {
-    backgroundColor: '#d3d3d3',
+    backgroundColor: '#bebebe',
     marginLeft: '10%',
     marginTop: 30,
     marginBottom: 10

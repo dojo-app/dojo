@@ -36,7 +36,6 @@ function removeFalseEntries(obj) {
 export class AddBillScreen extends React.Component {
   static navigationOptions = {
     title: 'Add Bill',
-    headerTintColor: '#c02b2b'
   };
 
   constructor(props) {

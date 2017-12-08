@@ -80,7 +80,7 @@ export class LoginScreen extends React.Component {
       return (
         <Container style={styles.container}>
           <H1 style={styles.loginText}>Logging In...</H1>
-          <Spinner color="#d3d3d3" />
+          <Spinner color='black' />
         </Container>
       );
     }
@@ -128,7 +128,8 @@ const styles = StyleSheet.create({
 
   loginText: {
     textAlign: 'center',
-    color: '#d3d3d3'
+    color: 'black',
+    fontWeight: 'bold'
   },
 
   backgroundImage: {

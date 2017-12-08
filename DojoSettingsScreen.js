@@ -41,6 +41,8 @@ function formatFirstName(name) {
 export class DojoSettingsScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Dojo Settings',
+    // headerTintColor: '#c02b2b'
+
   });
 
   leaveDojo() {

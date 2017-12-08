@@ -35,7 +35,6 @@ function removeFalseEntries(obj) {
 export class AddTaskScreen extends React.Component {
   static navigationOptions = {
     title: 'Add Task',
-    headerTintColor: '#c02b2b'
   };
 
   constructor(props) {

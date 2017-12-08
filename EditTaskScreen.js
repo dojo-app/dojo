@@ -25,8 +25,7 @@ import * as firebase from 'firebase';
 
 export class EditTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Task',
-    headerTintColor: '#c02b2b'
+    title: 'Edit Task'
   };
 
   constructor(props) {
@@ -186,6 +185,7 @@ export class EditTaskScreen extends React.Component {
               }}>
               <Text>Save</Text>
             </Button>
+>>>>>>> f8ac88ecb750f40357695170dff21f94e2a5f742
           </View>
         </Content>
       </Container>
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    marginTop: '10%',
+    // marginTop: '10%',
     backgroundColor: '#c02b2b'
   },
 
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
 
   view: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center'
+    // flexDirection: 'row',
+    // justifyContent: 'center'
   }
 });

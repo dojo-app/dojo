@@ -36,8 +36,7 @@ export class TaskScreen extends React.Component {
   }
 
   static navigationOptions = ({ navigation }) => ({
-    title: "Tasks",
-    //headerTintColor: '#c02b2b',
+    title: 'Tasks',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -65,7 +64,7 @@ export class TaskScreen extends React.Component {
             style={styles.thumbnail}
             source={require("./checkmark_false.png")}
           />
-          <Text>{title}</Text>
+         <Text>{title}</Text>
         </View>
       );
     }
@@ -78,8 +77,7 @@ export class TaskScreen extends React.Component {
       <ListItem
         style={{ marginLeft: 0 }}
         key={task.id}
-        onPress={() => navigate("TaskDetails", { task: task })}
-      >
+        onPress={() => navigate("TaskDetails", { task: task })}>
         <TouchableOpacity
           onPress={() => {
             var toggle = !task.checked;
@@ -100,7 +98,7 @@ export class TaskScreen extends React.Component {
           {this.toggleCheck(task.checked, task.title)}
         </TouchableOpacity>
       </ListItem>
-    ));
+    ));    
     return list;
   }
 
@@ -127,11 +125,19 @@ export class TaskScreen extends React.Component {
 
     const assignedToMeList = this.createList(assignedToMeArray);
 
+    const noTasks = (
+      <View>
+        <ListItem style={styles.center}>
+          <Text style={styles.center}> No Tasks to Display </Text>
+        </ListItem>
+      </View>
+      )
+
     const AssignedByMe = (
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{assignedByMeList}</List>
+            <List>{assignedByMeArray.length != 0 ? assignedByMeList : noTasks }</List>
           </Content>
         </Container>
       </Content>
@@ -141,7 +147,7 @@ export class TaskScreen extends React.Component {
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{assignedToMeList}</List>
+            <List>{assignedToMeArray.length != 0 ? assignedToMeList : noTasks }</List>
           </Content>
         </Container>
       </Content>
@@ -193,29 +199,27 @@ export class TaskScreen extends React.Component {
           onPress={() => navigate("AddTask")}
         />
       </Container>
-      /*
-      <Container style={styles.container}>
-        <Content>
-          <List>{tasks}</List>
-        </Content>
-        <ActionButton
-          buttonColor="#c02b2b"
-          onPress={() => this.props.navigation.navigate('AddTask')}
-        />
-      </Container>
-      */
     );
   }
 }
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end'
+  },
   container: {
     flex: 1,
     backgroundColor: "white"
   },
+
   listItem: {
-    //display: 'flex',
-    //flexWrap: 'nowrap'
+    borderBottomWidth: 1,
+    padding: 0,
+    margin: 0     
+
   },
   strikethrough: {
     textDecorationLine: "line-through"

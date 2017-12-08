@@ -34,8 +34,7 @@ export class BillScreen extends React.Component {
     };
   }
   static navigationOptions = ({ navigation }) => ({
-    title: "Bills",
-    //headerTintColor: '#c02b2b',
+    title: 'Bills',
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -111,7 +110,7 @@ export class BillScreen extends React.Component {
           </ListItem>
           {this.createList(involvingMe)}
           <ListItem itemDivider>
-            <Text>Assigned By Me </Text>
+            <Text>Assigned By Me</Text>
           </ListItem>
           {this.createList(assignedByMe)}
         </View>
@@ -430,9 +429,9 @@ const styles = StyleSheet.create({
   },
   containerTotal: {
     flex: 1,
-    backgroundColor: "white",
-    borderColor: "red",
-    justifyContent: "center"
+    backgroundColor: 'white',
+    // borderColor: 'red',
+    justifyContent: 'center'
   },
   segment: {
     backgroundColor: "white"
@@ -467,7 +466,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center"
   },
+
   flex: {
     flex: 1
+  },
+
+  heading: {
+    fontWeight: 'bold'
   }
 });

@@ -23,7 +23,7 @@ import * as firebase from 'firebase';
 export class EditBillScreen extends React.Component {
   static navigationOptions = {
     title: 'Edit Bill',
-    headerTintColor: '#c02b2b'
+    // headerTintColor: '#c02b2b'
   };
 
   constructor(props) {
@@ -168,7 +168,7 @@ export class EditBillScreen extends React.Component {
           </Form>
 
           <View style={styles.view}>
-            <Button
+            <Button full
               style={styles.button}
               onPress={() => {
                 console.log('usercount = ' + this.usersCount());
@@ -212,12 +212,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   button: {
-    marginTop: 30,
+    // marginTop: 30,
     backgroundColor: '#c02b2b'
   },
   view: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center'
+    // flexDirection: 'row',
+    // justifyContent: 'center'
   }
 });
