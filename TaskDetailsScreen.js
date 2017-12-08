@@ -15,7 +15,8 @@ import {
   ListItem,
   CheckBox,
   View,
-  Body
+  Body,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 import { Alert } from 'react-native';
@@ -23,16 +24,17 @@ import { Alert } from 'react-native';
 export class TaskDetailsScreen extends React.Component {
   static navigationOptions = {
     title: 'Task Details',
-    headerTintColor: '#c02b2b'    
-
+    // headerTintColor: '#c02b2b'
   };
 
   constructor(props) {
-      super(props);
-      const taskID = this.props.navigation.state.params.task.id;
-      this.state = {
-          taskTarget: this.props.screenProps.state.tasks.find(task => task.id === taskID)
-      };
+    super(props);
+    const taskID = this.props.navigation.state.params.task.id;
+    this.state = {
+      taskTarget: this.props.screenProps.state.tasks.find(
+        task => task.id === taskID
+      )
+    };
   }
 
   deleteTask() {
@@ -56,15 +58,39 @@ export class TaskDetailsScreen extends React.Component {
 
   render() {
     const users = this.props.screenProps.state.users.map(user => (
-      <ListItem key={user.id}>
-        <CheckBox
-          checked={this.state.taskTarget.users[user.id]}
-        />
-        <Body>
-          <Text>{user.name}</Text>
-        </Body>
-      </ListItem>
+        <ListItem key={user.id}>
+          <Thumbnail small source={{ uri: user.photoURL }} />
+          <Body>
+            <Text>{user.name}</Text>
+          </Body>
+        </ListItem>
     ));
+
+    // const users = this.props.screenProps.state.users.map(user => (
+    //   <ListItem key={user.id}>
+    //     <CheckBox
+    //       color="#c02b2b"
+    //       checked={this.state.taskTarget.users[user.id]}
+    //     />
+    //     <Body>
+    //       <Text>{user.name}</Text>
+    //     </Body>
+    //   </ListItem>
+    // ));
+    // const billUsers = this.state.bill.users;
+    // const user = this.props.screenProps.state.user;
+
+    // const users = this.props.screenProps.state.users
+    //   .filter(user => billUsers[user.id])
+    //   .map(user => (
+    //     <ListItem key={user.id}>
+    //       <Thumbnail small source={{ uri: user.photoURL }} />
+    //       <Body>
+    //         <Text>{user.name}</Text>
+    //       </Body>
+    //     </ListItem>
+    //   ));
+    
 
     return (
       <Container style={styles.container}>
@@ -72,26 +98,17 @@ export class TaskDetailsScreen extends React.Component {
           <Form>
             <Item fixedLabel>
               <Label>Title</Label>
-              <Input
-                disabled
-                value={this.state.taskTarget.title}
-              />
+              <Input disabled value={this.state.taskTarget.title} />
             </Item>
 
             <Item fixedLabel>
               <Label>Description</Label>
-              <Input
-                disabled
-                value={this.state.taskTarget.description}
-              />
+              <Input disabled value={this.state.taskTarget.description} />
             </Item>
 
             <Item fixedLabel>
               <Label>Due Date</Label>
-              <Input
-                disabled
-                value={this.state.taskTarget.date}
-              />
+              <Input disabled value={this.state.taskTarget.date} />
             </Item>
 
             <ListItem itemDivider>
@@ -99,41 +116,46 @@ export class TaskDetailsScreen extends React.Component {
                 <Text>Users</Text>
               </Body>
             </ListItem>
-
             {users}
           </Form>
 
-
           <View style={styles.container}>
-            <Button iconLeft style={ styles.editButton }
-            onPress={() =>
-              this.props.navigation.navigate('EditTask', {task: this.props.navigation.state.params.task})}>
-              <Icon name='ios-create-outline' />
+            <Button
+              iconLeft
+              style={styles.editButton}
+              onPress={() =>
+                this.props.navigation.navigate('EditTask', {
+                  task: this.props.navigation.state.params.task
+                })
+              }>
+              <Icon name="ios-create-outline" />
               <Text>Edit Task</Text>
             </Button>
 
-            <Button iconLeft style={styles.deleteButton} onPress={() =>
-              Alert.alert(
-                'Are you sure?',
-                'This task will be permanently deleted',
-                [
-                  { text: 'Cancel' },
-                  {
-                    text: 'Delete',
-                    onPress: () => {
-                      this.deleteTask();
-                      this.props.navigation.goBack();
+            <Button
+              iconLeft
+              style={styles.deleteButton}
+              onPress={() =>
+                Alert.alert(
+                  'Are you sure?',
+                  'This task will be permanently deleted',
+                  [
+                    { text: 'Cancel' },
+                    {
+                      text: 'Delete',
+                      onPress: () => {
+                        this.deleteTask();
+                        this.props.navigation.goBack();
+                      }
                     }
-                  }
-                ],
-                { cancelable: false }
-              )
-            }>
-              <Icon name='ios-trash' />
+                  ],
+                  { cancelable: false }
+                )
+              }>
+              <Icon name="ios-trash" />
               <Text>Delete Task</Text>
             </Button>
           </View>
-
         </Content>
       </Container>
     );
@@ -143,7 +165,7 @@ export class TaskDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',   
+    backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
@@ -153,7 +175,6 @@ const styles = StyleSheet.create({
     marginRight: '10%',
     marginTop: 30,
     marginBottom: 10
-
   },
 
   editButton: {

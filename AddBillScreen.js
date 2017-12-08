@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
-import DatePicker from 'react-native-datepicker'
+import DatePicker from 'react-native-datepicker';
 
 import {
   Container,
@@ -21,20 +21,21 @@ import {
 import * as firebase from 'firebase';
 
 function removeFalseEntries(obj) {
-    let result = {};
-    for (const key in obj) {
-        if (obj[key]) { //holds a true
-            result[key] = true;
-        }
+  let result = {};
+  for (const key in obj) {
+    if (obj[key]) {
+      //holds a true
+      result[key] = true;
     }
+  }
 
-    return result;
+  return result;
 }
 
 export class AddBillScreen extends React.Component {
   static navigationOptions = {
     title: 'Add Bill',
-    headerTintColor: '#c02b2b',
+    // headerTintColor: '#c02b2b'
   };
 
   constructor(props) {
@@ -45,7 +46,7 @@ export class AddBillScreen extends React.Component {
     }
 
     this.state = {
-      date:"2016-05-15",
+      date: '2016-05-15',
       billTitle: '',
       billAmount: '$0.00',
       billDescription: '',
@@ -83,46 +84,28 @@ export class AddBillScreen extends React.Component {
     return count;
   }
 
-  toggleCheck(bool, user){
-    if(bool){
-      return (
-        <Thumbnail
-            medium
-            source={require('./checkmark.png')}
-
-          />
-          );
+  toggleCheck(bool, user) {
+    if (bool) {
+      return <Thumbnail small source={require('./checkmark.png')} />;
+    } else {
+      return <Thumbnail small source={{ uri: user.photoURL }} />;
     }
-    else {
-      return(
-        <Thumbnail
-          medium
-          source={{ uri: user.photoURL }}
-        />
-      );
-    }
-
   }
 
-  formatAmount(text){
-    var txtLen = text.length-1;
+  formatAmount(text) {
+    var txtLen = text.length - 1;
     var check = text;
 
-    if(check.charAt(txtLen) < '0' || check.charAt(txtLen) > '9'){
-      check = check.substr(0, txtLen)
+    if (check.charAt(txtLen) < '0' || check.charAt(txtLen) > '9') {
+      check = check.substr(0, txtLen);
     }
 
-    check = check.replace(/[^0-9]/g,'');
+    check = check.replace(/[^0-9]/g, '');
     var accounting = require('accounting');
-    return accounting.formatMoney(parseFloat(check)/100);
-
-
-
+    return accounting.formatMoney(parseFloat(check) / 100);
   }
 
-
   render() {
-
     const users = this.props.screenProps.state.users.map(user => (
       <ListItem
         key={user.id}
@@ -143,51 +126,56 @@ export class AddBillScreen extends React.Component {
     ));
 
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
           <Form>
-          <Item fixedLabel>
-              <Label>Bill Title</Label>
+            <Item fixedLabel>
+              <Label>Title</Label>
               <Input
                 value={this.state.billTitle}
                 onChangeText={text => this.setState({ billTitle: text })}
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Amount </Label>
+              <Label>Amount </Label>
               <Input
-                style = {styles.right}
-                onChangeText={text => this.setState({ billAmount: this.formatAmount(text) })}
+                style={styles.right}
+                onChangeText={text =>
+                  this.setState({ billAmount: this.formatAmount(text) })
+                }
                 value={this.state.billAmount}
-
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Description</Label>
+              <Label>Description</Label>
               <Input
                 value={this.state.billDescription}
                 onChangeText={text => this.setState({ billDescription: text })}
               />
             </Item>
             <Item fixedLabel>
-              <Label>Bill Due Date</Label>
-              <Text style={styles.text}
+              <Label>Due Date</Label>
+              <Text
+                style={styles.text}
                 //value={this.state.billDueDate}
-                onPress={() => {this.refs.datepicker.onPressDate()}}
-              >
-               {this.state.date}
+                onPress={() => {
+                  this.refs.datepicker.onPressDate();
+                }}>
+                {this.state.date}
               </Text>
             </Item>
             <DatePicker
               date={this.state.date}
               mode="date"
-              style={{width: 0, height: 0}}
+              style={{ width: 0, height: 0 }}
               showIcon={false}
-              confirmBtnText='Submit'
-              cancelBtnText='Cancel'
+              confirmBtnText="Submit"
+              cancelBtnText="Cancel"
               //customStyles={customStyles}
               ref="datepicker"
-              onDateChange={(date) => {this.setState({date: date})}}
+              onDateChange={date => {
+                this.setState({ date: date });
+              }}
             />
             <ListItem itemDivider>
               <Body>
@@ -196,7 +184,8 @@ export class AddBillScreen extends React.Component {
             </ListItem>
             {users}
           </Form>
-          <Button style={styles.button}
+          <Button
+            style={styles.button}
             full
             onPress={() => {
               console.log('usercount = ' + this.usersCount());
@@ -207,7 +196,7 @@ export class AddBillScreen extends React.Component {
                   'Submission Failed',
                   'Your Bill Amount cannot be $0.00'
                 );
-              }  else if (this.usersCount() === 0) {
+              } else if (this.usersCount() === 0) {
                 Alert.alert(
                   'Submission Failed',
                   'At least one user must be involved.'
@@ -232,12 +221,12 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor:'#c02b2b'
+    backgroundColor: '#c02b2b'
   },
 
   right: {
-    marginRight:20,
-    textAlign: 'right' ,
+    marginRight: 20,
+    textAlign: 'right'
   },
 
   text: {

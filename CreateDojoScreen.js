@@ -7,9 +7,11 @@ import {
   Form,
   Input,
   Label,
-  Item
+  Item,
+  Icon,
+  Image
 } from 'native-base';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, View } from 'react-native';
 
 import { secret } from './secret';
 import Expo from 'expo';
@@ -18,7 +20,7 @@ import * as firebase from 'firebase';
 export class CreateDojoScreen extends React.Component {
   constructor() {
     super();
-    this.state = { dojoName: '' };
+    this.state = { dojoName: '', dojoDescription: '' };
   }
   createDojo() {
     var new_dojo = firebase
@@ -26,6 +28,7 @@ export class CreateDojoScreen extends React.Component {
       .ref('dojos')
       .push({
         name: this.state.dojoName,
+        description: this.state.dojoDescription,
         users: { [this.props.screenProps.state.user.uid]: true }
       });
 
@@ -39,7 +42,10 @@ export class CreateDojoScreen extends React.Component {
 
   render() {
     return (
+            // <Image style={styles.backgroundImage} source={require('./login.png')}>
+
       <Container style={styles.container}>
+      <Content>
         <Form>
           <Item fixedLabel>
             <Label>Dojo Name</Label>
@@ -49,11 +55,19 @@ export class CreateDojoScreen extends React.Component {
               onChangeText={text => this.setState({ dojoName: text })}
             />
           </Item>
+          <Item fixedLabel>
+            <Label>Description</Label>
+            <Input
+              value={this.state.dojoDescription}
+              onChangeText={text => this.setState({ dojoDescription: text })}
+            />
+          </Item>
         </Form>
-        <Button
+
+
+        <Button style={styles.create}
           large
-          full
-          success
+          iconLeft
           onPress={() => {
             if (this.state.dojoName === '') {
               Alert.alert('Error', 'Dojo name cannot be empty.');
@@ -61,19 +75,54 @@ export class CreateDojoScreen extends React.Component {
               this.createDojo();
             }
           }}>
+          <Icon name='ios-create-outline' />
           <Text>Create Dojo</Text>
-        </Button>
+        </Button>      
+      </Content>
       </Container>
+            // </Image> 
+
     );
   }
 }
 
 const styles = StyleSheet.create({
+  // container: {
+  //   flex: 1,
+  //   flexDirection: "row",
+  //   justifyContent: 'center',
+  //   backgroundColor: 'white'
+  // },
+
   container: {
     flex: 1,
-    justifyContent: 'center'
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
+ 
   text: {
     margin: '10%'
+  },
+  create: {
+    backgroundColor: '#c02b2b',
+    marginRight: '10%',
+    marginTop: 30,
+    marginBottom: 10
+  },
+
+  back: {
+    backgroundColor: '#d3d3d3',
+    marginLeft: '10%',
+    marginTop: 30,
+    marginBottom: 10
+  },
+
+  backgroundImage: {
+    flex: 1,
+    width: null,
+    height: null,
+    resizeMode: 'cover'
   }
+
 });

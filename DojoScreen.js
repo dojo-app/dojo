@@ -28,9 +28,10 @@ const dojoImage = require('./public/images/logo.png');
 const dojoEdit = require('./public/images/edit.png');
 
 import { StyleSheet, View, TouchableHighlight } from 'react-native';
-//import * as theme from './styles/theme';
-
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import * as firebase from 'firebase';
+import * as theme from './public/styles/theme';
+import { ViewMember } from './component/Profile.js';
 
 function formatFirstName(name) {
     let words = name.split(' ');
@@ -39,10 +40,17 @@ function formatFirstName(name) {
 }
 
 export class DojoScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = ({
+      loadMember: false
+    });
+  }
+
   static navigationOptions = ({ navigation }) => ({
     title: 'Dojo',
-    headerTintColor: '#c02b2b',
-
+    // headerTintColor: '#c02b2b',
+    
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
         name={focused ? 'ios-home' : 'ios-home-outline'}
@@ -60,7 +68,10 @@ export class DojoScreen extends React.Component {
 
     const members = this.props.screenProps.state.users.map(user => (
         <View style={styles.member} key={user.id}>
-          <Thumbnail large source={{ uri: user.photoURL }}></Thumbnail>
+          <TouchableHighlight underlayColor='transparent'
+            onPress={() => navigate('MemberProfile', {member: user})}>
+            <Thumbnail large source={{ uri: user.photoURL }}></Thumbnail>
+          </TouchableHighlight>
           <Text>{formatFirstName(user.name)}</Text>
         </View>
     ));
@@ -68,61 +79,56 @@ export class DojoScreen extends React.Component {
     const { navigate } = this.props.navigation;
 
     return (
-
         <Container style={styles.container}>
             <Content>
                 <View style={styles.dojoContainer}>
-                    <View style={styles.dojoHead}>
-                        <Thumbnail style={styles.dojoImage} source={ dojoImage }></Thumbnail>
-                        <Text>{this.props.screenProps.state.dojoName}</Text>
-                    </View>
-                    <View>
-                        <H1 style={styles.membersTitle}>Members</H1>
-                        <View style={styles.membersContainer}>
-                            {members}
-
-                                <View style={styles.member}>
-                                  <TouchableHighlight onPress={() => navigate('DojoQRCode')}>
-                                    <Thumbnail large source={ normalButton }></Thumbnail>
-                                  </TouchableHighlight>
-                                  <Text>Add member</Text>
-                                </View>
-
+                    <View style={styles.dojoHeadContainer}>
+                        <TouchableHighlight onPress={() => navigate('DojoSettings')}>
+                        <View style={styles.dojoHead}>
+                            <Thumbnail style={styles.dojoImage} source={ dojoImage }></Thumbnail>
+                            <View style={styles.dojoNameContainer}>
+                                <Text style={styles.dojoName}>{this.props.screenProps.state.dojoName}</Text>
+                                <FontAwesome name="gear" size={16} color="black" />
+                            </View>
                         </View>
+                        </TouchableHighlight>
                     </View>
-
                 </View>
 
-              <Button style={styles.leaveButton} full large onPress={() => this.leaveDojo()}>
-                <Text>Leave Dojo</Text>
-              </Button>
+                <View style={styles.content}>
+                    <H1 style={styles.membersTitle}>Members</H1>
+                    <View style={styles.listMembersContainer}>
+                        {members}
 
+                        <View style={styles.member}>
+                            <TouchableHighlight onPress={() => navigate('DojoQRCode')}>
+                                <Thumbnail large source={ normalButton }></Thumbnail>
+                            </TouchableHighlight>
+                            <Text>Add Member</Text>
+                        </View>
+
+                    </View>
+                </View>
             </Content>
         </Container>
-    );
-  }
-
-  leaveDojo() {
-    firebase
-      .database()
-      .ref('dojos')
-      .child(this.props.screenProps.state.dojo)
-      .child('users')
-      .child(this.props.screenProps.state.user.uid)
-      .remove();
-    firebase
-      .database()
-      .ref('users')
-      .child(this.props.screenProps.state.user.uid)
-      .child('dojo')
-      .remove();
-  }
+    )};
 }
 
 const styles = StyleSheet.create({
 
   container: {
     backgroundColor: 'white'
+  },
+
+  content: {
+    flex: 4,
+    margin: 25,
+    padding: 10,
+    alignSelf: 'stretch',
+    borderStyle: 'solid',
+    borderTopWidth: 2,
+    // borderBottomWidth: 2,
+    borderColor: '#c02b2b'
   },
 
   qr: {
@@ -137,7 +143,10 @@ const styles = StyleSheet.create({
   },
 
   membersTitle: {
-      marginLeft: 10
+      // marginLeft: 30,
+      fontWeight: 'bold',
+      fontSize: 20,
+      textAlign: 'center'
   },
 
   member: {
@@ -146,7 +155,7 @@ const styles = StyleSheet.create({
       alignItems: 'center'
   },
 
-  membersContainer: {
+  listMembersContainer: {
       flex: 1,
       flexDirection: 'row',
       flexWrap: "wrap",
@@ -155,11 +164,15 @@ const styles = StyleSheet.create({
 
   dojoContainer: {
       flex: 1,
-      flexDirection: 'column',
+      flexDirection: 'column'
+  },
+
+  dojoHeadContainer: {
+      marginTop: 10,
+      marginBottom: 30
   },
 
   dojoHead: {
-      margin: 20,
       justifyContent: 'center',
       alignItems: 'center'
   },
@@ -167,5 +180,20 @@ const styles = StyleSheet.create({
   dojoImage: {
       width: 150,
       height: 150
+  },
+
+  dojoNameContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      flexWrap: "wrap",
+      justifyContent: "center",
+      alignItems: "center"
+  },
+
+  dojoName: {
+      paddingLeft: 10,
+      paddingRight: 10,
+      fontWeight: 'bold',
+      fontSize: 30
   }
 });

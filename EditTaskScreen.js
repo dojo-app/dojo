@@ -18,14 +18,15 @@ import {
   CheckBox,
   ListItem,
   View,
-  Body
+  Body,
+  Thumbnail
 } from 'native-base';
 import * as firebase from 'firebase';
 
 export class EditTaskScreen extends React.Component {
   static navigationOptions = {
     title: 'Edit Task',
-    headerTintColor: '#c02b2b'    
+    // headerTintColor: '#c02b2b'    
   };
 
   constructor(props) {
@@ -77,6 +78,15 @@ export class EditTaskScreen extends React.Component {
     return count;
   }
 
+  toggleCheck(bool, user) {
+    console.log(bool);
+    if (bool) {
+      return <Thumbnail small source={require('./checkmark.png')} />;
+    } else {
+      return <Thumbnail small source={{ uri: user.photoURL }} />;
+    }
+  }
+
   render() {
     const users = this.props.screenProps.state.users.map(user => (
       <ListItem
@@ -88,7 +98,7 @@ export class EditTaskScreen extends React.Component {
             users: prevUsers
           });
         }}>
-        <CheckBox checked={this.state.users[user.id]} />
+        {this.toggleCheck(this.state.users[user.id], user)}
         <Body>
           <Text>{user.name}</Text>
         </Body>
@@ -147,7 +157,7 @@ export class EditTaskScreen extends React.Component {
           </Form>
 
           <View style={styles.view}>
-          <Button style={styles.button}
+          <Button full style={styles.button}
             onPress={() => {
               console.log('usercount = ' + this.usersCount());
               if (this.state.title === '') {
@@ -183,7 +193,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    marginTop: '10%',
+    // marginTop: '10%',
     backgroundColor: '#c02b2b'
   },
 
@@ -195,7 +205,7 @@ const styles = StyleSheet.create({
 
   view: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center'
+    // flexDirection: 'row',
+    // justifyContent: 'center'
   }
 });
