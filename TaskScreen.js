@@ -55,7 +55,6 @@ export class TaskScreen extends React.Component {
             style={styles.thumbnail}
             source={require('./checkmark.png')}
           />
-          <Text style={styles.strikethrough}>{title}</Text>
         </View>
       );
     } else {
@@ -65,6 +64,21 @@ export class TaskScreen extends React.Component {
             style={styles.thumbnail}
             source={require('./checkmark_false.png')}
           />
+        </View>
+      );
+    }
+  }
+
+  toggleStrikethrough(bool, title) {
+    if (bool) {
+      return (
+        <View style={styles.view}>
+          <Text style={styles.strikethrough}>{title}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.view}>
           <Text>{title}</Text>
         </View>
       );
@@ -96,6 +110,7 @@ export class TaskScreen extends React.Component {
           }}>
           {this.toggleCheck(task.checked, task.title)}
         </TouchableOpacity>
+        {this.toggleStrikethrough(task.checked, task.title)}
       </ListItem>
     ));
     return list;
