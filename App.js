@@ -219,8 +219,8 @@ export default class App extends React.Component {
       let userObj = snapshot.val();
       userObj['uid'] = this.state.user.uid;
 
-        this.setState({ user: userObj });
-      });
+      this.setState({ user: userObj });
+    });
   }
 
   updateUserInfo(user, newUser) {
@@ -235,8 +235,8 @@ export default class App extends React.Component {
 
     // For Google accounts: higher res image
     let photo = String(user.photoURL);
-    let index = photo.indexOf("s96-c");
-    photo = photo.substring(0, index) + "s400-c/photo.jpg";
+    let index = photo.indexOf('s96-c');
+    photo = photo.substring(0, index) + 's400-c/photo.jpg';
 
     userRef.child(user.uid).update({
       photoURL: photo
@@ -264,6 +264,8 @@ export default class App extends React.Component {
     //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
     if (snapshot.val()) {
       this.setState({ dojoDescription: snapshot.val() });
+    } else {
+      this.setState({ dojoDescription: '' });
     }
   }
 

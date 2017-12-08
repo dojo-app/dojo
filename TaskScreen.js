@@ -34,10 +34,6 @@ export class TaskScreen extends React.Component {
       loading: true,
       segment: 'ASSIGNED_TO_ME'
     };
-
-    this.props.onNavigationStateChange = () => {
-      this.setState({ segment: 'ASSIGNED_TO_ME' });
-    };
   }
 
   static navigationOptions = ({ navigation }) => ({
