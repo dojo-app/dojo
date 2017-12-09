@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, Keyboard } from 'react-native';
 
 import {
   Container,
@@ -22,7 +22,7 @@ import * as firebase from 'firebase';
 
 export class EditBillScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Bill',
+    title: 'Edit Bill'
     // headerTintColor: '#c02b2b'
   };
 
@@ -168,7 +168,8 @@ export class EditBillScreen extends React.Component {
           </Form>
 
           <View style={styles.view}>
-            <Button full
+            <Button
+              full
               style={styles.button}
               onPress={() => {
                 console.log('usercount = ' + this.usersCount());
@@ -190,6 +191,7 @@ export class EditBillScreen extends React.Component {
                     'At least one user must be involved.'
                   );
                 } else {
+                  Keyboard.dismiss();
                   this.editBill();
                   this.props.navigation.goBack();
                 }
@@ -216,7 +218,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#c02b2b'
   },
   view: {
-    flex: 1,
+    flex: 1
     // flexDirection: 'row',
     // justifyContent: 'center'
   }

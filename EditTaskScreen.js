@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, Keyboard } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import DatePicker from 'react-native-datepicker';
 
@@ -172,6 +172,7 @@ export class EditTaskScreen extends React.Component {
                     'At least one user must be involved.'
                   );
                 } else {
+                  Keyboard.dismiss();
                   this.editTask();
                   this.props.navigation.dispatch(
                     NavigationActions.reset({
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
   },
 
   view: {
-    flex: 1,
+    flex: 1
     // flexDirection: 'row',
     // justifyContent: 'center'
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, Keyboard } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 
 import {
@@ -34,7 +34,7 @@ function removeFalseEntries(obj) {
 
 export class AddTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Task',
+    title: 'Add Task'
   };
 
   constructor(props) {
@@ -193,6 +193,7 @@ export class AddTaskScreen extends React.Component {
                   'At least one user must be involved.'
                 );
               } else {
+                Keyboard.dismiss();
                 this.addTask();
                 this.props.navigation.goBack();
               }
