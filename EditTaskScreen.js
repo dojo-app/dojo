@@ -182,7 +182,7 @@ export class EditTaskScreen extends React.Component {
                     NavigationActions.reset({
                       index: 0,
                       actions: [
-                        NavigationActions.navigate({ routeName: "Home" })
+                        NavigationActions.navigate({ routeName: "Tasks" })
                       ]
                     })
                   );

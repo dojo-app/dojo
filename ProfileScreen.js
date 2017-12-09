@@ -57,7 +57,12 @@ export class ProfileScreen extends React.Component {
 
   // User canceled updated, reset all fields to their values prior to modifications
   resetMode = () => {
-    let descLength = this.props.screenProps.state.user.aboutMe.length;
+    let descLength;
+    if (this.props.screenProps.state.user.aboutMe) {
+      descLength = this.props.screenProps.state.user.aboutMe.length;
+    } else {
+      descLength = 0;
+    }
 
     this.setState({
       editMode: false,

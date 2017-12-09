@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, Alert, Keyboard } from "react-native";
-
+import { NavigationActions } from "react-navigation";
 import {
   Container,
   Header,
@@ -136,8 +136,9 @@ export class EditBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel style={styles.inputItem}>
-              <Label>Bill Amount </Label>
+              <Label>Amount</Label>
               <Input
+                keyboardType={"numeric"}
                 style={styles.right}
                 onChangeText={text =>
                   this.setState({ billAmount: this.formatAmount(text) })
@@ -194,7 +195,14 @@ export class EditBillScreen extends React.Component {
                 } else {
                   Keyboard.dismiss();
                   this.editBill();
-                  this.props.navigation.goBack();
+                  this.props.navigation.dispatch(
+                    NavigationActions.reset({
+                      index: 0,
+                      actions: [
+                        NavigationActions.navigate({ routeName: "Bills" })
+                      ]
+                    })
+                  );
                 }
               }}
             >
