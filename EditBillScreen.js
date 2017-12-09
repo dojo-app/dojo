@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, Alert, Keyboard } from "react-native";
 import { NavigationActions } from "react-navigation";
+import DatePicker from "react-native-datepicker";
 import {
   Container,
   Header,
@@ -38,7 +39,7 @@ export class EditBillScreen extends React.Component {
       billTitle: billField.title,
       billAmount: billField.amount,
       billDescription: billField.description,
-      billDueDate: billField.date,
+      date: billField.date,
       billUsers: billField.users
     };
   }
@@ -52,7 +53,7 @@ export class EditBillScreen extends React.Component {
       .child(key)
       .update({
         amount: this.state.billAmount,
-        date: this.state.billDueDate,
+        date: this.state.date,
         description: this.state.billDescription,
         requester: this.props.screenProps.state.user.uid,
         users: this.state.billUsers,
@@ -153,13 +154,32 @@ export class EditBillScreen extends React.Component {
                 onChangeText={text => this.setState({ billDescription: text })}
               />
             </Item>
+
             <Item fixedLabel style={styles.inputItem}>
               <Label>Due Date</Label>
-              <Input
-                value={this.state.billDueDate}
-                onChangeText={text => this.setState({ billDueDate: text })}
-              />
+              <Text
+                style={styles.text}
+                onPress={() => {
+                  this.refs.datepicker.onPressDate();
+                }}
+              >
+                {this.state.date}
+              </Text>
             </Item>
+            <DatePicker
+              format="MM-DD-YYYY"
+              date={this.state.date}
+              mode="date"
+              style={{ width: 0, height: 0 }}
+              showIcon={false}
+              confirmBtnText="Submit"
+              cancelBtnText="Cancel"
+              //customStyles={customStyles}
+              ref="datepicker"
+              onDateChange={date => {
+                this.setState({ date: date });
+              }}
+            />
 
             <ListItem itemDivider>
               <Body>
@@ -232,7 +252,11 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
     // justifyContent: 'center'
   },
-
+  text: {
+    marginTop: 17,
+    marginBottom: 17,
+    marginRight: 25
+  },
   inputItem: {
     marginLeft: 0,
     paddingLeft: 15
