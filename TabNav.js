@@ -37,10 +37,10 @@ const options = {
 
 export const TabNav = TabNavigator(
   {
-    Tasks: { screen: TaskScreen },
-    Bills: { screen: BillScreen },
-    Dojo: { screen: DojoScreen },
-    Profile: { screen: ProfileScreen }
+    Tasks: { screen: TaskScreen, path: 'home/tasks' },
+    Bills: { screen: BillScreen, path: 'home/bills' },
+    Dojo: { screen: DojoScreen, path: 'home/dojo' },
+    Profile: { screen: ProfileScreen, path: 'home/profile' }
   },
   options
 );
