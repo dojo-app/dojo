@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { StyleSheet, Alert, Keyboard } from 'react-native';
-import DatePicker from 'react-native-datepicker';
+import React, { Component } from "react";
+import { StyleSheet, Alert, Keyboard } from "react-native";
+import DatePicker from "react-native-datepicker";
 
 import {
   Container,
@@ -17,8 +17,8 @@ import {
   ListItem,
   Body,
   Thumbnail
-} from 'native-base';
-import * as firebase from 'firebase';
+} from "native-base";
+import * as firebase from "firebase";
 
 function removeFalseEntries(obj) {
   let result = {};
@@ -34,7 +34,7 @@ function removeFalseEntries(obj) {
 
 export class AddTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Task'
+    title: "Add Task"
   };
 
   constructor(props) {
@@ -47,8 +47,8 @@ export class AddTaskScreen extends React.Component {
     }
 
     this.state = {
-      title: '',
-      description: '',
+      title: "",
+      description: "",
       date: this.getDateString(),
       users: users
     };
@@ -61,12 +61,12 @@ export class AddTaskScreen extends React.Component {
     const month = this.prependZero(date.getMonth() + 1);
     const day = this.prependZero(date.getDate());
 
-    return `${year}-${month}-${day}`;
+    return `${month}-${day}-${year}`;
   }
 
   prependZero(n) {
     if (n < 10) {
-      return '0' + n;
+      return "0" + n;
     }
     return n;
   }
@@ -74,7 +74,7 @@ export class AddTaskScreen extends React.Component {
   addTask() {
     var key = firebase
       .database()
-      .ref('tasks')
+      .ref("tasks")
       .push({
         title: this.state.title,
         description: this.state.description,
@@ -86,9 +86,9 @@ export class AddTaskScreen extends React.Component {
 
     firebase
       .database()
-      .ref('dojos')
+      .ref("dojos")
       .child(this.props.screenProps.state.dojo)
-      .child('tasks')
+      .child("tasks")
       .update({ [key]: false });
   }
 
@@ -102,7 +102,7 @@ export class AddTaskScreen extends React.Component {
 
   toggleCheck(bool, user) {
     if (bool) {
-      return <Thumbnail small source={require('./checkmark.png')} />;
+      return <Thumbnail small source={require("./checkmark.png")} />;
     } else {
       return <Thumbnail small source={{ uri: user.photoURL }} />;
     }
@@ -120,7 +120,8 @@ export class AddTaskScreen extends React.Component {
           this.setState({
             users: removeFalseEntries(prevUsers)
           });
-        }}>
+        }}
+      >
         {this.toggleCheck(this.state.users[user.id], user)}
         <Body>
           <Text>{user.name}</Text>
@@ -130,7 +131,7 @@ export class AddTaskScreen extends React.Component {
 
     return (
       <Container style={styles.container}>
-        <Content keyboardShouldPersistTaps={'handled'}>
+        <Content keyboardShouldPersistTaps={"handled"}>
           <Form>
             <Item fixedLabel>
               <Label>Title</Label>
@@ -155,11 +156,13 @@ export class AddTaskScreen extends React.Component {
                 style={styles.text}
                 onPress={() => {
                   this.refs.datepicker.onPressDate();
-                }}>
+                }}
+              >
                 {this.state.date}
               </Text>
             </Item>
             <DatePicker
+              format="MM-DD-YYYY"
               date={this.state.date}
               mode="date"
               style={{ width: 0, height: 0 }}
@@ -185,19 +188,20 @@ export class AddTaskScreen extends React.Component {
             style={styles.button}
             full
             onPress={() => {
-              if (this.state.title === '') {
-                Alert.alert('Submission Failed', 'Title cannot be empty.');
+              if (this.state.title === "") {
+                Alert.alert("Submission Failed", "Title cannot be empty.");
               } else if (this.usersCount() === 0) {
                 Alert.alert(
-                  'Submission Failed',
-                  'At least one user must be involved.'
+                  "Submission Failed",
+                  "At least one user must be involved."
                 );
               } else {
                 Keyboard.dismiss();
                 this.addTask();
                 this.props.navigation.goBack();
               }
-            }}>
+            }}
+          >
             <Text>Submit</Text>
           </Button>
         </Content>
@@ -209,11 +213,11 @@ export class AddTaskScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: "white"
   },
 
   button: {
-    backgroundColor: '#c02b2b'
+    backgroundColor: "#c02b2b"
   },
 
   text: {

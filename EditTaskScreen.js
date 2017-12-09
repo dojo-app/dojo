@@ -139,6 +139,7 @@ export class EditTaskScreen extends React.Component {
               </Text>
             </Item>
             <DatePicker
+              format="MM-DD-YYYY"
               date={this.state.date}
               mode="date"
               style={{ width: 0, height: 0 }}
