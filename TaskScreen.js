@@ -47,30 +47,6 @@ export class TaskScreen extends React.Component {
     )
   });
 
-  toggleCheck(bool, title) {
-    if (bool) {
-      return (
-        <View style={styles.view}>
-          <Thumbnail
-            style={styles.thumbnail}
-            source={require('./checkmark.png')}
-          />
-          <Text style={styles.strikethrough}>{title}</Text>
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.view}>
-          <Thumbnail
-            style={styles.thumbnail}
-            source={require('./checkmark_false.png')}
-          />
-          <Text>{title}</Text>
-        </View>
-      );
-    }
-  }
-
   // creates an object of list items from array
   createList(array) {
     const { navigate } = this.props.navigation;
@@ -95,8 +71,20 @@ export class TaskScreen extends React.Component {
               .child('tasks')
               .update({ [task.id]: toggle });
           }}>
-          {this.toggleCheck(task.checked, task.title)}
+          <View style={styles.view}>
+            <Thumbnail
+              style={styles.thumbnail}
+              source={
+                task.checked
+                  ? require('./checkmark.png')
+                  : require('./checkmark_false.png')
+              }
+            />
+          </View>
         </TouchableOpacity>
+        <Text style={task.checked ? styles.strikethrough : styles.normal}>
+          {task.title}
+        </Text>
       </ListItem>
     ));
     return list;
@@ -238,6 +226,9 @@ const styles = StyleSheet.create({
   },
   strikethrough: {
     textDecorationLine: 'line-through'
+  },
+  normal: {
+    textDecorationLine: 'none'
   },
   segment: {
     backgroundColor: 'white'
