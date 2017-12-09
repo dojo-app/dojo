@@ -89,6 +89,11 @@ export class BillDetailsScreen extends React.Component {
               <Label>Amount</Label>
               <Input disabled value={this.state.bill.amount} />
             </Item>
+            
+            <Item fixedLabel style={styles.inputItem}>
+              <Label>Due Date</Label>
+              <Input disabled value={this.state.bill.date} />
+            </Item>
 
             <ListItem itemDivider>
               <Body>
