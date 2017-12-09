@@ -161,6 +161,7 @@ export class EditTaskScreen extends React.Component {
 
           <View style={styles.view}>
             <Button
+              full
               style={styles.button}
               onPress={() => {
                 console.log('usercount = ' + this.usersCount());
