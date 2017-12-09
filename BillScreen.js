@@ -47,10 +47,10 @@ export class BillScreen extends React.Component {
   getExcess(userID) {
     let sumPaid = 0.0;
     let sumOwed = 0.0;
-    let excess = 0.0;
     const billCreated = this.props.screenProps.state.bills
       .filter(bill => bill.requester === userID)
       .map(bill => (sumPaid += parseInt(bill.amount.substring(1))));
+
     const billInvolved = this.props.screenProps.state.bills
       .filter(bill => {
         return userID in bill.users;
@@ -61,10 +61,10 @@ export class BillScreen extends React.Component {
             parseInt(bill.amount.substring(1)) /
             parseInt(Object.keys(bill.users).length))
       );
-    excess = sumOwed - sumPaid;
+    const excess = sumOwed - sumPaid;
     // if negative then they're in deficit, people owe this person money.
     // if positive then they're in excess, they owe money to people.
-    return excess;
+    return Math.round(excess * 100) / 100;
   }
 
   // start ss
@@ -75,8 +75,11 @@ export class BillScreen extends React.Component {
   }
 
   getPersonalTotal() {
-    var num = this.getExcess(this.props.screenProps.state.user.uid);
+    const id = this.props.screenProps.state.user.uid;
+    const num = this.getExcess(id);
+
     var display = num < 0 ? '+$' + Math.abs(num) : '-$' + Math.abs(num);
+
     if (this.getExcess(this.props.screenProps.state.user.uid) != 0) {
       return 'Your total is ' + display + '!';
     } else {
@@ -162,17 +165,6 @@ export class BillScreen extends React.Component {
     return transactions;
   }
 
-  // returns if a given array sums to 0
-  validateExcessList(excessList) {
-    let sum = 0;
-
-    for (let i = 0; i < excessList.length; i++) {
-      sum += excessList[i];
-    }
-
-    return sum === 0;
-  }
-
   // returns a clone of a given 2D array
   clone2DArray(arr) {
     let clone = [];
@@ -200,7 +192,7 @@ export class BillScreen extends React.Component {
   // returns true if a given array is all 0s, false otherwise
   settled(arr) {
     for (let i = 0; i < arr.length; i++) {
-      if (arr[i] !== 0) {
+      if (Math.abs(arr[i]) > 0.1) {
         return false;
       }
     }
@@ -338,11 +330,7 @@ export class BillScreen extends React.Component {
               <ListItem style={styles.containerTotal}>
                 <Text>{this.getPersonalTotal()}</Text>
               </ListItem>
-              {this.validateExcessList(excessList) ? (
-                this.listTransactions(this.getTransactions(excessList))
-              ) : (
-                <Text>Loading</Text>
-              )}
+              {this.listTransactions(this.getTransactions(excessList))}
             </List>
             <View style={styles.center}>
               <Button
