@@ -51,7 +51,6 @@ export class AddBillScreen extends React.Component {
       billTitle: '',
       billAmount: '$0.00',
       billDescription: '',
-      billDueDate: '',
       billUsers: users,
       date: this.getDateString()
     };
@@ -64,7 +63,7 @@ export class AddBillScreen extends React.Component {
     const month = this.prependZero(date.getMonth() + 1);
     const day = this.prependZero(date.getDate());
 
-    return `${year}-${month}-${day}`;
+    return `${month}-${day}-${year}`;
   }
 
   prependZero(n) {
@@ -80,7 +79,7 @@ export class AddBillScreen extends React.Component {
       .ref('bills')
       .push({
         amount: this.state.billAmount,
-        date: this.state.billDueDate,
+        date: this.state.date,
         description: this.state.billDescription,
         requester: this.props.screenProps.state.user.uid,
         users: this.state.billUsers,
