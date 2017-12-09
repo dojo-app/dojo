@@ -29,11 +29,8 @@ export class TaskDetailsScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    const taskID = this.props.navigation.state.params.task.id;
     this.state = {
-      taskTarget: this.props.screenProps.state.tasks.find(
-        task => task.id === taskID
-      )
+      task: this.props.navigation.state.params.task
     };
   }
 
@@ -57,14 +54,17 @@ export class TaskDetailsScreen extends React.Component {
   }
 
   render() {
-    const users = this.props.screenProps.state.users.map(user => (
-      <ListItem key={user.id}>
-        <Thumbnail small source={{ uri: user.photoURL }} />
-        <Body>
-          <Text>{user.name}</Text>
-        </Body>
-      </ListItem>
-    ));
+    const taskUsers = this.state.task.users;
+    const users = this.props.screenProps.state.users
+      .filter(user => taskUsers[user.id])
+      .map(user => (
+        <ListItem key={user.id}>
+          <Thumbnail small source={{ uri: user.photoURL }} />
+          <Body>
+            <Text>{user.name}</Text>
+          </Body>
+        </ListItem>
+      ));
 
     // const users = this.props.screenProps.state.users.map(user => (
     //   <ListItem key={user.id}>
@@ -97,17 +97,17 @@ export class TaskDetailsScreen extends React.Component {
           <Form>
             <Item fixedLabel style={styles.inputItem}>
               <Label>Title</Label>
-              <Input disabled value={this.state.taskTarget.title} />
+              <Input disabled value={this.state.task.title} />
             </Item>
 
             <Item fixedLabel style={styles.inputItem}>
               <Label>Description</Label>
-              <Input disabled value={this.state.taskTarget.description} />
+              <Input disabled value={this.state.task.description} />
             </Item>
 
             <Item fixedLabel style={styles.inputItem}>
               <Label>Due Date</Label>
-              <Input disabled value={this.state.taskTarget.date} />
+              <Input disabled value={this.state.task.date} />
             </Item>
 
             <ListItem itemDivider>
