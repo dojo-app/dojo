@@ -52,7 +52,9 @@ export default class App extends React.Component {
       const refToDojo = ref.child('dojos').child(this.state.dojo);
       refToDojo.child('users').off();
       refToDojo.child('tasks').off();
-      // refToDojo.child('bills').off();
+      refToDojo.child('bills').off();
+      refToDojo.child('name').off();
+      refToDojo.child('description').off();
       this.setState({ dojoInfoListener: false });
     }
 
@@ -167,6 +169,8 @@ export default class App extends React.Component {
             dojoRef.child('users').off();
             dojoRef.child('tasks').off();
             dojoRef.child('bills').off();
+            dojoRef.child('name').off();
+            dojoRef.child('description').off();
 
             this.setState({ dojoInfoListener: false });
           }
@@ -209,18 +213,21 @@ export default class App extends React.Component {
       this.updateBills(snapshot);
     });
 
-    this.updateUserObj();
+    this.addUserObjectListener();
   }
 
-  updateUserObj() {
-    var userRef = firebase.database().ref('users');
+  addUserObjectListener() {
+    const userRef = firebase
+      .database()
+      .ref('users')
+      .child(this.state.user.uid);
 
-    userRef.child(this.state.user.uid).on('value', snapshot => {
+    userRef.on('value', snapshot => {
       let userObj = snapshot.val();
       userObj['uid'] = this.state.user.uid;
 
-        this.setState({ user: userObj });
-      });
+      this.setState({ user: userObj });
+    });
   }
 
   updateUserInfo(user, newUser) {
@@ -235,8 +242,8 @@ export default class App extends React.Component {
 
     // For Google accounts: higher res image
     let photo = String(user.photoURL);
-    let index = photo.indexOf("s96-c");
-    photo = photo.substring(0, index) + "s400-c/photo.jpg";
+    let index = photo.indexOf('s96-c');
+    photo = photo.substring(0, index) + 's400-c/photo.jpg';
 
     userRef.child(user.uid).update({
       photoURL: photo
@@ -264,6 +271,8 @@ export default class App extends React.Component {
     //TODO Fix state.dojo to be the whole structure containing dojoID and dojoName than state.dojo = {dojoID: "xxxx", dojoName: "xxxx"}
     if (snapshot.val()) {
       this.setState({ dojoDescription: snapshot.val() });
+    } else {
+      this.setState({ dojoDescription: '' });
     }
   }
 

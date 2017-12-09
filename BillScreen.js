@@ -34,7 +34,7 @@ export class BillScreen extends React.Component {
     };
   }
   static navigationOptions = ({ navigation }) => ({
-    title: 'Bills',
+    title: "Bills",
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
@@ -345,29 +345,29 @@ export class BillScreen extends React.Component {
                 <Text>Loading</Text>
               )}
             </List>
-            <View style={styles.center}>
-              <Button
-                style={styles.checkOff}
-                onPress={() =>
-                  Alert.alert(
-                    "Are you sure?",
-                    "Bills for all users will be deleted",
-                    [
-                      { text: "Cancel" },
-                      {
-                        text: "Delete",
-                        onPress: () => {
-                          this.checkOffBill();
-                        }
+
+            <Button
+              block
+              style={styles.checkOff}
+              onPress={() =>
+                Alert.alert(
+                  "Are you sure?",
+                  "Bills for all users will be deleted",
+                  [
+                    { text: "Cancel" },
+                    {
+                      text: "Delete",
+                      onPress: () => {
+                        this.checkOffBill();
                       }
-                    ],
-                    { cancelable: false }
-                  )
-                }
-              >
-                <Text>Clear All</Text>
-              </Button>
-            </View>
+                    }
+                  ],
+                  { cancelable: false }
+                )
+              }
+            >
+              <Text>Clear All</Text>
+            </Button>
           </Content>
         </Container>
       </Content>
@@ -429,9 +429,11 @@ const styles = StyleSheet.create({
   },
   containerTotal: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     // borderColor: 'red',
-    justifyContent: 'center'
+    justifyContent: "center",
+    marginLeft: 0,
+    paddingLeft: 15
   },
   segment: {
     backgroundColor: "white"
@@ -441,16 +443,8 @@ const styles = StyleSheet.create({
     height: 22,
     color: "white"
   },
-  center: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "flex-end",
-    justifyContent: "flex-end"
-  },
   checkOff: {
-    justifyContent: "flex-end",
-    alignSelf: "center",
-    marginTop: "auto",
+    margin: 10,
     backgroundColor: "#c02b2b"
   },
   positive: {
@@ -472,6 +466,14 @@ const styles = StyleSheet.create({
   },
 
   heading: {
-    fontWeight: 'bold'
+    fontWeight: "bold"
   }
 });
+
+// center: {
+//   flex: 1,
+//   flexDirection: "row",
+//   alignItems: "center",
+//   justifyContent: "center",
+//   marginTop: 10
+// },

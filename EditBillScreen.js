@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import React, { Component } from "react";
+import { StyleSheet, Alert, Keyboard } from "react-native";
 
 import {
   Container,
@@ -17,12 +17,12 @@ import {
   Body,
   Thumbnail,
   View
-} from 'native-base';
-import * as firebase from 'firebase';
+} from "native-base";
+import * as firebase from "firebase";
 
 export class EditBillScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Bill',
+    title: "Edit Bill"
     // headerTintColor: '#c02b2b'
   };
 
@@ -48,7 +48,7 @@ export class EditBillScreen extends React.Component {
 
     firebase
       .database()
-      .ref('bills')
+      .ref("bills")
       .child(key)
       .update({
         amount: this.state.billAmount,
@@ -61,17 +61,17 @@ export class EditBillScreen extends React.Component {
 
     firebase
       .database()
-      .ref('dojos')
+      .ref("dojos")
       .child(this.props.screenProps.state.dojo)
-      .child('bills')
+      .child("bills")
       .child(key)
       .remove();
 
     firebase
       .database()
-      .ref('dojos')
+      .ref("dojos")
       .child(this.props.screenProps.state.dojo)
-      .child('bills')
+      .child("bills")
       .update({ [key]: true });
   }
 
@@ -86,7 +86,7 @@ export class EditBillScreen extends React.Component {
   toggleCheck(bool, user) {
     console.log(bool);
     if (bool) {
-      return <Thumbnail small source={require('./checkmark.png')} />;
+      return <Thumbnail small source={require("./checkmark.png")} />;
     } else {
       return <Thumbnail small source={{ uri: user.photoURL }} />;
     }
@@ -96,12 +96,12 @@ export class EditBillScreen extends React.Component {
     var txtLen = text.length - 1;
     var check = text;
 
-    if (check.charAt(txtLen) < '0' || check.charAt(txtLen) > '9') {
+    if (check.charAt(txtLen) < "0" || check.charAt(txtLen) > "9") {
       check = check.substr(0, txtLen);
     }
 
-    check = check.replace(/[^0-9]/g, '');
-    var accounting = require('accounting');
+    check = check.replace(/[^0-9]/g, "");
+    var accounting = require("accounting");
     return accounting.formatMoney(parseFloat(check) / 100);
   }
 
@@ -115,7 +115,8 @@ export class EditBillScreen extends React.Component {
           this.setState({
             users: prevUsers
           });
-        }}>
+        }}
+      >
         {this.toggleCheck(this.state.billUsers[user.id], user)}
         <Body>
           <Text>{user.name}</Text>
@@ -127,14 +128,14 @@ export class EditBillScreen extends React.Component {
       <Container style={styles.container}>
         <Content>
           <Form>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Bill Title</Label>
               <Input
                 value={this.state.billTitle}
                 onChangeText={text => this.setState({ billTitle: text })}
               />
             </Item>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Bill Amount </Label>
               <Input
                 style={styles.right}
@@ -144,14 +145,14 @@ export class EditBillScreen extends React.Component {
                 value={this.state.billAmount}
               />
             </Item>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Description</Label>
               <Input
                 value={this.state.billDescription}
                 onChangeText={text => this.setState({ billDescription: text })}
               />
             </Item>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Due Date</Label>
               <Input
                 value={this.state.billDueDate}
@@ -168,32 +169,35 @@ export class EditBillScreen extends React.Component {
           </Form>
 
           <View style={styles.view}>
-            <Button full
+            <Button
+              full
               style={styles.button}
               onPress={() => {
-                console.log('usercount = ' + this.usersCount());
-                if (this.state.billTitle === '') {
-                  Alert.alert('Submission Failed', 'Title cannot be empty.');
-                } else if (this.state.billAmount === '$0.00') {
+                console.log("usercount = " + this.usersCount());
+                if (this.state.billTitle === "") {
+                  Alert.alert("Submission Failed", "Title cannot be empty.");
+                } else if (this.state.billAmount === "$0.00") {
                   Alert.alert(
-                    'Submission Failed',
-                    'Your Bill Amount cannot be $0.00'
+                    "Submission Failed",
+                    "Your Bill Amount cannot be $0.00"
                   );
                 } else if (this.usersCount() === 0) {
                   Alert.alert(
-                    'Submission Failed',
-                    'At least one user must be involved.'
+                    "Submission Failed",
+                    "At least one user must be involved."
                   );
                 } else if (this.usersCount() === 0) {
                   Alert.alert(
-                    'Submission Failed',
-                    'At least one user must be involved.'
+                    "Submission Failed",
+                    "At least one user must be involved."
                   );
                 } else {
+                  Keyboard.dismiss();
                   this.editBill();
                   this.props.navigation.goBack();
                 }
-              }}>
+              }}
+            >
               <Text>Save</Text>
             </Button>
           </View>
@@ -206,18 +210,23 @@ export class EditBillScreen extends React.Component {
 const styles = StyleSheet.create({
   right: {
     marginRight: 20,
-    textAlign: 'right'
+    textAlign: "right"
   },
   container: {
-    backgroundColor: 'white'
+    backgroundColor: "white"
   },
   button: {
     // marginTop: 30,
-    backgroundColor: '#c02b2b'
+    backgroundColor: "#c02b2b"
   },
   view: {
-    flex: 1,
+    flex: 1
     // flexDirection: 'row',
     // justifyContent: 'center'
+  },
+
+  inputItem: {
+    marginLeft: 0,
+    paddingLeft: 15
   }
 });

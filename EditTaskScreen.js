@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { StyleSheet, Alert } from 'react-native';
-import { NavigationActions } from 'react-navigation';
-import DatePicker from 'react-native-datepicker';
+import React, { Component } from "react";
+import { StyleSheet, Alert, Keyboard } from "react-native";
+import { NavigationActions } from "react-navigation";
+import DatePicker from "react-native-datepicker";
 
 import {
   Container,
@@ -19,13 +19,13 @@ import {
   View,
   Body,
   Thumbnail
-} from 'native-base';
+} from "native-base";
 
-import * as firebase from 'firebase';
+import * as firebase from "firebase";
 
 export class EditTaskScreen extends React.Component {
   static navigationOptions = {
-    title: 'Edit Task'
+    title: "Edit Task"
   };
 
   constructor(props) {
@@ -44,7 +44,7 @@ export class EditTaskScreen extends React.Component {
 
     firebase
       .database()
-      .ref('tasks')
+      .ref("tasks")
       .child(key)
       .update({
         title: this.state.title,
@@ -55,17 +55,17 @@ export class EditTaskScreen extends React.Component {
 
     firebase
       .database()
-      .ref('dojos')
+      .ref("dojos")
       .child(this.props.screenProps.state.dojo)
-      .child('tasks')
+      .child("tasks")
       .child(key)
       .remove();
 
     firebase
       .database()
-      .ref('dojos')
+      .ref("dojos")
       .child(this.props.screenProps.state.dojo)
-      .child('tasks')
+      .child("tasks")
       .update({ [key]: true });
   }
 
@@ -80,7 +80,7 @@ export class EditTaskScreen extends React.Component {
   toggleCheck(bool, user) {
     console.log(bool);
     if (bool) {
-      return <Thumbnail small source={require('./checkmark.png')} />;
+      return <Thumbnail small source={require("./checkmark.png")} />;
     } else {
       return <Thumbnail small source={{ uri: user.photoURL }} />;
     }
@@ -96,7 +96,8 @@ export class EditTaskScreen extends React.Component {
           this.setState({
             users: prevUsers
           });
-        }}>
+        }}
+      >
         {this.toggleCheck(this.state.users[user.id], user)}
         <Body>
           <Text>{user.name}</Text>
@@ -106,9 +107,9 @@ export class EditTaskScreen extends React.Component {
 
     return (
       <Container style={styles.container}>
-        <Content keyboardShouldPersistTaps={'handled'}>
+        <Content keyboardShouldPersistTaps={"handled"}>
           <Form>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Title</Label>
               <Input
                 value={this.state.title}
@@ -117,7 +118,7 @@ export class EditTaskScreen extends React.Component {
               />
             </Item>
 
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Description</Label>
               <Input
                 value={this.state.description}
@@ -125,14 +126,15 @@ export class EditTaskScreen extends React.Component {
               />
             </Item>
 
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Due Date</Label>
               <Text
                 style={styles.text}
                 //value={this.state.billDueDate}
                 onPress={() => {
                   this.refs.datepicker.onPressDate();
-                }}>
+                }}
+              >
                 {this.state.date}
               </Text>
             </Item>
@@ -161,31 +163,33 @@ export class EditTaskScreen extends React.Component {
 
           <View style={styles.view}>
             <Button
+              full
               style={styles.button}
               onPress={() => {
-                console.log('usercount = ' + this.usersCount());
-                if (this.state.title === '') {
-                  Alert.alert('Submission Failed', 'Title cannot be empty.');
+                console.log("usercount = " + this.usersCount());
+                if (this.state.title === "") {
+                  Alert.alert("Submission Failed", "Title cannot be empty.");
                 } else if (this.usersCount() === 0) {
                   Alert.alert(
-                    'Submission Failed',
-                    'At least one user must be involved.'
+                    "Submission Failed",
+                    "At least one user must be involved."
                   );
                 } else {
+                  Keyboard.dismiss();
                   this.editTask();
                   this.props.navigation.dispatch(
                     NavigationActions.reset({
                       index: 0,
                       actions: [
-                        NavigationActions.navigate({ routeName: 'Home' })
+                        NavigationActions.navigate({ routeName: "Home" })
                       ]
                     })
                   );
                 }
-              }}>
+              }}
+            >
               <Text>Save</Text>
             </Button>
->>>>>>> f8ac88ecb750f40357695170dff21f94e2a5f742
           </View>
         </Content>
       </Container>
@@ -196,12 +200,12 @@ export class EditTaskScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: "white"
   },
 
   button: {
     // marginTop: '10%',
-    backgroundColor: '#c02b2b'
+    backgroundColor: "#c02b2b"
   },
 
   text: {
@@ -211,8 +215,13 @@ const styles = StyleSheet.create({
   },
 
   view: {
-    flex: 1,
+    flex: 1
     // flexDirection: 'row',
     // justifyContent: 'center'
+  },
+
+  inputItem: {
+    marginLeft: 0,
+    paddingLeft: 15
   }
 });

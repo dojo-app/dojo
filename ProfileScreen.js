@@ -310,11 +310,13 @@ export class ProfileScreen extends React.Component {
               >
                 <Text>Cancel</Text>
               </Button>
+
               <Button
                 style={styles.button}
                 onPress={() => {
                   if (this.validateFields()) this.updateChanges();
-                }}>
+                }}
+              >
                 <Text style={{ color: "white" }}>Save</Text>
               </Button>
             </View>
@@ -365,11 +367,11 @@ const styles = StyleSheet.create({
     borderColor: "#c02b2b"
   },
   cancelButton: {
-    margin: 10,
+    marginRight: "10%",
     backgroundColor: "#bebebe"
   },
   button: {
-    margin: 10,
+    marginLeft: "10%",
     backgroundColor: "#c02b2b"
   },
   footer: {

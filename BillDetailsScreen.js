@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { Component } from "react";
+import { StyleSheet } from "react-native";
 import {
   Container,
   Header,
@@ -17,13 +17,13 @@ import {
   Icon,
   Body,
   Thumbnail
-} from 'native-base';
-import * as firebase from 'firebase';
-import { Alert } from 'react-native';
+} from "native-base";
+import * as firebase from "firebase";
+import { Alert } from "react-native";
 
 export class BillDetailsScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: 'Bill Details'
+    title: "Bill Details"
     // title: `${navigation.state.params.bill.title}`,
     // headerTintColor: '#c02b2b'
   });
@@ -39,16 +39,16 @@ export class BillDetailsScreen extends React.Component {
     //From Bills collection
     firebase
       .database()
-      .ref('bills')
+      .ref("bills")
       .child(this.state.bill.id)
       .remove();
 
     //From Dojo Bills collection
     firebase
       .database()
-      .ref('dojos')
+      .ref("dojos")
       .child(this.props.screenProps.state.dojo)
-      .child('bills')
+      .child("bills")
       .child(this.state.bill.id)
       .remove();
   }
@@ -75,17 +75,17 @@ export class BillDetailsScreen extends React.Component {
       <Container style={styles.container}>
         <Content>
           <Form>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Title</Label>
               <Input disabled value={this.state.bill.title} />
             </Item>
 
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Description</Label>
               <Input disabled value={this.state.bill.description} />
             </Item>
 
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Amount</Label>
               <Input disabled value={this.state.bill.amount} />
             </Item>
@@ -103,10 +103,11 @@ export class BillDetailsScreen extends React.Component {
               iconLeft
               style={styles.editButton}
               onPress={() => {
-                navigate('EditBill', {
+                navigate("EditBill", {
                   bill: this.props.navigation.state.params.bill
                 });
-              }}>
+              }}
+            >
               <Icon name="ios-create-outline" />
               <Text>Edit Bill</Text>
             </Button>
@@ -116,12 +117,12 @@ export class BillDetailsScreen extends React.Component {
               style={styles.deleteButton}
               onPress={() =>
                 Alert.alert(
-                  'Are you sure?',
-                  'This bill will be permanently deleted',
+                  "Are you sure?",
+                  "This bill will be permanently deleted",
                   [
-                    { text: 'Cancel' },
+                    { text: "Cancel" },
                     {
-                      text: 'Delete',
+                      text: "Delete",
                       onPress: () => {
                         this.deleteBill();
                         this.props.navigation.goBack();
@@ -130,7 +131,8 @@ export class BillDetailsScreen extends React.Component {
                   ],
                   { cancelable: false }
                 )
-              }>
+              }
+            >
               <Icon name="ios-trash" />
               <Text>Delete Bill</Text>
             </Button>
@@ -144,22 +146,27 @@ export class BillDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+    backgroundColor: "white",
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
 
   deleteButton: {
-    backgroundColor: '#c02b2b',
-    marginRight: '10%',
+    backgroundColor: "#c02b2b",
+    marginRight: "10%",
     marginTop: 30,
     marginBottom: 10
   },
 
   editButton: {
-    backgroundColor: '#bebebe',
-    marginLeft: '10%',
+    backgroundColor: "#bebebe",
+    marginLeft: "10%",
     marginTop: 30,
     marginBottom: 10
+  },
+
+  inputItem: {
+    marginLeft: 0,
+    paddingLeft: 15
   }
 });

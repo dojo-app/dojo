@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import React, { Component } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Container,
   Header,
@@ -22,16 +22,17 @@ import {
   CheckBox,
   View,
   Thumbnail
-} from "native-base";
-import * as firebase from "firebase";
-import ActionButton from "react-native-action-button";
-import { FontAwesome } from "@expo/vector-icons";
+} from 'native-base';
+import * as firebase from 'firebase';
+import ActionButton from 'react-native-action-button';
+import { FontAwesome } from '@expo/vector-icons';
 
 export class TaskScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true
+      loading: true,
+      segment: 'ASSIGNED_TO_ME'
     };
   }
 
@@ -40,7 +41,7 @@ export class TaskScreen extends React.Component {
 
     tabBarIcon: ({ tintColor, focused }) => (
       <Icon
-        name={focused ? "ios-list-box" : "ios-list-box-outline"}
+        name={focused ? 'ios-list-box' : 'ios-list-box-outline'}
         style={{ color: tintColor }}
       />
     )
@@ -52,7 +53,7 @@ export class TaskScreen extends React.Component {
         <View style={styles.view}>
           <Thumbnail
             style={styles.thumbnail}
-            source={require("./checkmark.png")}
+            source={require('./checkmark.png')}
           />
           <Text style={styles.strikethrough}>{title}</Text>
         </View>
@@ -62,9 +63,9 @@ export class TaskScreen extends React.Component {
         <View style={styles.view}>
           <Thumbnail
             style={styles.thumbnail}
-            source={require("./checkmark_false.png")}
+            source={require('./checkmark_false.png')}
           />
-         <Text>{title}</Text>
+          <Text>{title}</Text>
         </View>
       );
     }
@@ -77,28 +78,27 @@ export class TaskScreen extends React.Component {
       <ListItem
         style={{ marginLeft: 0 }}
         key={task.id}
-        onPress={() => navigate("TaskDetails", { task: task })}>
+        onPress={() => navigate('TaskDetails', { task: task })}>
         <TouchableOpacity
           onPress={() => {
             var toggle = !task.checked;
             firebase
               .database()
-              .ref("tasks")
+              .ref('tasks')
               .child(task.id)
               .update({ checked: toggle });
 
             firebase
               .database()
-              .ref("dojos")
+              .ref('dojos')
               .child(this.props.screenProps.state.dojo)
-              .child("tasks")
+              .child('tasks')
               .update({ [task.id]: toggle });
-          }}
-        >
+          }}>
           {this.toggleCheck(task.checked, task.title)}
         </TouchableOpacity>
       </ListItem>
-    ));    
+    ));
     return list;
   }
 
@@ -131,13 +131,15 @@ export class TaskScreen extends React.Component {
           <Text style={styles.center}> No Tasks to Display </Text>
         </ListItem>
       </View>
-      )
+    );
 
     const AssignedByMe = (
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{assignedByMeArray.length != 0 ? assignedByMeList : noTasks }</List>
+            <List>
+              {assignedByMeArray.length != 0 ? assignedByMeList : noTasks}
+            </List>
           </Content>
         </Container>
       </Content>
@@ -147,7 +149,9 @@ export class TaskScreen extends React.Component {
       <Content>
         <Container style={styles.container}>
           <Content>
-            <List>{assignedToMeArray.length != 0 ? assignedToMeList : noTasks }</List>
+            <List>
+              {assignedToMeArray.length != 0 ? assignedToMeList : noTasks}
+            </List>
           </Content>
         </Container>
       </Content>
@@ -159,44 +163,56 @@ export class TaskScreen extends React.Component {
           <Segment style={styles.segment}>
             <Button
               style={{
-                backgroundColor: this.state.onList ? "#c02b2b" : undefined,
-                borderColor: "#c02b2b"
+                backgroundColor:
+                  this.state.segment === 'ASSIGNED_TO_ME'
+                    ? '#c02b2b'
+                    : undefined,
+                borderColor: '#c02b2b'
               }}
               first
-              active={this.state.onList}
+              active={this.state.segment === 'ASSIGNED_TO_ME'}
               onPress={() => {
-                if (!this.state.onList) {
-                  this.setState({ onList: true });
+                if (this.state.segment !== 'ASSIGNED_TO_ME') {
+                  this.setState({ segment: 'ASSIGNED_TO_ME' });
                 }
-              }}
-            >
-              <Text style={{ color: this.state.onList ? "#FFF" : "#c02b2b" }}>
-                Assigned By Me
+              }}>
+              <Text
+                style={{
+                  color:
+                    this.state.segment === 'ASSIGNED_TO_ME' ? '#FFF' : '#c02b2b'
+                }}>
+                Assigned To Me
               </Text>
             </Button>
             <Button
               last
               style={{
-                backgroundColor: !this.state.onList ? "#c02b2b" : undefined,
-                borderColor: "#c02b2b"
+                backgroundColor:
+                  this.state.segment === 'ASSIGNED_BY_ME'
+                    ? '#c02b2b'
+                    : undefined,
+                borderColor: '#c02b2b'
               }}
-              active={!this.state.onList}
+              active={this.state.segment === 'ASSIGNED_BY_ME'}
               onPress={() => {
-                if (this.state.onList) {
-                  this.setState({ onList: false });
+                if (this.state.segment !== 'ASSIGNED_BY_ME') {
+                  this.setState({ segment: 'ASSIGNED_BY_ME' });
                 }
-              }}
-            >
-              <Text style={{ color: !this.state.onList ? "#FFF" : "#c02b2b" }}>
-                Assigned To Me
+              }}>
+              <Text
+                style={{
+                  color:
+                    this.state.segment === 'ASSIGNED_BY_ME' ? '#FFF' : '#c02b2b'
+                }}>
+                Assigned By Me
               </Text>
             </Button>
           </Segment>
         </Header>
-        {this.state.onList ? AssignedByMe : AssignedToMe}
+        {this.state.segment === 'ASSIGNED_TO_ME' ? AssignedToMe : AssignedByMe}
         <ActionButton
           buttonColor="#c02b2b"
-          onPress={() => navigate("AddTask")}
+          onPress={() => navigate('AddTask')}
         />
       </Container>
     );
@@ -212,39 +228,38 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
 
   listItem: {
     borderBottomWidth: 1,
     padding: 0,
-    margin: 0     
-
+    margin: 0
   },
   strikethrough: {
-    textDecorationLine: "line-through"
+    textDecorationLine: 'line-through'
   },
   segment: {
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
   seg: {
-    backgroundColor: "green"
+    backgroundColor: 'green'
   },
   actionButtonIcon: {
     fontSize: 20,
     height: 22,
-    color: "white"
+    color: 'white'
   },
   view: {
     //flexWrap: 'nowrap'
     flex: 10,
-    flexDirection: "row",
+    flexDirection: 'row',
     //justifyContent: 'center',
-    justifyContent: "space-between",
-    alignItems: "center"
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   list: {
-    flexWrap: "nowrap"
+    flexWrap: 'nowrap'
   },
   thumbnail: {
     marginRight: 12,

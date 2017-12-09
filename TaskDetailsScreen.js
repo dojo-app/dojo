@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { Component } from "react";
+import { StyleSheet } from "react-native";
 import {
   Container,
   Header,
@@ -17,13 +17,13 @@ import {
   View,
   Body,
   Thumbnail
-} from 'native-base';
-import * as firebase from 'firebase';
-import { Alert } from 'react-native';
+} from "native-base";
+import * as firebase from "firebase";
+import { Alert } from "react-native";
 
 export class TaskDetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Task Details',
+    title: "Task Details"
     // headerTintColor: '#c02b2b'
   };
 
@@ -42,28 +42,28 @@ export class TaskDetailsScreen extends React.Component {
 
     firebase
       .database()
-      .ref('dojos')
+      .ref("dojos")
       .child(this.props.screenProps.state.dojo)
-      .child('tasks')
+      .child("tasks")
       .child(key)
       .remove();
 
     firebase
       .database()
       .ref()
-      .child('tasks')
+      .child("tasks")
       .child(key)
       .remove();
   }
 
   render() {
     const users = this.props.screenProps.state.users.map(user => (
-        <ListItem key={user.id}>
-          <Thumbnail small source={{ uri: user.photoURL }} />
-          <Body>
-            <Text>{user.name}</Text>
-          </Body>
-        </ListItem>
+      <ListItem key={user.id}>
+        <Thumbnail small source={{ uri: user.photoURL }} />
+        <Body>
+          <Text>{user.name}</Text>
+        </Body>
+      </ListItem>
     ));
 
     // const users = this.props.screenProps.state.users.map(user => (
@@ -90,23 +90,22 @@ export class TaskDetailsScreen extends React.Component {
     //       </Body>
     //     </ListItem>
     //   ));
-    
 
     return (
       <Container style={styles.container}>
         <Content>
           <Form>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Title</Label>
               <Input disabled value={this.state.taskTarget.title} />
             </Item>
 
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Description</Label>
               <Input disabled value={this.state.taskTarget.description} />
             </Item>
 
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.inputItem}>
               <Label>Due Date</Label>
               <Input disabled value={this.state.taskTarget.date} />
             </Item>
@@ -124,10 +123,11 @@ export class TaskDetailsScreen extends React.Component {
               iconLeft
               style={styles.editButton}
               onPress={() =>
-                this.props.navigation.navigate('EditTask', {
+                this.props.navigation.navigate("EditTask", {
                   task: this.props.navigation.state.params.task
                 })
-              }>
+              }
+            >
               <Icon name="ios-create-outline" />
               <Text>Edit Task</Text>
             </Button>
@@ -137,12 +137,12 @@ export class TaskDetailsScreen extends React.Component {
               style={styles.deleteButton}
               onPress={() =>
                 Alert.alert(
-                  'Are you sure?',
-                  'This task will be permanently deleted',
+                  "Are you sure?",
+                  "This task will be permanently deleted",
                   [
-                    { text: 'Cancel' },
+                    { text: "Cancel" },
                     {
-                      text: 'Delete',
+                      text: "Delete",
                       onPress: () => {
                         this.deleteTask();
                         this.props.navigation.goBack();
@@ -151,7 +151,8 @@ export class TaskDetailsScreen extends React.Component {
                   ],
                   { cancelable: false }
                 )
-              }>
+              }
+            >
               <Icon name="ios-trash" />
               <Text>Delete Task</Text>
             </Button>
@@ -165,22 +166,27 @@ export class TaskDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+    backgroundColor: "white",
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
 
   deleteButton: {
-    backgroundColor: '#c02b2b',
-    marginRight: '10%',
+    backgroundColor: "#c02b2b",
+    marginRight: "10%",
     marginTop: 30,
     marginBottom: 10
   },
 
   editButton: {
-    backgroundColor: '#bebebe',
-    marginLeft: '10%',
+    backgroundColor: "#bebebe",
+    marginLeft: "10%",
     marginTop: 30,
     marginBottom: 10
+  },
+
+  inputItem: {
+    marginLeft: 0,
+    paddingLeft: 15
   }
 });

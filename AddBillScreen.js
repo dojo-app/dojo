@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, Keyboard } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 
 import {
@@ -35,7 +35,7 @@ function removeFalseEntries(obj) {
 
 export class AddBillScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add Bill',
+    title: 'Add Bill'
   };
 
   constructor(props) {
@@ -145,7 +145,7 @@ export class AddBillScreen extends React.Component {
 
     return (
       <Container style={styles.container}>
-        <Content>
+        <Content keyboardShouldPersistTaps={'handled'}>
           <Form>
             <Item fixedLabel>
               <Label>Title</Label>
@@ -155,8 +155,9 @@ export class AddBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel>
-              <Label>Amount </Label>
+              <Label>Amount</Label>
               <Input
+                keyboardType={'numeric'}
                 style={styles.right}
                 onChangeText={text =>
                   this.setState({ billAmount: this.formatAmount(text) })
@@ -209,7 +210,7 @@ export class AddBillScreen extends React.Component {
               console.log('usercount = ' + this.usersCount());
               if (this.state.billTitle === '') {
                 Alert.alert('Submission Failed', 'Title cannot be empty.');
-              } else if (this.billAmount === '$0.00') {
+              } else if (this.state.billAmount === '$0.00') {
                 Alert.alert(
                   'Submission Failed',
                   'Your Bill Amount cannot be $0.00'
@@ -220,6 +221,7 @@ export class AddBillScreen extends React.Component {
                   'At least one user must be involved.'
                 );
               } else {
+                Keyboard.dismiss();
                 this.addBill();
                 this.props.navigation.goBack();
               }
