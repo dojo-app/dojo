@@ -226,6 +226,10 @@ export default class App extends React.Component {
       let userObj = snapshot.val();
       userObj['uid'] = this.state.user.uid;
 
+      if (!userObj.phoneNumber) {
+        userObj.phoneNumber = '';
+      }
+
       this.setState({ user: userObj });
     });
   }
