@@ -27,7 +27,7 @@ function removeFalseEntries(obj) {
   for (const key in obj) {
     if (obj[key]) {
       //holds a true
-      result[key] = true;
+      result[key] = false;
     }
   }
 
@@ -167,8 +167,7 @@ export class AddBillScreen extends React.Component {
               />
             </Item>
             <Item fixedLabel style={styles.category}>
-              <Label
-                >Description</Label>
+              <Label style={styles.label}>Description</Label>
               <Input
                 multiline={true}
                 style={[styles.border,styles.description]}
@@ -200,14 +199,15 @@ export class AddBillScreen extends React.Component {
                 this.setState({ date: date });
               }}
             />
+
             <View style={styles.category}>
-
-            <Item fixedLabel style={styles.user}>
-              <Label>Users Involved </Label>
-
-              </Item>
-            {users}
+              <Item fixedLabel style={styles.user}>
+                <Label>Users Involved </Label>
+               </Item>
+              {users}
             </View>
+
+
           </Form>
           <Button
             style={styles.button}
@@ -259,7 +259,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10,
     marginTop: 20,
-    paddingBottom: 20,
+    paddingBottom: 10,
+
+    borderBottomWidth: .75,
   
   },
 
@@ -285,7 +287,10 @@ const styles = StyleSheet.create({
   },
   description:{
     textAlignVertical: 'top',
-
     height: 100
+  },
+  label:{
+    marginTop: 0,
+    height: 100,
   }
 });

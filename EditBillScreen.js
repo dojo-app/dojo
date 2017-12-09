@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
+import DatePicker from 'react-native-datepicker';
+
 
 import {
   Container,
@@ -127,44 +129,64 @@ export class EditBillScreen extends React.Component {
       <Container style={styles.container}>
         <Content>
           <Form>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.category}>
               <Label>Bill Title</Label>
               <Input
+                style={styles.border}
                 value={this.state.billTitle}
                 onChangeText={text => this.setState({ billTitle: text })}
               />
             </Item>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.category}>
               <Label>Bill Amount </Label>
               <Input
-                style={styles.right}
+                style={[styles.border,styles.right]}
                 onChangeText={text =>
                   this.setState({ billAmount: this.formatAmount(text) })
                 }
                 value={this.state.billAmount}
               />
             </Item>
-            <Item fixedLabel>
-              <Label>Description</Label>
+            <Item fixedLabel style={styles.category}>
+              <Label style={styles.label}>Description</Label>
               <Input
+                multiline={true}
+                style={[styles.border,styles.description]}
                 value={this.state.billDescription}
                 onChangeText={text => this.setState({ billDescription: text })}
               />
             </Item>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.category}>
               <Label>Due Date</Label>
-              <Input
-                value={this.state.billDueDate}
-                onChangeText={text => this.setState({ billDueDate: text })}
-              />
+              <Text
+                style={styles.text}
+                //value={this.state.billDueDate}
+                onPress={() => {
+                  this.refs.datepicker.onPressDate();
+                }}>
+                {this.state.billDueDate}
+              </Text>
             </Item>
+            <DatePicker
+              date={this.state.billDueDate}
+              mode="date"
+              style={{ width: 0, height: 0 }}
+              showIcon={false}
+              confirmBtnText="Submit"
+              cancelBtnText="Cancel"
+              //customStyles={customStyles}
+              ref="datepicker"
+              onDateChange={date => {
+                this.setState({ billDueDate: date });
+              }}
+            />
 
-            <ListItem itemDivider>
-              <Body>
-                <Text>Users</Text>
-              </Body>
-            </ListItem>
-            {users}
+            <View style={styles.category}>
+              <Item fixedLabel style={styles.user}>
+                <Label>Users Involved </Label>
+               </Item>
+              {users}
+            </View>
           </Form>
 
           <View style={styles.view}>
@@ -205,8 +227,33 @@ export class EditBillScreen extends React.Component {
 
 const styles = StyleSheet.create({
   right: {
-    marginRight: 20,
     textAlign: 'right'
+  },
+  category:{
+    flex: 0,
+    marginRight: 10,
+    marginTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth:1,
+    borderColor: '#c02b2b',
+
+
+  },
+  text: {
+    marginTop: 17,
+    marginBottom: 17,
+    marginRight: 100,
+    backgroundColor:'red'
+  },
+  user:{
+    flex: 0,
+    marginRight: 10,
+    marginLeft: 10,
+    marginTop: 20,
+    paddingBottom: 10,
+
+    borderBottomWidth: .75,
+  
   },
   container: {
     backgroundColor: 'white'
@@ -219,5 +266,20 @@ const styles = StyleSheet.create({
     flex: 1,
     // flexDirection: 'row',
     // justifyContent: 'center'
+  },
+  border:{
+    paddingBottom:0,
+    paddingTop:0,
+    flex:2.5,
+    borderWidth: .5,
+    borderColor: '#CCCCCC',
+  },
+  description:{
+    textAlignVertical: 'top',
+    height: 100
+  },
+  label:{
+    marginTop: 0,
+    height: 100,
   }
 });

@@ -16,7 +16,8 @@ import {
   CheckBox,
   ListItem,
   Body,
-  Thumbnail
+  Thumbnail,
+  View
 } from 'native-base';
 import * as firebase from 'firebase';
 
@@ -132,24 +133,27 @@ export class AddTaskScreen extends React.Component {
       <Container style={styles.container}>
         <Content keyboardShouldPersistTaps={'handled'}>
           <Form>
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.category}>
               <Label>Title</Label>
               <Input
+                style={styles.border} 
                 value={this.state.title}
                 onChangeText={text => this.setState({ title: text })}
                 autoFocus={true}
               />
             </Item>
 
-            <Item fixedLabel>
-              <Label>Description</Label>
+            <Item fixedLabel style={styles.category}>
+              <Label style={styles.label}>Description</Label>
               <Input
+                multiline={true}
+                style={[styles.border,styles.description]}
                 value={this.state.description}
                 onChangeText={text => this.setState({ description: text })}
               />
             </Item>
 
-            <Item fixedLabel>
+            <Item fixedLabel style={styles.category}>
               <Label>Due Date</Label>
               <Text
                 style={styles.text}
@@ -173,13 +177,18 @@ export class AddTaskScreen extends React.Component {
               }}
             />
 
-            <ListItem itemDivider>
-              <Body>
-                <Text>Users</Text>
-              </Body>
-            </ListItem>
 
+            <View style={styles.category}>
+
+            <Item fixedLabel style={styles.user}>
+              <Label>Users Involved </Label>
+
+              </Item>
             {users}
+            </View>
+
+
+
           </Form>
           <Button
             style={styles.button}
@@ -219,5 +228,38 @@ const styles = StyleSheet.create({
     marginTop: 17,
     marginBottom: 17,
     marginRight: 25
+  },
+  category:{
+    flex: 0,
+    marginRight: 10,
+    marginTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth:1,
+    borderColor: '#c02b2b'
+
+  },
+  user:{
+    flex: 0,
+    marginRight: 10,
+    marginLeft: 10,
+    marginTop: 20,
+    paddingBottom: 20,
+  
+  },
+  border:{
+    paddingBottom:0,
+    paddingTop:0,
+    flex:2.5,
+    borderWidth: .5,
+    borderColor: '#CCCCCC',
+  },
+
+  description:{
+    textAlignVertical: 'top',
+    height: 100
+  },
+  label:{
+    marginTop: 0,
+    height: 100,
   }
 });
