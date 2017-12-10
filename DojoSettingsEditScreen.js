@@ -25,7 +25,7 @@ import {
   Button
 } from 'native-base';
 
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import * as firebase from 'firebase';
 //import * as theme from './styles/theme';
@@ -43,13 +43,19 @@ export class DojoSettingsEditScreen extends React.Component {
   }
 
   save() {
+      // Validation
+      if (this.state.dojoName === '') {
+        Alert.alert('Edit Failed', 'Dojo name cannot be empty.');
+        return;
+      }
+
       firebase
         .database()
         .ref(`dojos/${this.props.screenProps.state.dojo}`)
         .update({
           name: this.state.dojoName,
           description: this.state.dojoDescription
-        });
+      });
   }
 
   render() {
